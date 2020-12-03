@@ -1,0 +1,52 @@
+const geometry = new THREE.BufferGeometry();
+	
+let x1 = vSticks[i].start.position.x
+let y1 = vSticks[i].start.position.y
+let z1 = vSticks[i].start.position.z
+
+let x2 = vSticks[i].end.position.x
+let y2 = vSticks[i].end.position.y
+let x2 = vSticks[i].end.position.z
+
+const vertices = new Float32Array( [
+	-1.0, -1.0,  1.0,
+	 1.0, -1.0,  1.0,
+	 1.0,  1.0,  1.0,
+
+	 1.0,  1.0,  1.0,
+	-1.0,  1.0,  1.0,
+	-1.0, -1.0,  1.0
+] );
+
+// itemSize = 3 because there are 3 values (components) per vertex
+geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+const material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+const mesh = new THREE.Mesh( geometry, material );
+
+
+
+
+
+    
+    // const bGeometry = new THREE.BufferGeometry();
+    // const pts = [];
+    // pts.push( vSticks[i].start.position );
+    // pts.push( vSticks[i].end.position );
+    // bGeometry.setAttribute( 'position', new THREE.BufferAttribute( pts., 3 ) );
+
+
+
+
+    // // draw sticks
+    // const points = [];
+    // points.push( vSticks[i].start.position );
+    // points.push( vSticks[i].end.position );
+
+    // //this.line.geometry.setFromPoints(points);
+    // let geometry = new THREE.Geometry();
+    // geometry.setFromPoints( points );
+    // geometry.verticesNeedUpdate = true;
+    // drawnSticks[i] = new THREE.Line(geometry, material);
+    // drawnSticks[i].geometry.attributes
+    // scene.add(drawnSticks[i]);
+    // //drawnSticks[i].geometry.verticesNeedUpdate = true
