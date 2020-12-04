@@ -30,11 +30,12 @@ export class VerletStick {
             // nodeConstrainFactors optionally anchor stick on one side
             let node1ConstrainFactor = 0.5;
             let node2ConstrainFactor = 0.5;
+            // console.log ("this.anchorDetail = " + this.anchorDetail);
             if (this.anchorDetail === 1) {
                 node1ConstrainFactor = 0.0;
                 node2ConstrainFactor = 1.0;
             }
-            else if (this.anchorDetail === 2) {
+            if (this.anchorDetail === 2) {
                 node1ConstrainFactor = 1.0;
                 node2ConstrainFactor = 0.0;
             }

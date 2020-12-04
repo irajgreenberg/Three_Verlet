@@ -23,7 +23,7 @@ import { OrbitControls } from '/jsm/controls/OrbitControls';
 import { VerletNode } from './VerletNode.js';
 import { visitNodes } from 'typescript';
 import { VerletStick } from './VerletStick.js';
-import { VerletStrand } from './VerletStrand.js';
+import { AnchorPoint, VerletStrand } from './VerletStrand.js';
 
 const scene: THREE.Scene = new THREE.Scene();
 const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
@@ -37,19 +37,19 @@ const controls = new OrbitControls(camera, renderer.domElement);
 const bounds: THREE.Vector3 = new THREE.Vector3(2, .75, 1);
 
 // Create/add tendrils
-let tendrils: VerletStrand[] = new Array(100);
+let tendrils: VerletStrand[] = new Array(350);
 for (var i = 0; i < tendrils.length; i++) {
-    tendrils[i] = new VerletStrand(20);
+    tendrils[i] = new VerletStrand(new THREE.Vector3(-.2, 0, 0), new THREE.Vector3(.2, 0, 0), 20, AnchorPoint.HEAD_TAIL);
     scene.add(tendrils[i]);
 }
 
 // Create/add outer box
 const geometry2: THREE.BoxGeometry = new THREE.BoxGeometry(bounds.x, bounds.y, bounds.z);
-const material2: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({ color: 0xff8800, wireframe: true });
+const material2: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({ color: 0x445544, wireframe: true });
 const cube2: THREE.Mesh = new THREE.Mesh(geometry2, material2);
 scene.add(cube2);
 
-camera.position.z = 2;
+camera.position.z = .55;
 
 // animation vars
 let spd: THREE.Vector3 = new THREE.Vector3(.01, .1, .1);
@@ -69,7 +69,9 @@ var animate = function () {
 
     for (var i = 0; i < tendrils.length; i++) {
         for (var j = 0; j < tendrils[i].nodes.length; j++) {
-        tendrils[i].nodes[j].verlet();
+       //if(j<tendrils[i].nodes.length-1) {
+           tendrils[i].nodes[j].verlet();
+      // }
         tendrils[i].nodes[j].constrainBounds(bounds);
     }
 }

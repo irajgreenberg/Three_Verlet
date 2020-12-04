@@ -14,7 +14,7 @@ export class VerletNode extends THREE.Mesh{
 
   private posOld :THREE.Vector3;
   private radius: number; //for conveneince
-
+ 
   constructor(pos:THREE.Vector3, radius:number = 0.005){
   super(new THREE.SphereBufferGeometry( radius ), new THREE.MeshBasicMaterial( { color: 0xff0000 } ));
   this.radius = radius;

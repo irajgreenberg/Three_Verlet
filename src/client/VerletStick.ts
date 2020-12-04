@@ -13,8 +13,9 @@ import * as THREE from '/build/three.module.js';
 import { VerletNode } from './VerletNode.js';
 import { Line } from '/build/three.module.js';
 
-export class VerletStick {
 
+export class VerletStick {
+ 
   private stickTension:number;
   // // anchor stick detail
   private anchorDetail:number;
@@ -23,7 +24,7 @@ export class VerletStick {
   len: number;
 
 
-  constructor(start: VerletNode, end: VerletNode, stickTension:number = .4, anchorDetail:number = 0){
+  constructor(start: VerletNode, end: VerletNode, stickTension:number = .4, anchorDetail: number = 0){
     this.start = start;
     this.end = end;
     this.len = this.start.position.distanceTo(this.end.position);
@@ -50,10 +51,12 @@ export class VerletStick {
       // nodeConstrainFactors optionally anchor stick on one side
       let node1ConstrainFactor:number = 0.5;
       let node2ConstrainFactor:number = 0.5;
+     // console.log ("this.anchorDetail = " + this.anchorDetail);
       if(this.anchorDetail===1){
         node1ConstrainFactor = 0.0;
         node2ConstrainFactor = 1.0;
-      } else if(this.anchorDetail===2){
+      } 
+      if(this.anchorDetail===2){
         node1ConstrainFactor = 1.0;
         node2ConstrainFactor = 0.0;
       }
