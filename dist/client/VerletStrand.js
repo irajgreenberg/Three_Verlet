@@ -144,4 +144,26 @@ export class VerletStrand extends THREE.Group {
         //this.tendril.
         this.add(this.tendril);
     }
+    verlet(isConstrained = true) {
+        for (var i = 0; i < this.nodes.length; i++) {
+            //if(j<tendrils[i].nodes.length-1) {
+            this.nodes[i].verlet();
+            // }
+            // tendrils[i].nodes[j].constrainBounds(bounds);
+        }
+        if (isConstrained) {
+            this.constrain();
+        }
+    }
+    constrain() {
+        for (var i = 0; i < this.segmentCount; i++) {
+            this.segments[i].constrainLen();
+        }
+        this.geometry.verticesNeedUpdate = true;
+    }
+    constrainBounds(bounds) {
+        for (var j = 0; j < this.nodes.length; j++) {
+            this.nodes[j].constrainBounds(bounds);
+        }
+    }
 }

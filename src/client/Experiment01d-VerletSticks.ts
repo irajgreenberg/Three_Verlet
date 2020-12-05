@@ -68,21 +68,9 @@ var animate = function () {
     camera.lookAt(scene.position); //0,0,0
 
     for (var i = 0; i < tendrils.length; i++) {
-        for (var j = 0; j < tendrils[i].nodes.length; j++) {
-       //if(j<tendrils[i].nodes.length-1) {
-           tendrils[i].nodes[j].verlet();
-      // }
-        tendrils[i].nodes[j].constrainBounds(bounds);
+        tendrils[i].verlet();
+        tendrils[i].constrainBounds(bounds);
     }
-}
-
-
-for (var i = 0; i < tendrils.length; i++) {
-    for (var j = 0; j < tendrils[i].segmentCount; j++) {
-        tendrils[i].segments[j].constrainLen();
-    }
-    tendrils[i].geometry.verticesNeedUpdate = true;
-}
 
     controls.update()
     render();

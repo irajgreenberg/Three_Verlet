@@ -54,7 +54,7 @@ export class VerletStrand extends THREE.Group {
             // show nodes
             this.add(this.nodes[i]);
             if (i > 0 && i % 2 === 0) {
-               // this.nodes[i].moveNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.01), THREE.MathUtils.randFloatSpread(.01), THREE.MathUtils.randFloatSpread(.01)));
+                // this.nodes[i].moveNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.01), THREE.MathUtils.randFloatSpread(.01), THREE.MathUtils.randFloatSpread(.01)));
             }
         }
 
@@ -135,11 +135,37 @@ export class VerletStrand extends THREE.Group {
                     if (i === this.segments.length - 1) { this.geometry.vertices.push(this.segments[i].end.position) }
                 }
         }
-        let lineMaterial = new THREE.LineBasicMaterial({ color: 0xff8888, linewidth:.1});
+        let lineMaterial = new THREE.LineBasicMaterial({ color: 0xff8888, linewidth: .1 });
         this.tendril = new THREE.Line(this.geometry, lineMaterial);
         this.tendril.material.transparent = true; //annoying ide can't accurately track this
         this.tendril.material.opacity = .25; //annoying ide can't accurately track this
         //this.tendril.
         this.add(this.tendril);
     }
+
+    public verlet(isConstrained:boolean = true): void {
+        for (var i = 0; i < this.nodes.length; i++) {
+            //if(j<tendrils[i].nodes.length-1) {
+            this.nodes[i].verlet();
+            // }
+            // tendrils[i].nodes[j].constrainBounds(bounds);
+        }
+       if(isConstrained){
+        this.constrain();
+       } 
+    }
+
+    private constrain():void {
+        for (var i = 0; i < this.segmentCount; i++) {
+            this.segments[i].constrainLen();
+        }
+        this.geometry.verticesNeedUpdate = true;
+    }
+
+    public constrainBounds(bounds:THREE.Vector3):void {
+        for (var j = 0; j < this.nodes.length; j++) {
+            this.nodes[j].constrainBounds(bounds);
+        }
+    }
+
 }
