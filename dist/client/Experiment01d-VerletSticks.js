@@ -25,9 +25,9 @@ const controls = new OrbitControls(camera, renderer.domElement);
 // cube bounds
 const bounds = new THREE.Vector3(2, .75, 1);
 // Create/add tendrils
-let tendrils = new Array(350);
+let tendrils = new Array(50);
 for (var i = 0; i < tendrils.length; i++) {
-    tendrils[i] = new VerletStrand(new THREE.Vector3(-.2, 0, 0), new THREE.Vector3(.2, 0, 0), 20, AnchorPoint.HEAD_TAIL);
+    tendrils[i] = new VerletStrand(new THREE.Vector3(-.2, .05, 0), new THREE.Vector3(.2, .05, 0), 50, AnchorPoint.HEAD_TAIL, .85);
     scene.add(tendrils[i]);
 }
 // Create/add outer box
@@ -37,8 +37,8 @@ const cube2 = new THREE.Mesh(geometry2, material2);
 scene.add(cube2);
 camera.position.z = .55;
 // animation vars
-let spd = new THREE.Vector3(.01, .1, .1);
-let theta = 0.0;
+// let spd: THREE.Vector3 = new THREE.Vector3(.01, .1, .1);
+// let theta = 0.0;
 window.addEventListener('resize', onWindowResize, false);
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -48,7 +48,7 @@ function onWindowResize() {
 }
 var animate = function () {
     requestAnimationFrame(animate);
-    controls.autoRotate = true;
+    //controls.autoRotate = true;
     camera.lookAt(scene.position); //0,0,0
     for (var i = 0; i < tendrils.length; i++) {
         tendrils[i].verlet();

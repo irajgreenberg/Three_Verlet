@@ -21,14 +21,16 @@ export class VerletStrand extends THREE.Group {
     segmentCount: number;
     segments: VerletStick[];
     nodes: VerletNode[];
-    // anchor stick detail
+    // controls anchor ponts along strand
     private anchorPointDetail: AnchorPoint;
+    // controls spring tension between adjacent nodes
+    elasticity:number;
     geometry = new THREE.Geometry();
     material = new THREE.MeshBasicMaterial({ color: 0xffffff, });
     public tendril: THREE.Line;
 
 
-    constructor(head: THREE.Vector3, tail: THREE.Vector3, segmentCount: number, anchorPointDetail: AnchorPoint = AnchorPoint.NONE) {
+    constructor(head: THREE.Vector3, tail: THREE.Vector3, segmentCount: number, anchorPointDetail: AnchorPoint = AnchorPoint.NONE, elasticity:number = .5) {
         super();
         this.head = head;
         this.tail = tail;
@@ -36,6 +38,7 @@ export class VerletStrand extends THREE.Group {
         this.segments = new Array(segmentCount);
         this.nodes = new Array(segmentCount + 1);
         this.anchorPointDetail = anchorPointDetail;
+        this.elasticity = elasticity;
         // encapsulaes stick data
         this.tendril = new THREE.Line();
 
@@ -50,7 +53,7 @@ export class VerletStrand extends THREE.Group {
         deltaVec.normalize();
 
         for (var i = 0; i < this.nodes.length; i++) {
-            this.nodes[i] = new VerletNode(new THREE.Vector3(this.head.x + deltaVec.x * segLen * i, this.head.x + deltaVec.y * segLen * i, this.head.x + deltaVec.z * segLen * i), THREE.MathUtils.randFloat(.0002, .0007));
+            this.nodes[i] = new VerletNode(new THREE.Vector3(this.head.x + deltaVec.x * segLen * i, this.head.y + deltaVec.y * segLen * i, this.head.z + deltaVec.z * segLen * i), THREE.MathUtils.randFloat(.0002, .0007));
             // show nodes
             this.add(this.nodes[i]);
             if (i > 0 && i % 2 === 0) {
@@ -60,13 +63,13 @@ export class VerletStrand extends THREE.Group {
 
         // move nodes
         // move node 2
-        this.nodes[9].moveNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.1), THREE.MathUtils.randFloatSpread(.1), THREE.MathUtils.randFloatSpread(.1)));
+        this.nodes[20].moveNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.04), THREE.MathUtils.randFloatSpread(.04), THREE.MathUtils.randFloatSpread(.04)));
 
         // add constraints
         switch (this.anchorPointDetail) {
             case AnchorPoint.NONE:
                 for (var i = 0; i < this.segments.length; i++) {
-                    this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], THREE.MathUtils.randFloat(.2, .4), AnchorPoint.NONE);
+                    this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], this.elasticity, AnchorPoint.NONE);
                     this.geometry.vertices.push(this.segments[i].start.position);
                     if (i === this.segments.length - 1) { this.geometry.vertices.push(this.segments[i].end.position) }
                 }
@@ -74,9 +77,9 @@ export class VerletStrand extends THREE.Group {
             case AnchorPoint.HEAD:
                 for (var i = 0; i < this.segments.length; i++) {
                     if (i === 0) {
-                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], THREE.MathUtils.randFloat(.2, .4), AnchorPoint.HEAD);
+                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], this.elasticity, AnchorPoint.HEAD);
                     } else {
-                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], THREE.MathUtils.randFloat(.2, .4), AnchorPoint.NONE);
+                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], this.elasticity, AnchorPoint.NONE);
                     }
                     this.geometry.vertices.push(this.segments[i].start.position);
                     if (i === this.segments.length - 1) { this.geometry.vertices.push(this.segments[i].end.position) }
@@ -85,9 +88,9 @@ export class VerletStrand extends THREE.Group {
             case AnchorPoint.TAIL:
                 for (var i = 0; i < this.segments.length; i++) {
                     if (i === this.segments.length - 1) {
-                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], THREE.MathUtils.randFloat(.2, .4), AnchorPoint.TAIL);
+                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], this.elasticity, AnchorPoint.TAIL);
                     } else {
-                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], THREE.MathUtils.randFloat(.2, .4), AnchorPoint.NONE);
+                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], this.elasticity, AnchorPoint.NONE);
                     }
                     this.geometry.vertices.push(this.segments[i].start.position);
                     if (i === this.segments.length - 1) { this.geometry.vertices.push(this.segments[i].end.position) }
@@ -96,11 +99,11 @@ export class VerletStrand extends THREE.Group {
             case AnchorPoint.HEAD_TAIL:
                 for (var i = 0; i < this.segments.length; i++) {
                     if (i === 0) {
-                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], THREE.MathUtils.randFloat(.7, .9), AnchorPoint.HEAD);
+                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], this.elasticity, AnchorPoint.HEAD);
                     } else if (i === this.segments.length - 1) {
-                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], THREE.MathUtils.randFloat(.7, .9), AnchorPoint.TAIL);
+                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], this.elasticity, AnchorPoint.TAIL);
                     } else {
-                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], THREE.MathUtils.randFloat(.7, .9), AnchorPoint.NONE);
+                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], this.elasticity, AnchorPoint.NONE);
                     }
                     this.geometry.vertices.push(this.segments[i].start.position);
                     if (i === this.segments.length - 1) { this.geometry.vertices.push(this.segments[i].end.position) }
@@ -109,9 +112,9 @@ export class VerletStrand extends THREE.Group {
             case AnchorPoint.MOD2:
                 for (var i = 0; i < this.segments.length; i++) {
                     if (i % 2 === 0) {
-                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], THREE.MathUtils.randFloat(.2, .4), AnchorPoint.MOD2);
+                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], this.elasticity, AnchorPoint.MOD2);
                     } else {
-                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], THREE.MathUtils.randFloat(.2, .4), AnchorPoint.NONE);
+                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], this.elasticity, AnchorPoint.NONE);
                     }
                     this.geometry.vertices.push(this.segments[i].start.position);
                     if (i === this.segments.length - 1) { this.geometry.vertices.push(this.segments[i].end.position) }
@@ -120,9 +123,9 @@ export class VerletStrand extends THREE.Group {
             case AnchorPoint.RAND:
                 for (var i = 0; i < this.segments.length; i++) {
                     if (THREE.MathUtils.randInt(0, 1) === 0) {
-                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], THREE.MathUtils.randFloat(.2, .4), AnchorPoint.RAND);
+                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], this.elasticity, AnchorPoint.RAND);
                     } else {
-                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], THREE.MathUtils.randFloat(.2, .4), AnchorPoint.NONE);
+                        this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], this.elasticity, AnchorPoint.NONE);
                     }
                     this.geometry.vertices.push(this.segments[i].start.position);
                     if (i === this.segments.length - 1) { this.geometry.vertices.push(this.segments[i].end.position) }
@@ -130,12 +133,12 @@ export class VerletStrand extends THREE.Group {
                 break;
             default:
                 for (var i = 0; i < this.segments.length; i++) {
-                    this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], THREE.MathUtils.randFloat(.2, .4), AnchorPoint.NONE);
+                    this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], this.elasticity, AnchorPoint.NONE);
                     this.geometry.vertices.push(this.segments[i].start.position);
                     if (i === this.segments.length - 1) { this.geometry.vertices.push(this.segments[i].end.position) }
                 }
         }
-        let lineMaterial = new THREE.LineBasicMaterial({ color: 0xff8888, linewidth: .1 });
+        let lineMaterial = new THREE.LineBasicMaterial({ color: 0xff8888, linewidth: 5 });
         this.tendril = new THREE.Line(this.geometry, lineMaterial);
         this.tendril.material.transparent = true; //annoying ide can't accurately track this
         this.tendril.material.opacity = .25; //annoying ide can't accurately track this
@@ -145,10 +148,7 @@ export class VerletStrand extends THREE.Group {
 
     public verlet(isConstrained:boolean = true): void {
         for (var i = 0; i < this.nodes.length; i++) {
-            //if(j<tendrils[i].nodes.length-1) {
             this.nodes[i].verlet();
-            // }
-            // tendrils[i].nodes[j].constrainBounds(bounds);
         }
        if(isConstrained){
         this.constrain();
@@ -163,8 +163,8 @@ export class VerletStrand extends THREE.Group {
     }
 
     public constrainBounds(bounds:THREE.Vector3):void {
-        for (var j = 0; j < this.nodes.length; j++) {
-            this.nodes[j].constrainBounds(bounds);
+        for (var i = 0; i < this.nodes.length; i++) {
+            this.nodes[i].constrainBounds(bounds);
         }
     }
 
