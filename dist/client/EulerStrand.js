@@ -2,7 +2,7 @@
 // of an 'independent' softbody organism.
 // Project is being produced in collaboration with
 // Courtney Brown, Melanie Clemmons & Brent Brimhall
-// Creates Verlet Tendrils - motion/springing based on displacement
+// Creates Euler Tendrils - motion/springin based on speed
 import * as THREE from '/build/three.module.js';
 import { VerletNode } from './VerletNode.js';
 import { VerletStick } from './VerletStick.js';

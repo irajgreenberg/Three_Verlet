@@ -3,7 +3,7 @@
 // Project is being produced in collaboration with
 // Courtney Brown, Melanie Clemmons & Brent Brimhall
 
-// draw tendrils
+// Creates Verlet Tendrils - motion/springing based on displacement
 
 import * as THREE from '/build/three.module.js';
 import { VerletNode } from './VerletNode.js';

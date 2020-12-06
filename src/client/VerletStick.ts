@@ -5,6 +5,7 @@
 
 // Simple verlet Stick
 // manages constraint of verlet nodes
+
 // Original Author: Ira Greenberg, 11/2020
 // Center of Creative Computation, SMU
 //----------------------------------------------

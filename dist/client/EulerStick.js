@@ -2,44 +2,44 @@
 // of an 'independent' softbody organism.
 // Project is being produced in collaboration with
 // Courtney Brown, Melanie Clemmons & Brent Brimhall
-// Springing based no Euler motion and simple interia
-// manages constraint of head and tail vecs
+// Springing based on Euler motion and simple interia
+// manages constraint of start and end vecs
 // Original Author: Ira Greenberg, 11/2020
 // Center of Creative Computation, SMU
 //----------------------------------------------
 import * as THREE from '/build/three.module.js';
 export class EulerStick {
-    constructor(head, tail, springFactor = .4, springDamping = .775, initialHeadSpeed = new THREE.Vector3()) {
-        this.head = head;
-        this.tail = tail;
+    constructor(start, end, springFactor = .4, springDamping = .775, initialstartSpeed = new THREE.Vector3()) {
+        this.start = start;
+        this.end = end;
         this.springFactor = springFactor;
         this.springDamping = springDamping;
-        this.headSpeed = initialHeadSpeed;
-        this.tailSpeed = new THREE.Vector3();
+        this.startSpeed = initialstartSpeed;
+        this.endSpeed = new THREE.Vector3();
     }
     move() {
-        this.head.add(this.headSpeed);
+        this.start.add(this.startSpeed);
         this.constrain();
     }
     constrain() {
         //move center point
-        let deltaX = this.head.x - this.tail.x;
-        let deltaY = this.head.y - this.tail.y;
-        let deltaZ = this.head.z - this.tail.z;
+        let deltaX = this.start.x - this.end.x;
+        let deltaY = this.start.y - this.end.y;
+        let deltaZ = this.start.z - this.end.z;
         // create springing effect
         deltaX *= this.springFactor;
         deltaY *= this.springFactor;
         deltaZ *= this.springFactor;
-        this.tailSpeed.x += deltaX;
-        this.tailSpeed.y += deltaY;
-        this.tailSpeed.z += deltaZ;
+        this.endSpeed.x += deltaX;
+        this.endSpeed.y += deltaY;
+        this.endSpeed.z += deltaZ;
         // move predator's center
-        this.tail.x += this.tailSpeed.x;
-        this.tail.y += this.tailSpeed.y;
-        this.tail.z += this.tailSpeed.z;
+        this.end.x += this.endSpeed.x;
+        this.end.y += this.endSpeed.y;
+        this.end.z += this.endSpeed.z;
         // slow down springing
-        this.tailSpeed.x *= this.springDamping;
-        this.tailSpeed.y *= this.springDamping;
-        this.tailSpeed.z *= this.springDamping;
+        this.endSpeed.x *= this.springDamping;
+        this.endSpeed.y *= this.springDamping;
+        this.endSpeed.z *= this.springDamping;
     }
 }
