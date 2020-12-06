@@ -6,7 +6,7 @@
 //                    Server runs locally at port 3000
 // These experiments support development
 // of an 'independent' softbody organism.
-// This work is being produced in collaboration with
+// Work is being produced in collaboration with
 // Courtney Brown, Melanie Clemmons & Brent Brimhall
 // Draw a collection of verlet sticks 
 // contained within a cube
@@ -25,9 +25,9 @@ const controls = new OrbitControls(camera, renderer.domElement);
 // cube bounds
 const bounds = new THREE.Vector3(2, .75, 1);
 // Create/add tendrils
-let tendrils = new Array(50);
+let tendrils = new Array(100);
 for (var i = 0; i < tendrils.length; i++) {
-    tendrils[i] = new VerletStrand(new THREE.Vector3(-.2, .05, 0), new THREE.Vector3(.2, .05, 0), 50, AnchorPoint.HEAD_TAIL, .85);
+    tendrils[i] = new VerletStrand(new THREE.Vector3(-.2, .05, 0), new THREE.Vector3(.2, .05, 0), 50, AnchorPoint.HEAD_TAIL, .5 + Math.random() * .475);
     scene.add(tendrils[i]);
 }
 // Create/add outer box

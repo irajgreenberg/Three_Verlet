@@ -1,6 +1,6 @@
 // This class supports development
 // of an 'independent' softbody organism.
-// This work is being produced in collaboration with
+// Project is being produced in collaboration with
 // Courtney Brown, Melanie Clemmons & Brent Brimhall
 
 // Simple verlet Stick

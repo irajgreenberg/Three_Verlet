@@ -1,3 +1,7 @@
+// This class supports development
+// of an 'independent' softbody organism.
+// Project is being produced in collaboration with
+// Courtney Brown, Melanie Clemmons & Brent Brimhall
 // draw tendrils
 import * as THREE from '/build/three.module.js';
 import { VerletNode } from './VerletNode.js';
