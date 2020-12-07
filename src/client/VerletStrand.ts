@@ -29,13 +29,13 @@ export class VerletStrand extends THREE.Group {
     // controls anchor ponts along strand
     private anchorPointDetail: AnchorPoint;
     // controls spring tension between adjacent nodes
-    elasticity:number;
+    elasticity: number;
     geometry = new THREE.Geometry();
     material = new THREE.MeshBasicMaterial({ color: 0xffffff, });
     public tendril: THREE.Line;
 
 
-    constructor(head: THREE.Vector3, tail: THREE.Vector3, segmentCount: number, anchorPointDetail: AnchorPoint = AnchorPoint.NONE, elasticity:number = .5) {
+    constructor(head: THREE.Vector3, tail: THREE.Vector3, segmentCount: number, anchorPointDetail: AnchorPoint = AnchorPoint.NONE, elasticity: number = .5) {
         super();
         this.head = head;
         this.tail = tail;
@@ -68,7 +68,7 @@ export class VerletStrand extends THREE.Group {
 
         // move nodes
         // move node 2
-        this.nodes[20].moveNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.04), THREE.MathUtils.randFloatSpread(.04), THREE.MathUtils.randFloatSpread(.04)));
+        this.nodes[2].moveNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.04), THREE.MathUtils.randFloatSpread(.04), THREE.MathUtils.randFloatSpread(.04)));
 
         // add constraints
         switch (this.anchorPointDetail) {
@@ -151,25 +151,36 @@ export class VerletStrand extends THREE.Group {
         this.add(this.tendril);
     }
 
-    public verlet(isConstrained:boolean = true): void {
+    public verlet(isConstrained: boolean = true): void {
         for (var i = 0; i < this.nodes.length; i++) {
             this.nodes[i].verlet();
         }
-       if(isConstrained){
-        this.constrain();
-       } 
+        if (isConstrained) {
+            this.constrain();
+        }
     }
 
-    private constrain():void {
+    private constrain(): void {
         for (var i = 0; i < this.segmentCount; i++) {
             this.segments[i].constrainLen();
         }
         this.geometry.verticesNeedUpdate = true;
     }
 
-    public constrainBounds(bounds:THREE.Vector3):void {
+    public constrainBounds(bounds: THREE.Vector3): void {
         for (var i = 0; i < this.nodes.length; i++) {
             this.nodes[i].constrainBounds(bounds);
+        }
+    }
+
+    // Resets node position delta and stick lengths
+    // required when tranforming strand shapes after initialization
+    public resetVerlet(): void {
+        for (var i = 0; i < this.nodes.length; i++) {
+            this.nodes[i].resetVerlet();
+        }
+        for (var i = 0; i < this.segmentCount; i++) {
+            this.segments[i].reinitializeLen();
         }
     }
 

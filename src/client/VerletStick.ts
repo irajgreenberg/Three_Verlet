@@ -70,4 +70,8 @@ export class VerletStick {
       this.end.position.z -= delta.z * (node2ConstrainFactor *  this.stickTension * difference);
     }
   }
+
+  reinitializeLen():void {
+    this.len = this.start.position.distanceTo(this.end.position);
+  }
 }

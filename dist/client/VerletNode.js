@@ -26,6 +26,9 @@ export class VerletNode extends THREE.Mesh {
         this.position.z += (this.position.z - this.posOld.z);
         this.posOld.copy(posTemp1);
     }
+    resetVerlet() {
+        this.posOld = this.position.clone();
+    }
     constrainBounds(bounds) {
         if (this.position.x > bounds.x / 2 - this.radius) {
             this.position.x = bounds.x / 2 - this.radius;

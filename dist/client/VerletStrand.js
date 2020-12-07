@@ -48,7 +48,7 @@ export class VerletStrand extends THREE.Group {
         }
         // move nodes
         // move node 2
-        this.nodes[20].moveNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.04), THREE.MathUtils.randFloatSpread(.04), THREE.MathUtils.randFloatSpread(.04)));
+        this.nodes[2].moveNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.04), THREE.MathUtils.randFloatSpread(.04), THREE.MathUtils.randFloatSpread(.04)));
         // add constraints
         switch (this.anchorPointDetail) {
             case AnchorPoint.NONE:
@@ -166,6 +166,16 @@ export class VerletStrand extends THREE.Group {
     constrainBounds(bounds) {
         for (var i = 0; i < this.nodes.length; i++) {
             this.nodes[i].constrainBounds(bounds);
+        }
+    }
+    // Resets node position delta and stick lengths
+    // required when tranforming strand shapes after initialization
+    resetVerlet() {
+        for (var i = 0; i < this.nodes.length; i++) {
+            this.nodes[i].resetVerlet();
+        }
+        for (var i = 0; i < this.segmentCount; i++) {
+            this.segments[i].reinitializeLen();
         }
     }
 }
