@@ -10,37 +10,31 @@
 // Center of Creative Computation, SMU
 //----------------------------------------------
 
+import { EulerNode } from './EulerNode.js';
 import * as THREE from '/build/three.module.js';
 
 export class EulerStick {
 
     // Note: for now keep non-dependent properties public
-    start: THREE.Vector3;
-    startSpeed: THREE.Vector3;
-    private end: THREE.Vector3;
-    private endSpeed: THREE.Vector3;
+    start: EulerNode;
+    end: EulerNode;
+    endSpeed: THREE.Vector3;
     springFactor: number;
     springDamping: number;
 
-    constructor(start: THREE.Vector3, end: THREE.Vector3, springFactor: number = .4, springDamping: number = .775, initialstartSpeed: THREE.Vector3 = new THREE.Vector3()) {
+    constructor(start: EulerNode, end: EulerNode, springFactor: number = .4, springDamping: number = .775) {
         this.start = start;
         this.end = end;
         this.springFactor = springFactor;
         this.springDamping = springDamping;
-        this.startSpeed = initialstartSpeed;
         this.endSpeed = new THREE.Vector3();
     }
 
-    public move(): void {
-        this.start.add(this.startSpeed);
-        this.constrain();
-    }
-
-    private constrain(): void {
+     constrainLen(): void {
         //move center point
-        let deltaX = this.start.x - this.end.x;
-        let deltaY = this.start.y - this.end.y;
-        let deltaZ = this.start.z - this.end.z;
+        let deltaX = this.start.position.x - this.end.position.x;
+        let deltaY = this.start.position.y - this.end.position.y;
+        let deltaZ = this.start.position.z - this.end.position.z;
 
         // create springing effect
         deltaX *= this.springFactor;
@@ -51,9 +45,9 @@ export class EulerStick {
         this.endSpeed.z += deltaZ;
 
         // move predator's center
-        this.end.x += this.endSpeed.x;
-        this.end.y += this.endSpeed.y;
-        this.end.z += this.endSpeed.z;
+        this.end.position.x += this.endSpeed.x;
+        this.end.position.y += this.endSpeed.y;
+        this.end.position.z += this.endSpeed.z;
 
         // slow down springing
         this.endSpeed.x *= this.springDamping;
