@@ -8,18 +8,9 @@
 import * as THREE from '/build/three.module.js';
 import { VerletNode } from './VerletNode.js';
 import { VerletStick } from './VerletStick.js';
+import { AnchorPoint } from './IJGUtils.js';
 
 
-export enum AnchorPoint {
-    NONE,
-    HEAD,
-    TAIL,
-    HEAD_TAIL,
-    MOD2,
-    RAND
-}
-
-//const tendrilCount: number = 20;
 export class VerletStrand extends THREE.Group {
     public head: THREE.Vector3
     public tail: THREE.Vector3
@@ -61,14 +52,7 @@ export class VerletStrand extends THREE.Group {
             this.nodes[i] = new VerletNode(new THREE.Vector3(this.head.x + deltaVec.x * segLen * i, this.head.y + deltaVec.y * segLen * i, this.head.z + deltaVec.z * segLen * i), THREE.MathUtils.randFloat(.0002, .0007));
             // show nodes
             this.add(this.nodes[i]);
-            if (i > 0 && i % 2 === 0) {
-                // this.nodes[i].moveNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.01), THREE.MathUtils.randFloatSpread(.01), THREE.MathUtils.randFloatSpread(.01)));
-            }
         }
-
-        // move nodes
-        // move node 2
-        // this.nodes[2].moveNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.04), THREE.MathUtils.randFloatSpread(.04), THREE.MathUtils.randFloatSpread(.04)));
 
         // add constraints
         switch (this.anchorPointDetail) {

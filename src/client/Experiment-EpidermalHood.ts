@@ -23,7 +23,7 @@ import { OrbitControls } from '/jsm/controls/OrbitControls';
 import { VerletNode } from './VerletNode.js';
 import { visitNodes } from 'typescript';
 import { VerletStick } from './VerletStick.js';
-import { AnchorPoint, VerletStrand } from './VerletStrand.js';
+import { VerletStrand } from './VerletStrand.js';
 import { EpidermalHood } from './EpidermalHood.js';
 
 const scene: THREE.Scene = new THREE.Scene();
@@ -39,8 +39,8 @@ const bounds: THREE.Vector3 = new THREE.Vector3(2, .75, 1);
 
 // Create Epidermal Hood
 //constructor(radius: number, height: number, spineCount: number, sliceCount: number) 
-    let epidermalHood = new EpidermalHood(.2, .2, 8, 30);
-    scene.add(epidermalHood);
+let epidermalHood = new EpidermalHood(.2, .2, 8, 30);
+scene.add(epidermalHood);
 
 // Create/add outer box
 const geometry2: THREE.BoxGeometry = new THREE.BoxGeometry(bounds.x, bounds.y, bounds.z);
@@ -69,11 +69,11 @@ var animate = function () {
     camera.lookAt(scene.position); //0,0,0
 
     //for (var i = 0; i < tendrils.length; i++) {
-        epidermalHood.pulse();
-        epidermalHood.constrainBounds(bounds);
-        // .verlet();
-        // tendrils[i].constrainBounds(bounds);
-   // }
+    epidermalHood.pulse();
+    epidermalHood.constrainBounds(bounds);
+    // .verlet();
+    // tendrils[i].constrainBounds(bounds);
+    // }
 
     controls.update()
     render();

@@ -6,16 +6,7 @@
 import * as THREE from '/build/three.module.js';
 import { VerletNode } from './VerletNode.js';
 import { VerletStick } from './VerletStick.js';
-export var AnchorPoint;
-(function (AnchorPoint) {
-    AnchorPoint[AnchorPoint["NONE"] = 0] = "NONE";
-    AnchorPoint[AnchorPoint["HEAD"] = 1] = "HEAD";
-    AnchorPoint[AnchorPoint["TAIL"] = 2] = "TAIL";
-    AnchorPoint[AnchorPoint["HEAD_TAIL"] = 3] = "HEAD_TAIL";
-    AnchorPoint[AnchorPoint["MOD2"] = 4] = "MOD2";
-    AnchorPoint[AnchorPoint["RAND"] = 5] = "RAND";
-})(AnchorPoint || (AnchorPoint = {}));
-//const tendrilCount: number = 20;
+import { AnchorPoint } from './IJGUtils.js';
 export class VerletStrand extends THREE.Group {
     constructor(head, tail, segmentCount, anchorPointDetail = AnchorPoint.NONE, elasticity = .5) {
         super();
@@ -42,13 +33,7 @@ export class VerletStrand extends THREE.Group {
             this.nodes[i] = new VerletNode(new THREE.Vector3(this.head.x + deltaVec.x * segLen * i, this.head.y + deltaVec.y * segLen * i, this.head.z + deltaVec.z * segLen * i), THREE.MathUtils.randFloat(.0002, .0007));
             // show nodes
             this.add(this.nodes[i]);
-            if (i > 0 && i % 2 === 0) {
-                // this.nodes[i].moveNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.01), THREE.MathUtils.randFloatSpread(.01), THREE.MathUtils.randFloatSpread(.01)));
-            }
         }
-        // move nodes
-        // move node 2
-        // this.nodes[2].moveNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.04), THREE.MathUtils.randFloatSpread(.04), THREE.MathUtils.randFloatSpread(.04)));
         // add constraints
         switch (this.anchorPointDetail) {
             case AnchorPoint.NONE:

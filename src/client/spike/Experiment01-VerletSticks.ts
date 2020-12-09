@@ -25,33 +25,53 @@ import { visitNodes } from 'typescript';
 import { VerletStick } from './VerletStick.js';
 
 const scene: THREE.Scene = new THREE.Scene();
-
 const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
                         75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-
 const controls = new OrbitControls(camera, renderer.domElement);
 
-const stickCount = 2;
+// cube bounds
+const bounds: THREE.Vector3 = new THREE.Vector3(2, .75, 1);
+
+const stickCount = 40;
+let nodes:VerletNode[] = new Array(stickCount*2);
 let vSticks:VerletStick[] = new Array(stickCount);
-for(var i=0; i<stickCount; i++){
-    let tn1:VerletNode = new VerletNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.1), 
-    THREE.MathUtils.randFloatSpread(.1), THREE.MathUtils.randFloatSpread(.1)), THREE.MathUtils.randFloat(.002, .005));
+
+// to draw sticks
+
+let drawnSticks:THREE.Line[] = new Array(stickCount);
+
+for(var i=0, j=0; i<stickCount; i++, j+=2){
+    nodes[j] = new VerletNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.09), 
+    THREE.MathUtils.randFloatSpread(.09), THREE.MathUtils.randFloatSpread(.09)), THREE.MathUtils.randFloat(.002, .005));
+    scene.add(nodes[j]);
+    nodes[j].moveNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.1), THREE.MathUtils.randFloatSpread(.1), THREE.MathUtils.randFloatSpread(.1)));
     
-    let tn2:VerletNode = new VerletNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.1), 
-    THREE.MathUtils.randFloatSpread(.1), THREE.MathUtils.randFloatSpread(.1)), THREE.MathUtils.randFloat(.002, .005));
+    nodes[j+1] = new VerletNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.09), 
+    THREE.MathUtils.randFloatSpread(.09), THREE.MathUtils.randFloatSpread(.09)), THREE.MathUtils.randFloat(.002, .005));
+    scene.add(nodes[j+1]);
+    nodes[j+1].moveNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.1), THREE.MathUtils.randFloatSpread(.1), THREE.MathUtils.randFloatSpread(.1)));
     
-    vSticks[i] =  new VerletStick(tn1, tn2, THREE.MathUtils.randFloat(.001, .01), 0);
-    scene.add(vSticks[i]);
-    // vSticks[i].moveNode(1, new THREE.Vector3(THREE.MathUtils.randFloatSpread(.01), 
-    // THREE.MathUtils.randFloatSpread(.01), THREE.MathUtils.randFloatSpread(.01)));
+    // add constraints
+    vSticks[i] =  new VerletStick(nodes[j], nodes[j+1], THREE.MathUtils.randFloat(.001, .01), 0);
+    
+    var geometry = new THREE.Geometry();
+    let material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    geometry.vertices.push(vSticks[i].start.position);
+    geometry.vertices.push(vSticks[i].end.position);
+    drawnSticks[i] = new THREE.Line(geometry, material);
+    scene.add(drawnSticks[i]);
+
+        // move nodes
+    // if (i % 2 == 0) {
+    //     nodes[i].moveNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.1), THREE.MathUtils.randFloatSpread(.1), THREE.MathUtils.randFloatSpread(.1)));
+    // }
 }
 
-
 // outer box
-const geometry2: THREE.BoxGeometry = new THREE.BoxGeometry(2, .75, 1);
+const geometry2: THREE.BoxGeometry = new THREE.BoxGeometry(bounds.x, bounds.y, bounds.z);
 const material2: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({ color: 0xff8800, wireframe: true });
 const cube2: THREE.Mesh = new THREE.Mesh(geometry2, material2);
 scene.add(cube2);
@@ -75,12 +95,17 @@ var animate = function () {
     controls.autoRotate = true;
     camera.lookAt(scene.position); //0,0,0
 
-    for(var i=0; i<stickCount; i++){
-       // vSticks[i].verlet();
-        vSticks[i].constrainLen();
-        //vSticks[i].constrainBounds(new THREE.Vector3(2, .75, 1));
+    for(var i=0; i<nodes.length; i++){
+        nodes[i].verlet();
+        nodes[i].constrainBounds(bounds);
     }
+        
+        
+    for (var i=0, j=0; i<stickCount; i++, j+=2) {
+        vSticks[i].constrainLen();
+        drawnSticks[i].geometry.verticesNeedUpdate = true;
 
+    }
 
     controls.update()
     render();

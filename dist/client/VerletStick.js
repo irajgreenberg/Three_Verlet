@@ -9,17 +9,12 @@
 //----------------------------------------------
 import * as THREE from '/build/three.module.js';
 export class VerletStick {
-    constructor(start, end, stickTension = .4, anchorDetail = 0) {
+    constructor(start, end, stickTension = .4, anchorTerminal = 0) {
         this.start = start;
         this.end = end;
         this.len = this.start.position.distanceTo(this.end.position);
         this.stickTension = stickTension;
-        this.anchorDetail = anchorDetail;
-        // super.material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
-        // const points = [];
-        // points.push( start.position );
-        // points.push( end.position );
-        // this.geometry = new THREE.BufferGeometry().setFromPoints( points );
+        this.anchorTerminal = anchorTerminal;
     }
     constrainLen() {
         // accuracy factor
@@ -30,12 +25,11 @@ export class VerletStick {
             // nodeConstrainFactors optionally anchor stick on one side
             let node1ConstrainFactor = 0.5;
             let node2ConstrainFactor = 0.5;
-            // console.log ("this.anchorDetail = " + this.anchorDetail);
-            if (this.anchorDetail === 1) {
+            if (this.anchorTerminal === 1) {
                 node1ConstrainFactor = 0.0;
                 node2ConstrainFactor = 1.0;
             }
-            if (this.anchorDetail === 2) {
+            if (this.anchorTerminal === 2) {
                 node1ConstrainFactor = 1.0;
                 node2ConstrainFactor = 0.0;
             }

@@ -11,7 +11,7 @@
 // Work is being produced in collaboration with
 // Courtney Brown, Melanie Clemmons & Brent Brimhall
 
-// Draw a collection of Euler sticks 
+// Draw a collection of verlet sticks 
 // contained within a cube
 
 // Original Author: Ira Greenberg, 11/2020
@@ -20,8 +20,11 @@
 
 import * as THREE from '/build/three.module.js';
 import { OrbitControls } from '/jsm/controls/OrbitControls';
-import { EulerStick } from './EulerStick.js';
-//import { visitNodes } from 'typescript';
+import { VerletNode } from './VerletNode.js';
+import { visitNodes } from 'typescript';
+import { VerletStick } from './VerletStick.js';
+import { VerletStrand } from './VerletStrand.js';
+import { AnchorPoint } from './IJGUtils.js';
 
 const scene: THREE.Scene = new THREE.Scene();
 const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
@@ -37,7 +40,7 @@ const bounds: THREE.Vector3 = new THREE.Vector3(2, .75, 1);
 // Create/add tendrils
 let tendrils: VerletStrand[] = new Array(100);
 for (var i = 0; i < tendrils.length; i++) {
-    tendrils[i] = new VerletStrand(new THREE.Vector3(-.2, .05, 0), new THREE.Vector3(.2, .05, 0), 50, AnchorPoint.HEAD_TAIL, .5 + Math.random()*.475);
+    tendrils[i] = new VerletStrand(new THREE.Vector3(-.2, .05, 0), new THREE.Vector3(.2, .05, 0), 50, AnchorPoint.HEAD_TAIL, .5 + Math.random() * .475);
     scene.add(tendrils[i]);
 }
 
