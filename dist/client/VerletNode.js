@@ -9,7 +9,7 @@
 import * as THREE from '/build/three.module.js';
 export class VerletNode extends THREE.Mesh {
     constructor(pos, radius = 0.005) {
-        super(new THREE.SphereBufferGeometry(radius), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+        super(new THREE.SphereBufferGeometry(radius), new THREE.MeshBasicMaterial({ color: 0xeeee00 }));
         this.radius = radius;
         this.position.set(pos.x, pos.y, pos.z);
         this.posOld = this.position.clone();

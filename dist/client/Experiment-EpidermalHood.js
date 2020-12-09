@@ -26,14 +26,16 @@ const controls = new OrbitControls(camera, renderer.domElement);
 const bounds = new THREE.Vector3(2, .75, 1);
 // Create Epidermal Hood
 //constructor(radius: number, height: number, spineCount: number, sliceCount: number) 
-let epidermalHood = new EpidermalHood(.2, .3, 12, 18);
+let epidermalHood = new EpidermalHood(.2, .2, 8, 30);
 scene.add(epidermalHood);
 // Create/add outer box
 const geometry2 = new THREE.BoxGeometry(bounds.x, bounds.y, bounds.z);
-const material2 = new THREE.MeshBasicMaterial({ color: 0x445544, wireframe: true });
+const material2 = new THREE.MeshBasicMaterial({ color: 0x22ee00, wireframe: true });
+material2.transparent = true;
+material2.opacity = .08;
 const cube2 = new THREE.Mesh(geometry2, material2);
 scene.add(cube2);
-camera.position.z = .55;
+camera.position.z = .85;
 // animation vars
 // let spd: THREE.Vector3 = new THREE.Vector3(.01, .1, .1);
 // let theta = 0.0;
@@ -46,7 +48,7 @@ function onWindowResize() {
 }
 var animate = function () {
     requestAnimationFrame(animate);
-    //controls.autoRotate = true;
+    controls.autoRotate = true;
     camera.lookAt(scene.position); //0,0,0
     //for (var i = 0; i < tendrils.length; i++) {
     epidermalHood.pulse();

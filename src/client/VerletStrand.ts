@@ -68,7 +68,7 @@ export class VerletStrand extends THREE.Group {
 
         // move nodes
         // move node 2
-        this.nodes[2].moveNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.04), THREE.MathUtils.randFloatSpread(.04), THREE.MathUtils.randFloatSpread(.04)));
+        // this.nodes[2].moveNode(new THREE.Vector3(THREE.MathUtils.randFloatSpread(.04), THREE.MathUtils.randFloatSpread(.04), THREE.MathUtils.randFloatSpread(.04)));
 
         // add constraints
         switch (this.anchorPointDetail) {
@@ -143,7 +143,7 @@ export class VerletStrand extends THREE.Group {
                     if (i === this.segments.length - 1) { this.geometry.vertices.push(this.segments[i].end.position) }
                 }
         }
-        let lineMaterial = new THREE.LineBasicMaterial({ color: 0xff8888, linewidth: 5 });
+        let lineMaterial = new THREE.LineBasicMaterial({ color: 0xcc55cc });
         this.tendril = new THREE.Line(this.geometry, lineMaterial);
         this.tendril.material.transparent = true; //annoying ide can't accurately track this
         this.tendril.material.opacity = .25; //annoying ide can't accurately track this
