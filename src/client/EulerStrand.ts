@@ -71,7 +71,7 @@ export class EulerStrand extends THREE.Group {
             this.geometry.vertices.push(this.segments[i].start.position);
             if (i === this.segments.length - 1) { this.geometry.vertices.push(this.segments[i].end.position) }
         }
-        
+
         let lineMaterial = new THREE.LineBasicMaterial({ color: 0x22ff22, linewidth: 5 });
         this.tendril = new THREE.Line(this.geometry, lineMaterial);
         //this.tendril.material.transparent = true; //annoying ide can't accurately track this
@@ -82,7 +82,7 @@ export class EulerStrand extends THREE.Group {
 
     public move(isConstrained: boolean = true): void {
         for (var i = 0; i < this.segmentCount; i++) {
-           // this.nodes[i].move();
+            // this.nodes[i].move();
         }
         this.nodes[0].move();
         if (isConstrained) {
@@ -98,9 +98,9 @@ export class EulerStrand extends THREE.Group {
     }
 
     public constrainBounds(bounds: THREE.Vector3): void {
-       for (var i = 0; i < this.nodes.length; i++) {
-           this.nodes[i].constrainBounds(bounds);
-       }
+        for (var i = 0; i < this.nodes.length; i++) {
+            this.nodes[i].constrainBounds(bounds);
+        }
     }
 
 }

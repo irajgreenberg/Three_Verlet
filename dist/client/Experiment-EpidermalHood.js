@@ -16,6 +16,7 @@
 import * as THREE from '/build/three.module.js';
 import { OrbitControls } from '/jsm/controls/OrbitControls';
 import { EpidermalHood } from './EpidermalHood.js';
+import { Propulsion } from './IJGUtils.js';
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
@@ -23,11 +24,16 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 // cube bounds
-const bounds = new THREE.Vector3(2, .75, 1);
+const bounds = new THREE.Vector3(2, 1.75, 1);
 // Create Epidermal Hood
-//constructor(radius: number, height: number, spineCount: number, sliceCount: number) 
-let epidermalHood = new EpidermalHood(.2, .2, 8, 30);
+// cover
+let epidermalCover = new EpidermalHood(new THREE.Vector3(0, 0, 0), .27, .4, 36, 24, .575);
+epidermalCover.setDynamics(new Propulsion(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, -.01, 0), new THREE.Vector3(0, Math.PI / 2000, 0)));
+scene.add(epidermalCover);
+let epidermalHood = new EpidermalHood(epidermalCover.getApex().multiply(new THREE.Vector3(-1)), .2, .2, 30, 30, .92);
 scene.add(epidermalHood);
+let epidermalHood2 = new EpidermalHood(new THREE.Vector3(), .1, .1, 30, 45, .875);
+scene.add(epidermalHood2);
 // Create/add outer box
 const geometry2 = new THREE.BoxGeometry(bounds.x, bounds.y, bounds.z);
 const material2 = new THREE.MeshBasicMaterial({ color: 0x22ee00, wireframe: true });
@@ -50,12 +56,12 @@ var animate = function () {
     requestAnimationFrame(animate);
     controls.autoRotate = true;
     camera.lookAt(scene.position); //0,0,0
-    //for (var i = 0; i < tendrils.length; i++) {
-    epidermalHood.pulse();
+    epidermalCover.pulse();
+    epidermalCover.constrainBounds(bounds);
+    epidermalHood.follow(epidermalCover.getApex().add(new THREE.Vector3(0, -.28, .0)));
     epidermalHood.constrainBounds(bounds);
-    // .verlet();
-    // tendrils[i].constrainBounds(bounds);
-    // }
+    epidermalHood2.follow(epidermalHood.getApex().add(new THREE.Vector3(0, -.2, 0)));
+    epidermalHood2.constrainBounds(bounds);
     controls.update();
     render();
 };

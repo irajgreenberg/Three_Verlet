@@ -37,7 +37,8 @@ export class VerletStick {
     // accuracy factor
     let accuracyCount: number = 1; //TO DO: make externally controllable eventually
     for (var i = 0; i < accuracyCount; i++) {
-      let delta: THREE.Vector3 = new THREE.Vector3(this.end.position.x - this.start.position.x,
+      let delta: THREE.Vector3 = new THREE.Vector3(
+        this.end.position.x - this.start.position.x,
         this.end.position.y - this.start.position.y,
         this.end.position.z - this.start.position.z);
       let deltaLength: number = delta.length();

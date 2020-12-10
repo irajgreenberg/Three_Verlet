@@ -8,23 +8,20 @@
 import * as THREE from '/build/three.module.js';
 import { VerletStick } from './VerletStick.js';
 import { VerletStrand } from './VerletStrand.js';
-import { AnchorPoint } from './IJGUtils.js';
+import { AnchorPoint, Propulsion } from './IJGUtils.js';
+//import { Vector3 } from '/build/three.module.js';
 
 export class EpidermalHood extends THREE.Group {
 
+    pos: THREE.Vector3;
     radius: number = 0.0;
     height: number = 0.0;
     spineCount: number = 12;
     sliceCount: number = 12;
+    constraintFactor: number;
+
     spines: VerletStrand[];
-    //slices: VerletStrand[];
-    // sliceSticks:THREE.Line[];
-    //sticks: VerletStick[];
-    //drawnStick: THREE.Line = new THREE.Line;
-
-
-    // test
-    // sliceSticks:THREE.Line[];
+    // slices
     slices: VerletStick[];
     sliceLines: THREE.Line[];
     sliceGeoms: THREE.Geometry[];
@@ -32,42 +29,53 @@ export class EpidermalHood extends THREE.Group {
 
 
     // dynamics
-    propulsionVec: THREE.Vector3 = new THREE.Vector3(0, 1, 0);
-    propulsionForce: THREE.Vector3 = new THREE.Vector3(0, .1, 0);
-    propulsionFreq: THREE.Vector3 = new THREE.Vector3(0, Math.PI / 25, 0);
-    thetaPulse: number = 0.0;
+    // Propulsion object includes: direction, force, frequency
+    dynamics: Propulsion;
+    private dynamicsThetas: THREE.Vector3 = new THREE.Vector3(0.0, 0.0, 0.0);
+    // leader: THREE.Vector3;
 
 
-    constructor(radius: number, height: number, spineCount: number, sliceCount: number) {
+    constructor(position: THREE.Vector3, radius: number, height: number, spineCount: number, sliceCount: number, constraintFactor: number) {
         super();
+        this.pos = position;
         this.radius = radius;
         this.height = height;
         this.spineCount = spineCount;
         this.sliceCount = sliceCount;
+        this.constraintFactor = constraintFactor;
+
         this.spines = new Array(spineCount);
 
-        // drawing slices test
+        // slices
         this.slices = new Array(sliceCount * spineCount);
         this.sliceLines = new Array(sliceCount * spineCount);
         this.sliceGeoms = new Array(sliceCount * spineCount);
         this.sliceMats = new Array(sliceCount * spineCount);
 
+        this.dynamics = new Propulsion();
+
         // construct hood
         this.constructHood();
+    }
+
+    setDynamics(dynamics: Propulsion): void {
+        this.dynamics = dynamics;
     }
 
     private constructHood(): void {
         let phi = 0.0; // rotation around Y-axis
         let k = 0; // poorly named slice counter
         for (var i = 0; i < this.spines.length; i++) {
-            this.spines[i] = new VerletStrand(new THREE.Vector3(), new THREE.Vector3(), this.sliceCount, AnchorPoint.HEAD_TAIL, .2);
+            this.spines[i] = new VerletStrand(new THREE.Vector3(), new THREE.Vector3(), this.sliceCount, AnchorPoint.HEAD_TAIL, this.constraintFactor);
             let theta = 0.0; // rotation around Z-axis
             for (var j = 0; j < this.sliceCount + 1; j++) {
-                this.spines[i].nodes[j].position.x = Math.cos(theta) * this.radius;
-                this.spines[i].nodes[j].position.y = Math.sin(theta) * this.radius;
-                this.spines[i].nodes[j].position.z = 0.0;
+                // plot around z-axis
+                this.spines[i].nodes[j].position.x = this.pos.x + Math.cos(theta) * this.radius;
+                this.spines[i].nodes[j].position.y = this.pos.y + Math.sin(theta) * this.height;
+                this.spines[i].nodes[j].position.z = this.pos.z;
                 theta += (Math.PI / 2) / this.sliceCount;
 
+                // plot around y-axis
                 const x = Math.sin(phi) * this.spines[i].nodes[j].position.z + Math.cos(phi) * this.spines[i].nodes[j].position.x;
                 const y = this.spines[i].nodes[j].position.y
                 const z = Math.cos(phi) * this.spines[i].nodes[j].position.z - Math.sin(phi) * this.spines[i].nodes[j].position.x;
@@ -114,15 +122,40 @@ export class EpidermalHood extends THREE.Group {
             //this.spines[i].resetVerlet();
             this.add(this.spines[i]);
         }
+
+        // set leader to Hood apex;
+        // this.leader = this.spines[0].nodes[this.spines[0].nodes.length - 1].position;
+    }
+
+    getApex(): THREE.Vector3 {
+        return this.spines[0].nodes[this.spines[0].nodes.length - 1].position;
     }
 
     public pulse(): void {
         for (var i = 0; i < this.spines.length; i++) {
             this.spines[i].verlet();
 
-            this.spines[i].nodes[this.spines[i].nodes.length - 1].position.y = this.height + Math.sin(this.thetaPulse) * .065;
-            this.spines[i].nodes[0].position.y = Math.cos(this.thetaPulse) * .015;
-            this.thetaPulse += Math.PI / 1400;
+            this.spines[i].nodes[this.spines[i].nodes.length - 1].position.y = this.pos.y + this.height + Math.sin(this.dynamicsThetas.y) * this.dynamics.force.y;
+
+            this.spines[i].nodes[0].position.y = this.pos.y + Math.cos(this.dynamicsThetas.y) * this.dynamics.force.y * .5;
+            this.dynamicsThetas.add(this.dynamics.frequency);
+        }
+
+        for (var i = 0; i < this.slices.length; i++) {
+            this.slices[i].constrainLen();
+            this.sliceLines[i].geometry.verticesNeedUpdate = true;
+        }
+    }
+
+    public follow(apex: THREE.Vector3): void {
+        for (var i = 0; i < this.spines.length; i++) {
+            this.spines[i].verlet();
+
+            this.spines[i].nodes[this.spines[i].nodes.length - 1].position.y = this.pos.y + apex.y;
+            this.spines[i].nodes[0].position.y = this.pos.y - this.height + apex.y;
+
+            // this.spines[i].nodes[0].position.y = this.pos.y + Math.cos(this.dynamicsThetas.y) * this.dynamics.force.y * .5;
+            // this.dynamicsThetas.add(this.dynamics.frequency);
         }
 
         for (var i = 0; i < this.slices.length; i++) {
