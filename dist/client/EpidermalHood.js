@@ -6,7 +6,7 @@
 import * as THREE from '/build/three.module.js';
 import { VerletStick } from './VerletStick.js';
 import { VerletStrand } from './VerletStrand.js';
-import { AnchorPoint, Propulsion } from './IJGUtils.js';
+import { AnchorPoint, Propulsion, VerletMaterials } from './IJGUtils.js';
 //import { Vector3 } from '/build/three.module.js';
 export class EpidermalHood extends THREE.Group {
     // leader: THREE.Vector3;
@@ -30,11 +30,29 @@ export class EpidermalHood extends THREE.Group {
         this.sliceGeoms = new Array(sliceCount * spineCount);
         this.sliceMats = new Array(sliceCount * spineCount);
         this.dynamics = new Propulsion();
+        // materials
+        this.verletMaterials = new VerletMaterials();
         // construct hood
         this.constructHood();
     }
     setDynamics(dynamics) {
         this.dynamics = dynamics;
+    }
+    setMaterials(verletMaterials) {
+        this.verletMaterials = verletMaterials;
+        for (var i = 0; i < this.spines.length; i++) {
+            this.spines[i].setMaterials(this.verletMaterials.spineColor, this.verletMaterials.spineAlpha, this.verletMaterials.nodeColor);
+        }
+        for (var i = 0; i < this.slices.length; i++) {
+            this.sliceLines[i].material.color = this.verletMaterials.sliceColor;
+            this.sliceLines[i].material.opacity = this.verletMaterials.sliceAlpha;
+            this.sliceLines[i].material.transparent = true;
+        }
+    }
+    setNodesScale(scale, isRandom = false) {
+        for (var i = 0; i < this.spines.length; i++) {
+            this.spines[i].setNodesScale(scale);
+        }
     }
     constructHood() {
         let phi = 0.0; // rotation around Y-axis
@@ -59,9 +77,9 @@ export class EpidermalHood extends THREE.Group {
                 // create slices
                 if (i > 0) {
                     this.sliceGeoms[k] = new THREE.Geometry();
-                    this.sliceMats[k] = new THREE.MeshBasicMaterial({ color: 0xFF8800 });
+                    this.sliceMats[k] = new THREE.MeshBasicMaterial({ color: this.verletMaterials.sliceColor });
                     this.sliceMats[k].transparent = true;
-                    this.sliceMats[k].opacity = .25;
+                    this.sliceMats[k].opacity = this.verletMaterials.sliceAlpha;
                     this.slices[k] = new VerletStick(this.spines[i - 1].nodes[j], this.spines[i].nodes[j]);
                     this.sliceGeoms[k].vertices.push(this.slices[k].start.position);
                     this.sliceGeoms[k].vertices.push(this.slices[k].end.position);
@@ -72,9 +90,9 @@ export class EpidermalHood extends THREE.Group {
                 // close hood
                 if (i === this.spines.length - 1) {
                     this.sliceGeoms[k] = new THREE.Geometry();
-                    this.sliceMats[k] = new THREE.MeshBasicMaterial({ color: 0xFF8800 });
+                    this.sliceMats[k] = new THREE.MeshBasicMaterial({ color: this.verletMaterials.sliceColor });
                     this.sliceMats[k].transparent = true; //annoying ide can't accurately track this
-                    this.sliceMats[k].opacity = .25;
+                    this.sliceMats[k].opacity = this.verletMaterials.sliceAlpha;
                     // this.slices[k] = new VerletStick(this.spines[i-1].nodes[j], this.spines[i].nodes[j], .4, AnchorPoint.TAIL);
                     this.slices[k] = new VerletStick(this.spines[i].nodes[j], this.spines[0].nodes[j]);
                     this.sliceGeoms[k].vertices.push(this.slices[k].start.position);
@@ -88,11 +106,9 @@ export class EpidermalHood extends THREE.Group {
             //this.spines[i].resetVerlet();
             this.add(this.spines[i]);
         }
-        // set leader to Hood apex;
-        // this.leader = this.spines[0].nodes[this.spines[0].nodes.length - 1].position;
     }
     getApex() {
-        return this.spines[0].nodes[this.spines[0].nodes.length - 1].position;
+        return this.spines[0].nodes[this.spines[0].nodes.length - 1].position.clone();
     }
     pulse() {
         for (var i = 0; i < this.spines.length; i++) {

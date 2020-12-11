@@ -8,7 +8,7 @@
 import * as THREE from '/build/three.module.js';
 import { VerletStick } from './VerletStick.js';
 import { VerletStrand } from './VerletStrand.js';
-import { AnchorPoint, Propulsion } from './IJGUtils.js';
+import { AnchorPoint, Propulsion, VerletMaterials } from './IJGUtils.js';
 //import { Vector3 } from '/build/three.module.js';
 
 export class EpidermalHood extends THREE.Group {
@@ -26,6 +26,8 @@ export class EpidermalHood extends THREE.Group {
     sliceLines: THREE.Line[];
     sliceGeoms: THREE.Geometry[];
     sliceMats: THREE.MeshBasicMaterial[];
+
+    verletMaterials: VerletMaterials;
 
 
     // dynamics
@@ -54,12 +56,33 @@ export class EpidermalHood extends THREE.Group {
 
         this.dynamics = new Propulsion();
 
+        // materials
+        this.verletMaterials = new VerletMaterials();
+
         // construct hood
         this.constructHood();
     }
 
     setDynamics(dynamics: Propulsion): void {
         this.dynamics = dynamics;
+    }
+
+    setMaterials(verletMaterials: VerletMaterials): void {
+        this.verletMaterials = verletMaterials;
+        for (var i = 0; i < this.spines.length; i++) {
+            this.spines[i].setMaterials(this.verletMaterials.spineColor, this.verletMaterials.spineAlpha, this.verletMaterials.nodeColor);
+        }
+        for (var i = 0; i < this.slices.length; i++) {
+            this.sliceLines[i].material.color = this.verletMaterials.sliceColor;
+            this.sliceLines[i].material.opacity = this.verletMaterials.sliceAlpha;
+            this.sliceLines[i].material.transparent = true;
+        }
+    }
+
+    setNodesScale(scale: number, isRandom: boolean = false) {
+        for (var i = 0; i < this.spines.length; i++) {
+            this.spines[i].setNodesScale(scale);
+        }
     }
 
     private constructHood(): void {
@@ -89,9 +112,9 @@ export class EpidermalHood extends THREE.Group {
                 // create slices
                 if (i > 0) {
                     this.sliceGeoms[k] = new THREE.Geometry();
-                    this.sliceMats[k] = new THREE.MeshBasicMaterial({ color: 0xFF8800 });
+                    this.sliceMats[k] = new THREE.MeshBasicMaterial({ color: this.verletMaterials.sliceColor });
                     this.sliceMats[k].transparent = true;
-                    this.sliceMats[k].opacity = .25;
+                    this.sliceMats[k].opacity = this.verletMaterials.sliceAlpha;
 
                     this.slices[k] = new VerletStick(this.spines[i - 1].nodes[j], this.spines[i].nodes[j]);
                     this.sliceGeoms[k].vertices.push(this.slices[k].start.position);
@@ -104,9 +127,9 @@ export class EpidermalHood extends THREE.Group {
                 // close hood
                 if (i === this.spines.length - 1) {
                     this.sliceGeoms[k] = new THREE.Geometry();
-                    this.sliceMats[k] = new THREE.MeshBasicMaterial({ color: 0xFF8800 });
+                    this.sliceMats[k] = new THREE.MeshBasicMaterial({ color: this.verletMaterials.sliceColor });
                     this.sliceMats[k].transparent = true; //annoying ide can't accurately track this
-                    this.sliceMats[k].opacity = .25;
+                    this.sliceMats[k].opacity = this.verletMaterials.sliceAlpha;
 
 
                     // this.slices[k] = new VerletStick(this.spines[i-1].nodes[j], this.spines[i].nodes[j], .4, AnchorPoint.TAIL);
@@ -122,13 +145,10 @@ export class EpidermalHood extends THREE.Group {
             //this.spines[i].resetVerlet();
             this.add(this.spines[i]);
         }
-
-        // set leader to Hood apex;
-        // this.leader = this.spines[0].nodes[this.spines[0].nodes.length - 1].position;
     }
 
     getApex(): THREE.Vector3 {
-        return this.spines[0].nodes[this.spines[0].nodes.length - 1].position;
+        return this.spines[0].nodes[this.spines[0].nodes.length - 1].position.clone();
     }
 
     public pulse(): void {

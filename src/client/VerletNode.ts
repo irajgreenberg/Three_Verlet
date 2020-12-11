@@ -14,10 +14,12 @@ export class VerletNode extends THREE.Mesh {
 
   private posOld: THREE.Vector3;
   private radius: number; //for conveneince
+  color: THREE.Color;
 
-  constructor(pos: THREE.Vector3, radius: number = 0.005) {
-    super(new THREE.SphereBufferGeometry(radius), new THREE.MeshBasicMaterial({ color: 0xeeee00 }));
+  constructor(pos: THREE.Vector3, radius: number = 0.005, color: THREE.Color = new THREE.Color(.5, .5, .5)) {
+    super(new THREE.SphereBufferGeometry(radius), new THREE.MeshBasicMaterial({ color: color }));
     this.radius = radius;
+    this.color = color;
     this.position.set(pos.x, pos.y, pos.z);
     this.posOld = this.position.clone();
   }

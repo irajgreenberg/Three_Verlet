@@ -6,14 +6,6 @@
 import * as THREE from '/build/three.module.js';
 import { EulerNode } from './EulerNode.js';
 import { EulerStick } from './EulerStick.js';
-// export enum AnchorPoint {
-//     NONE,
-//     HEAD,
-//     TAIL,
-//     HEAD_TAIL,
-//     MOD2,
-//     RAND
-// }
 //const tendrilCount: number = 20;
 export class EulerStrand extends THREE.Group {
     constructor(head, tail, segmentCount, elasticity = .5, damping = .725) {

@@ -25,7 +25,7 @@ import { visitNodes } from 'typescript';
 import { VerletStick } from './VerletStick.js';
 import { VerletStrand } from './VerletStrand.js';
 import { EpidermalHood } from './EpidermalHood.js';
-import { Propulsion } from './IJGUtils.js';
+import { Propulsion, VerletMaterials } from './IJGUtils.js';
 
 const scene: THREE.Scene = new THREE.Scene();
 const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
@@ -44,14 +44,43 @@ let epidermalCover = new EpidermalHood(new THREE.Vector3(0, 0, 0), .27, .4, 36, 
 epidermalCover.setDynamics(new Propulsion(new THREE.Vector3(0, 1, 0),
     new THREE.Vector3(0, -.01, 0),
     new THREE.Vector3(0, Math.PI / 2000, 0)));
+
+epidermalCover.setMaterials(new VerletMaterials(
+    .01,
+    new THREE.Color(.6, .6, 1),
+    .2,
+    new THREE.Color(1, .8, .9),
+    .2,
+    new THREE.Color(1, .7, 1),
+    .2));
+
+epidermalCover.setNodesScale(4.2);
+
 scene.add(epidermalCover);
 
 
-let epidermalHood = new EpidermalHood(epidermalCover.getApex().multiply(new THREE.Vector3(-1)), .2, .2, 30, 30, .92);
-
+let epidermalHood = new EpidermalHood(epidermalCover.getApex().multiply(new THREE.Vector3(-1)), .2, .2, 30, 30, .2);
+epidermalHood.setMaterials(new VerletMaterials(
+    .01,
+    new THREE.Color(1, .8, .8),
+    .4,
+    new THREE.Color(1, .5, 0),
+    .7,
+    new THREE.Color(.8, .8, .9),
+    .4));
+epidermalHood.setNodesScale(3);
 scene.add(epidermalHood);
 
-let epidermalHood2 = new EpidermalHood(new THREE.Vector3(), .1, .1, 30, 45, .875);
+let epidermalHood2 = new EpidermalHood(new THREE.Vector3(), .1, .1, 30, 45, .375);
+epidermalHood2.setMaterials(new VerletMaterials(
+    .01,
+    new THREE.Color(.4, 0, .85),
+    .4,
+    new THREE.Color(.6, 0, 0),
+    .4,
+    new THREE.Color(.8, 0, 0),
+    .4));
+epidermalHood2.setNodesScale(2);
 
 scene.add(epidermalHood2);
 

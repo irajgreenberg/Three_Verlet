@@ -163,4 +163,17 @@ export class VerletStrand extends THREE.Group {
             this.segments[i].reinitializeLen();
         }
     }
+    setMaterials(tendrilColor, alpha, nodeColor) {
+        this.tendril.material.color = tendrilColor;
+        this.tendril.material.transparent = true; //annoying ide can't
+        this.tendril.material.opacity = alpha;
+        for (var i = 0; i < this.nodes.length; i++) {
+            this.nodes[i].material.color = nodeColor;
+        }
+    }
+    setNodesScale(scale) {
+        for (var i = 0; i < this.nodes.length; i++) {
+            this.nodes[i].geometry.scale(scale, scale, scale);
+        }
+    }
 }

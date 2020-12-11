@@ -17,3 +17,22 @@ export class Propulsion {
         this.frequency = frequency;
     }
 }
+// Organism Materials
+export class VerletMaterials {
+    constructor(nodeRadius = .001, nodeColor = new THREE.Color(.5, .5, .5), nodeAlpha = .5, spineColor = new THREE.Color(.5, .5, .5), spineAlpha = .5, sliceColor = new THREE.Color(.5, .5, .5), sliceAlpha = .5) {
+        this.nodeRadius = .01;
+        this.nodeColor = new THREE.Color(.5, .5, .5);
+        this.nodeAlpha = 1.0;
+        this.spineColor = new THREE.Color(.5, .5, .5);
+        this.spineAlpha = 1.0;
+        this.sliceColor = new THREE.Color(.5, .5, .5);
+        this.sliceAlpha = 1.0;
+        this.nodeRadius = nodeRadius;
+        this.nodeColor = nodeColor;
+        this.nodeAlpha = nodeAlpha;
+        this.spineColor = spineColor;
+        this.spineAlpha = spineAlpha;
+        this.sliceColor = sliceColor;
+        this.sliceAlpha = sliceAlpha;
+    }
+}
