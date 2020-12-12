@@ -7,6 +7,7 @@ import * as THREE from '/build/three.module.js';
 import { VerletStick } from './VerletStick.js';
 import { VerletStrand } from './VerletStrand.js';
 import { AnchorPoint, Propulsion, VerletMaterials } from './IJGUtils.js';
+import { Vector3 } from '/build/three.module.js';
 //import { Vector3 } from '/build/three.module.js';
 export class EpidermalHood extends THREE.Group {
     // leader: THREE.Vector3;
@@ -16,7 +17,11 @@ export class EpidermalHood extends THREE.Group {
         this.height = 0.0;
         this.spineCount = 12;
         this.sliceCount = 12;
+        this.tendrilSegments = 0.0;
+        this.tendrilLength = 0.0;
+        this.tendrilTension = 0.0;
         this.dynamicsThetas = new THREE.Vector3(0.0, 0.0, 0.0);
+        this.hasTendrils = false;
         this.pos = position;
         this.radius = radius;
         this.height = height;
@@ -32,26 +37,22 @@ export class EpidermalHood extends THREE.Group {
         this.dynamics = new Propulsion();
         // materials
         this.verletMaterials = new VerletMaterials();
+        // instantiate hanging tendrils array
+        this.tendrils = new Array(spineCount);
         // construct hood
         this.constructHood();
     }
-    setDynamics(dynamics) {
-        this.dynamics = dynamics;
-    }
-    setMaterials(verletMaterials) {
-        this.verletMaterials = verletMaterials;
+    addHangingTendrils(tendrilSegments = 20, tendrilLength = .3, tendrilTension = 0.95) {
+        let tendrilNodes = this.getBaseNodes();
+        this.hasTendrils = true; // useful if I want oeventually remove dynamically
+        //console.log(this.hasTendrils);
+        this.tendrilSegments = tendrilSegments; // don't really need to retain this.
+        this.tendrilLength = tendrilLength;
+        this.tendrilTension = tendrilTension;
         for (var i = 0; i < this.spines.length; i++) {
-            this.spines[i].setMaterials(this.verletMaterials.spineColor, this.verletMaterials.spineAlpha, this.verletMaterials.nodeColor);
-        }
-        for (var i = 0; i < this.slices.length; i++) {
-            this.sliceLines[i].material.color = this.verletMaterials.sliceColor;
-            this.sliceLines[i].material.opacity = this.verletMaterials.sliceAlpha;
-            this.sliceLines[i].material.transparent = true;
-        }
-    }
-    setNodesScale(scale, isRandom = false) {
-        for (var i = 0; i < this.spines.length; i++) {
-            this.spines[i].setNodesScale(scale);
+            // console.log(tendrilNodes[i].position);
+            this.tendrils[i] = new VerletStrand(tendrilNodes[i].position, new Vector3(tendrilNodes[i].position.x, tendrilNodes[i].position.y - tendrilLength, tendrilNodes[i].position.z), this.tendrilSegments, AnchorPoint.HEAD_TAIL, this.tendrilTension);
+            this.add(this.tendrils[i]);
         }
     }
     constructHood() {
@@ -107,12 +108,49 @@ export class EpidermalHood extends THREE.Group {
             this.add(this.spines[i]);
         }
     }
+    setDynamics(dynamics) {
+        this.dynamics = dynamics;
+    }
+    setMaterials(verletMaterials) {
+        this.verletMaterials = verletMaterials;
+        for (var i = 0; i < this.spines.length; i++) {
+            this.spines[i].setMaterials(this.verletMaterials.spineColor, this.verletMaterials.spineAlpha, this.verletMaterials.nodeColor);
+            // if (this.hasTendrils) {
+            //     this.tendrils[i].setMaterials(this.verletMaterials.spineColor, this.verletMaterials.spineAlpha, this.verletMaterials.nodeColor);
+            // }
+        }
+        for (var i = 0; i < this.slices.length; i++) {
+            this.sliceLines[i].material.color = this.verletMaterials.sliceColor;
+            this.sliceLines[i].material.opacity = this.verletMaterials.sliceAlpha;
+            this.sliceLines[i].material.transparent = true;
+        }
+    }
+    setNodesScale(scale, isRandom = false) {
+        for (var i = 0; i < this.spines.length; i++) {
+            this.spines[i].setNodesScale(scale);
+        }
+    }
+    // Returns base nodes for tendril attachment
+    getBaseNodes() {
+        let baseNodes = new Array(this.spineCount);
+        for (var i = 0; i < this.spines.length; i++) {
+            baseNodes[i] = this.spines[i].nodes[0];
+        }
+        return baseNodes;
+    }
     getApex() {
         return this.spines[0].nodes[this.spines[0].nodes.length - 1].position.clone();
     }
     pulse() {
+        // console.log(this.hasTendrils);
         for (var i = 0; i < this.spines.length; i++) {
             this.spines[i].verlet();
+            if (this.hasTendrils) {
+                this.tendrils[i].verlet();
+                this.tendrils[i].nodes[0].position.x = this.spines[i].nodes[1].position.x;
+                this.tendrils[i].nodes[0].position.y = this.spines[i].nodes[1].position.y;
+                this.tendrils[i].nodes[0].position.z = this.spines[i].nodes[1].position.z;
+            }
             this.spines[i].nodes[this.spines[i].nodes.length - 1].position.y = this.pos.y + this.height + Math.sin(this.dynamicsThetas.y) * this.dynamics.force.y;
             this.spines[i].nodes[0].position.y = this.pos.y + Math.cos(this.dynamicsThetas.y) * this.dynamics.force.y * .5;
             this.dynamicsThetas.add(this.dynamics.frequency);
@@ -125,6 +163,12 @@ export class EpidermalHood extends THREE.Group {
     follow(apex) {
         for (var i = 0; i < this.spines.length; i++) {
             this.spines[i].verlet();
+            if (this.hasTendrils) {
+                this.tendrils[i].verlet();
+                this.tendrils[i].nodes[0].position.x = this.spines[i].nodes[1].position.x;
+                this.tendrils[i].nodes[0].position.y = this.spines[i].nodes[1].position.y;
+                this.tendrils[i].nodes[0].position.z = this.spines[i].nodes[1].position.z;
+            }
             this.spines[i].nodes[this.spines[i].nodes.length - 1].position.y = this.pos.y + apex.y;
             this.spines[i].nodes[0].position.y = this.pos.y - this.height + apex.y;
             // this.spines[i].nodes[0].position.y = this.pos.y + Math.cos(this.dynamicsThetas.y) * this.dynamics.force.y * .5;

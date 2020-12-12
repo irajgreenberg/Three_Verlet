@@ -6,9 +6,11 @@
 // Creates Jellyfish like epidermal hood, powered by verlet strands
 
 import * as THREE from '/build/three.module.js';
+import { VerletNode } from './VerletNode.js';
 import { VerletStick } from './VerletStick.js';
 import { VerletStrand } from './VerletStrand.js';
 import { AnchorPoint, Propulsion, VerletMaterials } from './IJGUtils.js';
+import { Vector3 } from '/build/three.module.js';
 //import { Vector3 } from '/build/three.module.js';
 
 export class EpidermalHood extends THREE.Group {
@@ -20,15 +22,23 @@ export class EpidermalHood extends THREE.Group {
     sliceCount: number = 12;
     constraintFactor: number;
 
+    // down spines
     spines: VerletStrand[];
-    // slices
+
+    // cross slices
     slices: VerletStick[];
     sliceLines: THREE.Line[];
     sliceGeoms: THREE.Geometry[];
     sliceMats: THREE.MeshBasicMaterial[];
 
-    verletMaterials: VerletMaterials;
+    // hanging tendrils
+    hasTendrils: boolean;
+    tendrils: VerletStrand[];
+    tendrilSegments: number = 0.0;
+    tendrilLength: number = 0.0;
+    tendrilTension: number = 0.0;
 
+    verletMaterials: VerletMaterials;
 
     // dynamics
     // Propulsion object includes: direction, force, frequency
@@ -39,6 +49,7 @@ export class EpidermalHood extends THREE.Group {
 
     constructor(position: THREE.Vector3, radius: number, height: number, spineCount: number, sliceCount: number, constraintFactor: number) {
         super();
+        this.hasTendrils = false;
         this.pos = position;
         this.radius = radius;
         this.height = height;
@@ -59,31 +70,37 @@ export class EpidermalHood extends THREE.Group {
         // materials
         this.verletMaterials = new VerletMaterials();
 
+        // instantiate hanging tendrils array
+        this.tendrils = new Array(spineCount);
+
         // construct hood
         this.constructHood();
     }
 
-    setDynamics(dynamics: Propulsion): void {
-        this.dynamics = dynamics;
+    addHangingTendrils(tendrilSegments: number = 20, tendrilLength: number = .3, tendrilTension: number = 0.95): void {
+
+        let tendrilNodes: VerletNode[] = this.getBaseNodes();
+
+        this.hasTendrils = true; // useful if I want oeventually remove dynamically
+        //console.log(this.hasTendrils);
+        this.tendrilSegments = tendrilSegments; // don't really need to retain this.
+        this.tendrilLength = tendrilLength;
+        this.tendrilTension = tendrilTension;
+        for (var i = 0; i < this.spines.length; i++) {
+            // console.log(tendrilNodes[i].position);
+            this.tendrils[i] = new VerletStrand(
+                tendrilNodes[i].position,
+                new Vector3(tendrilNodes[i].position.x, tendrilNodes[i].position.y - tendrilLength, tendrilNodes[i].position.z),
+
+                this.tendrilSegments,
+                AnchorPoint.HEAD_TAIL,
+                this.tendrilTension
+            );
+
+            this.add(this.tendrils[i]);
+        }
     }
 
-    setMaterials(verletMaterials: VerletMaterials): void {
-        this.verletMaterials = verletMaterials;
-        for (var i = 0; i < this.spines.length; i++) {
-            this.spines[i].setMaterials(this.verletMaterials.spineColor, this.verletMaterials.spineAlpha, this.verletMaterials.nodeColor);
-        }
-        for (var i = 0; i < this.slices.length; i++) {
-            this.sliceLines[i].material.color = this.verletMaterials.sliceColor;
-            this.sliceLines[i].material.opacity = this.verletMaterials.sliceAlpha;
-            this.sliceLines[i].material.transparent = true;
-        }
-    }
-
-    setNodesScale(scale: number, isRandom: boolean = false) {
-        for (var i = 0; i < this.spines.length; i++) {
-            this.spines[i].setNodesScale(scale);
-        }
-    }
 
     private constructHood(): void {
         let phi = 0.0; // rotation around Y-axis
@@ -147,13 +164,56 @@ export class EpidermalHood extends THREE.Group {
         }
     }
 
+    setDynamics(dynamics: Propulsion): void {
+        this.dynamics = dynamics;
+    }
+
+    setMaterials(verletMaterials: VerletMaterials): void {
+        this.verletMaterials = verletMaterials;
+        for (var i = 0; i < this.spines.length; i++) {
+            this.spines[i].setMaterials(this.verletMaterials.spineColor, this.verletMaterials.spineAlpha, this.verletMaterials.nodeColor);
+
+            // if (this.hasTendrils) {
+            //     this.tendrils[i].setMaterials(this.verletMaterials.spineColor, this.verletMaterials.spineAlpha, this.verletMaterials.nodeColor);
+            // }
+        }
+        for (var i = 0; i < this.slices.length; i++) {
+            this.sliceLines[i].material.color = this.verletMaterials.sliceColor;
+            this.sliceLines[i].material.opacity = this.verletMaterials.sliceAlpha;
+            this.sliceLines[i].material.transparent = true;
+        }
+    }
+
+    setNodesScale(scale: number, isRandom: boolean = false) {
+        for (var i = 0; i < this.spines.length; i++) {
+            this.spines[i].setNodesScale(scale);
+        }
+    }
+
+    // Returns base nodes for tendril attachment
+    getBaseNodes(): VerletNode[] {
+        let baseNodes: VerletNode[] = new Array(this.spineCount);
+        for (var i = 0; i < this.spines.length; i++) {
+            baseNodes[i] = this.spines[i].nodes[0];
+        }
+        return baseNodes;
+
+    }
+
     getApex(): THREE.Vector3 {
         return this.spines[0].nodes[this.spines[0].nodes.length - 1].position.clone();
     }
 
     public pulse(): void {
+        // console.log(this.hasTendrils);
         for (var i = 0; i < this.spines.length; i++) {
             this.spines[i].verlet();
+            if (this.hasTendrils) {
+                this.tendrils[i].verlet();
+                this.tendrils[i].nodes[0].position.x = this.spines[i].nodes[1].position.x;
+                this.tendrils[i].nodes[0].position.y = this.spines[i].nodes[1].position.y;
+                this.tendrils[i].nodes[0].position.z = this.spines[i].nodes[1].position.z;
+            }
 
             this.spines[i].nodes[this.spines[i].nodes.length - 1].position.y = this.pos.y + this.height + Math.sin(this.dynamicsThetas.y) * this.dynamics.force.y;
 
@@ -165,11 +225,19 @@ export class EpidermalHood extends THREE.Group {
             this.slices[i].constrainLen();
             this.sliceLines[i].geometry.verticesNeedUpdate = true;
         }
+
     }
 
     public follow(apex: THREE.Vector3): void {
         for (var i = 0; i < this.spines.length; i++) {
             this.spines[i].verlet();
+            if (this.hasTendrils) {
+                this.tendrils[i].verlet();
+                this.tendrils[i].nodes[0].position.x = this.spines[i].nodes[1].position.x;
+                this.tendrils[i].nodes[0].position.y = this.spines[i].nodes[1].position.y;
+                this.tendrils[i].nodes[0].position.z = this.spines[i].nodes[1].position.z;
+            }
+
 
             this.spines[i].nodes[this.spines[i].nodes.length - 1].position.y = this.pos.y + apex.y;
             this.spines[i].nodes[0].position.y = this.pos.y - this.height + apex.y;

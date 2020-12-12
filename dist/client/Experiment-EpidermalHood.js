@@ -27,18 +27,21 @@ const controls = new OrbitControls(camera, renderer.domElement);
 const bounds = new THREE.Vector3(2, 1.75, 1);
 // Create Epidermal Hood
 // cover
-let epidermalCover = new EpidermalHood(new THREE.Vector3(0, 0, 0), .27, .4, 36, 24, .575);
-epidermalCover.setDynamics(new Propulsion(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, -.01, 0), new THREE.Vector3(0, Math.PI / 2000, 0)));
-epidermalCover.setMaterials(new VerletMaterials(.01, new THREE.Color(.6, .6, 1), .2, new THREE.Color(1, .8, .9), .2, new THREE.Color(1, .7, 1), .2));
-epidermalCover.setNodesScale(4.2);
+let epidermalCover = new EpidermalHood(new THREE.Vector3(0, 0, 0), .27, .5, 56, 24, .575);
+epidermalCover.setDynamics(new Propulsion(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, -.03, 0), new THREE.Vector3(0, Math.PI / 2000, 0)));
+epidermalCover.setMaterials(new VerletMaterials(.01, new THREE.Color(.6, .6, 1), .2, new THREE.Color(.7, 0, .6), .5, new THREE.Color(.5, 0, .8), .5));
+epidermalCover.setNodesScale(5.2);
+epidermalCover.addHangingTendrils(59, .1, .03);
 scene.add(epidermalCover);
 let epidermalHood = new EpidermalHood(epidermalCover.getApex().multiply(new THREE.Vector3(-1)), .2, .2, 30, 30, .2);
-epidermalHood.setMaterials(new VerletMaterials(.01, new THREE.Color(1, .8, .8), .4, new THREE.Color(1, .5, 0), .7, new THREE.Color(.8, .8, .9), .4));
-epidermalHood.setNodesScale(3);
+epidermalHood.setMaterials(new VerletMaterials(.01, new THREE.Color(.9, .7, .7), .4, new THREE.Color(1, .5, 0), .4, new THREE.Color(.8, .8, .9), .4));
+epidermalHood.setNodesScale(4);
+epidermalHood.addHangingTendrils();
 scene.add(epidermalHood);
-let epidermalHood2 = new EpidermalHood(new THREE.Vector3(), .1, .1, 30, 45, .375);
-epidermalHood2.setMaterials(new VerletMaterials(.01, new THREE.Color(.4, 0, .85), .4, new THREE.Color(.6, 0, 0), .4, new THREE.Color(.8, 0, 0), .4));
-epidermalHood2.setNodesScale(2);
+let epidermalHood2 = new EpidermalHood(new THREE.Vector3(0, 0, 0), .1, .1, 15, 12, .8);
+epidermalHood2.setMaterials(new VerletMaterials(.01, new THREE.Color(.9, .3, .9), .4, new THREE.Color(.6, 0, 0), .4, new THREE.Color(.8, 0, 0), .4));
+epidermalHood2.setNodesScale(3);
+epidermalHood2.addHangingTendrils(30, .7, .99);
 scene.add(epidermalHood2);
 // Create/add outer box
 const geometry2 = new THREE.BoxGeometry(bounds.x, bounds.y, bounds.z);
@@ -66,7 +69,7 @@ var animate = function () {
     epidermalCover.constrainBounds(bounds);
     epidermalHood.follow(epidermalCover.getApex().add(new THREE.Vector3(0, -.28, .0)));
     epidermalHood.constrainBounds(bounds);
-    epidermalHood2.follow(epidermalHood.getApex().add(new THREE.Vector3(0, -.2, 0)));
+    epidermalHood2.follow(epidermalHood.getApex().add(new THREE.Vector3(0, -.125, 0)));
     epidermalHood2.constrainBounds(bounds);
     controls.update();
     render();
