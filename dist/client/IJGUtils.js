@@ -41,24 +41,28 @@ export class Propulsion {
 }
 // Organism Materials
 export class VerletMaterials {
-    constructor(nodeRadius = .001, nodeColor = new THREE.Color(.5, .5, .5), nodeAlpha = .5, spineColor = new THREE.Color(.5, .5, .5), spineAlpha = .5, sliceColor = new THREE.Color(.5, .5, .5), sliceAlpha = .5, tendrilColor = new THREE.Color(.5, .5, .5), tendrilAlpha = .5) {
-        this.nodeRadius = .01;
-        this.nodeColor = new THREE.Color(.5, .5, .5);
-        this.nodeAlpha = 1.0;
+    constructor(spineNodeColor = new THREE.Color(.5, .5, .5), spineColor = new THREE.Color(.5, .5, .5), spineAlpha = .5, sliceColor = new THREE.Color(.5, .5, .5), sliceAlpha = .5, tendrilNodeColor = new THREE.Color(.5, .5, .5), tendrilColor = new THREE.Color(.5, .5, .5), tendrilAlpha = .5, ciliaNodeColor = new THREE.Color(.5, .5, .5), ciliaColor = new THREE.Color(.5, .5, .5), ciliaAlpha = .5) {
+        this.spineNodeColor = new THREE.Color(.5, .5, .5);
         this.spineColor = new THREE.Color(.5, .5, .5);
         this.spineAlpha = 1.0;
         this.sliceColor = new THREE.Color(.5, .5, .5);
         this.sliceAlpha = 1.0;
+        this.tendrilNodeColor = new THREE.Color(.5, .5, .5);
         this.tendrilColor = new THREE.Color(.5, .5, .5);
         this.tendrilAlpha = 1.0;
-        this.nodeRadius = nodeRadius;
-        this.nodeColor = nodeColor;
-        this.nodeAlpha = nodeAlpha;
+        this.ciliaNodeColor = new THREE.Color(.5, .5, .5);
+        this.ciliaColor = new THREE.Color(.5, .5, .5);
+        this.ciliaAlpha = 1.0;
+        this.spineNodeColor = spineNodeColor;
         this.spineColor = spineColor;
         this.spineAlpha = spineAlpha;
         this.sliceColor = sliceColor;
         this.sliceAlpha = sliceAlpha;
+        this.tendrilNodeColor = tendrilNodeColor;
         this.tendrilColor = tendrilColor;
         this.tendrilAlpha = tendrilAlpha;
+        this.ciliaNodeColor = ciliaNodeColor;
+        this.ciliaColor = ciliaColor;
+        this.ciliaAlpha = ciliaAlpha;
     }
 }

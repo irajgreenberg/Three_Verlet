@@ -40,57 +40,66 @@ const bounds: THREE.Vector3 = new THREE.Vector3(2, 1.75, 1);
 
 // Create Epidermal Hood
 // cover
-let epidermalCover = new EpidermalHood(new THREE.Vector3(0, 0, 0), .27, .5, 40, 60, .875);
-epidermalCover.addHangingTendrils(30, .4, .03);
-//epidermalCover.addCilia(12, .1, .03);
+let epidermalCover = new EpidermalHood(new THREE.Vector3(0, 0, 0), .27, .5, 30, 50, .875);
+epidermalCover.addHangingTendrils(10, .4, .9);
+epidermalCover.addCilia(2, .05, .85);
 epidermalCover.setDynamics(new Propulsion(new THREE.Vector3(0, 1, 0),
     new THREE.Vector3(0, -.04, 0),
     new THREE.Vector3(0, Math.PI / 1500, 0)));
 epidermalCover.setMaterials(new VerletMaterials(
-    .01,
-    new THREE.Color(.6, .6, 1),
-    .2,
-    new THREE.Color(.7, 0, .6),
-    .5,
-    new THREE.Color(.5, 0, .8),
-    .5,
-    new THREE.Color(.7, .5, 1),
-    .4));
+    new THREE.Color(.8, .6, 8),  /*node color*/
+    new THREE.Color(.8, .1, .9), /*spine color*/
+    .2,                          /*spine alpha*/
+    new THREE.Color(.7, 0, .6),  /*slice color*/
+    .5,                          /*slice alpha*/
+    new THREE.Color(.7, .4, .6),  /*tendril node color*/
+    new THREE.Color(.5, .3, .9),  /*tendril color*/
+    .5,                          /*tendril alpha*/
+    new THREE.Color(.5, .8, 1),  /*cilia node color*/
+    new THREE.Color(.5, .8, 1),  /*cilia color*/
+    .2));                        /*cilia alpha*/
 
-epidermalCover.setNodesScale(5.2);
-epidermalCover.setNodesVisible(true, false);
+
+epidermalCover.setNodesScale(6.2, 8, 3);
+epidermalCover.setNodesVisible(true, true, true);
 scene.add(epidermalCover);
 
 
-let epidermalHood = new EpidermalHood(epidermalCover.getApex().multiply(new THREE.Vector3(-1)), .2, .2, 30, 30, .2);
-epidermalHood.addHangingTendrils();
+let epidermalHood = new EpidermalHood(epidermalCover.getApex().multiply(new THREE.Vector3(-1)), .2, .2, 40, 30, .95);
+epidermalHood.addHangingTendrils(20, .45, .79);
 epidermalHood.setMaterials(new VerletMaterials(
-    .01,
+    new THREE.Color(.9, .9, .9),
     new THREE.Color(.9, .7, .7),
     .4,
     new THREE.Color(1, .5, 0),
     .4,
     new THREE.Color(.8, .8, .9),
+    new THREE.Color(.8, .8, .9),
+    .2,
+    new THREE.Color(.8, .8, .9),
+    new THREE.Color(.8, .8, .9),
     .4));
-epidermalHood.setNodesScale(4);
+epidermalHood.setNodesScale(4, 2);
 
-epidermalHood.setNodesVisible(true, false);
+epidermalHood.setNodesVisible(true, true, false);
 scene.add(epidermalHood);
 
 let epidermalHood2 = new EpidermalHood(new THREE.Vector3(0, 0, 0), .1, .1, 15, 12, .8);
 epidermalHood2.addHangingTendrils(30, .55, .99);
 epidermalHood2.setMaterials(new VerletMaterials(
-    .01,
-    new THREE.Color(.9, .3, .9),
-    .4,
-    new THREE.Color(.6, 0, 0),
-    .4,
-    new THREE.Color(.8, 0, 0),
-    .4,
-    new THREE.Color(.8, .3, .4),
-    .55));
-epidermalHood2.setNodesScale(3);
-epidermalHood2.setNodesVisible(true, false);
+    new THREE.Color(.3, 0, .1),
+    new THREE.Color(.5, 0, .2),
+    .8,
+    new THREE.Color(.6, .2, 0),
+    .8,
+    new THREE.Color(.5, .2, .2),
+    new THREE.Color(.6, .5, .5),
+    .5,
+    new THREE.Color(.8, .8, .9),
+    new THREE.Color(.8, .8, .9),
+    .4));
+epidermalHood2.setNodesScale(10, 7);
+epidermalHood2.setNodesVisible(true, true, false);
 scene.add(epidermalHood2);
 
 

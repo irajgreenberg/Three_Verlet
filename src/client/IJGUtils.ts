@@ -51,35 +51,41 @@ export class Propulsion {
 
 // Organism Materials
 export class VerletMaterials {
-    nodeRadius: number = .01;
-    nodeColor: THREE.Color = new THREE.Color(.5, .5, .5);
-    nodeAlpha: number = 1.0;
+    spineNodeColor: THREE.Color = new THREE.Color(.5, .5, .5);
     spineColor: THREE.Color = new THREE.Color(.5, .5, .5);
     spineAlpha: number = 1.0;
     sliceColor: THREE.Color = new THREE.Color(.5, .5, .5);
     sliceAlpha: number = 1.0;
+    tendrilNodeColor: THREE.Color = new THREE.Color(.5, .5, .5);
     tendrilColor: THREE.Color = new THREE.Color(.5, .5, .5);
     tendrilAlpha: number = 1.0;
+    ciliaNodeColor: THREE.Color = new THREE.Color(.5, .5, .5);
+    ciliaColor: THREE.Color = new THREE.Color(.5, .5, .5);
+    ciliaAlpha: number = 1.0;
 
     constructor(
-        nodeRadius: number = .001,
-        nodeColor: THREE.Color = new THREE.Color(.5, .5, .5),
-        nodeAlpha: number = .5,
+        spineNodeColor: THREE.Color = new THREE.Color(.5, .5, .5),
         spineColor: THREE.Color = new THREE.Color(.5, .5, .5),
         spineAlpha: number = .5,
         sliceColor: THREE.Color = new THREE.Color(.5, .5, .5),
         sliceAlpha: number = .5,
+        tendrilNodeColor: THREE.Color = new THREE.Color(.5, .5, .5),
         tendrilColor: THREE.Color = new THREE.Color(.5, .5, .5),
-        tendrilAlpha: number = .5) {
+        tendrilAlpha: number = .5,
+        ciliaNodeColor: THREE.Color = new THREE.Color(.5, .5, .5),
+        ciliaColor: THREE.Color = new THREE.Color(.5, .5, .5),
+        ciliaAlpha: number = .5) {
 
-        this.nodeRadius = nodeRadius;
-        this.nodeColor = nodeColor;
-        this.nodeAlpha = nodeAlpha;
+        this.spineNodeColor = spineNodeColor;
         this.spineColor = spineColor;
         this.spineAlpha = spineAlpha;
         this.sliceColor = sliceColor;
         this.sliceAlpha = sliceAlpha;
+        this.tendrilNodeColor = tendrilNodeColor;
         this.tendrilColor = tendrilColor;
         this.tendrilAlpha = tendrilAlpha;
+        this.ciliaNodeColor = ciliaNodeColor;
+        this.ciliaColor = ciliaColor;
+        this.ciliaAlpha = ciliaAlpha;
     }
 }

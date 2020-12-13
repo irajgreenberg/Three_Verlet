@@ -20,7 +20,6 @@ export class EpidermalHood extends THREE.Group {
         this.tendrilSegments = 0.0;
         this.tendrilLength = 0.0;
         this.tendrilTension = 0.0;
-        this.cilia = new Array();
         this.ciliaSegments = 0.0;
         this.cilialLength = 0.0;
         this.ciliaTension = 0.0;
@@ -40,6 +39,7 @@ export class EpidermalHood extends THREE.Group {
         this.sliceMats = new Array(sliceCount * spineCount);
         // cilia
         this.hasCilia = false;
+        this.cilia = new Array(spineCount * (sliceCount + 1));
         this.dynamics = new Propulsion();
         // materials
         this.verletMaterials = new VerletMaterials();
@@ -47,34 +47,6 @@ export class EpidermalHood extends THREE.Group {
         this.tendrils = new Array(spineCount);
         // construct hood
         this.constructHood();
-    }
-    // not attaching???
-    addCilia(ciliaSegments = 0.0, cilialLength = 0.0, ciliaTension) {
-        let ciliaNodes = this.getSpineNodes();
-        this.hasCilia = true;
-        for (var i = 0; i < this.spines.length; i++) {
-            for (var j = 0; j < this.spines[i].nodes.length; j++) {
-                let k = this.spines[i].nodes.length * i + j;
-                let cil = new VerletStrand(ciliaNodes[k].position, new THREE.Vector3(ciliaNodes[k].position.x, ciliaNodes[k].position.y + .02, ciliaNodes[k].position.z), ciliaSegments, AnchorPoint.TAIL, this.ciliaTension);
-                this.cilia.push(cil);
-                // cilialLength: number = 0.0;
-                // ciliaTension: number = 0.0;
-                this.add(this.cilia[k]);
-            }
-        }
-    }
-    addHangingTendrils(tendrilSegments = 20, tendrilLength = .3, tendrilTension = 0.95) {
-        let tendrilNodes = this.getBaseNodes();
-        this.hasTendrils = true; // useful if I want oeventually remove dynamically
-        //console.log(this.hasTendrils);
-        this.tendrilSegments = tendrilSegments; // don't really need to retain this.
-        this.tendrilLength = tendrilLength;
-        this.tendrilTension = tendrilTension;
-        for (var i = 0; i < this.spines.length; i++) {
-            // console.log(tendrilNodes[i].position);
-            this.tendrils[i] = new VerletStrand(tendrilNodes[i].position, new Vector3(tendrilNodes[i].position.x, tendrilNodes[i].position.y - tendrilLength, tendrilNodes[i].position.z), this.tendrilSegments, AnchorPoint.HEAD, this.tendrilTension);
-            this.add(this.tendrils[i]);
-        }
     }
     constructHood() {
         let phi = 0.0; // rotation around Y-axis
@@ -129,15 +101,47 @@ export class EpidermalHood extends THREE.Group {
             this.add(this.spines[i]);
         }
     }
+    // Cilia
+    addCilia(ciliaSegments = 0.0, cilialLength = 0.0, ciliaTension) {
+        let ciliaNodes = this.getSpineNodes();
+        this.ciliaSegments = ciliaSegments;
+        this.cilialLength = cilialLength;
+        this.ciliaTension = ciliaTension;
+        this.hasCilia = true;
+        for (var i = 0; i < this.spines.length; i++) {
+            for (var j = 0; j < this.spines[i].nodes.length; j++) {
+                let k = this.spines[i].nodes.length * i + j;
+                let vec = ciliaNodes[k].position.clone();
+                vec.normalize();
+                vec.multiplyScalar(this.cilialLength);
+                this.cilia[k] = new VerletStrand(ciliaNodes[k].position, new THREE.Vector3(ciliaNodes[k].position.x - vec.x, ciliaNodes[k].position.y - vec.y, ciliaNodes[k].position.z - vec.z), ciliaSegments, AnchorPoint.HEAD, this.ciliaTension);
+                this.add(this.cilia[k]);
+            }
+        }
+    }
+    // Tendrils
+    addHangingTendrils(tendrilSegments = 20, tendrilLength = .3, tendrilTension = 0.95) {
+        let tendrilNodes = this.getBaseNodes();
+        this.hasTendrils = true; // useful if I want oeventually remove dynamically
+        //console.log(this.hasTendrils);
+        this.tendrilSegments = tendrilSegments; // don't really need to retain this.
+        this.tendrilLength = tendrilLength;
+        this.tendrilTension = tendrilTension;
+        for (var i = 0; i < this.spines.length; i++) {
+            // console.log(tendrilNodes[i].position);
+            this.tendrils[i] = new VerletStrand(tendrilNodes[i].position, new Vector3(tendrilNodes[i].position.x, tendrilNodes[i].position.y - tendrilLength, tendrilNodes[i].position.z), this.tendrilSegments, AnchorPoint.HEAD, this.tendrilTension);
+            this.add(this.tendrils[i]);
+        }
+    }
     setDynamics(dynamics) {
         this.dynamics = dynamics;
     }
     setMaterials(verletMaterials) {
         this.verletMaterials = verletMaterials;
         for (var i = 0; i < this.spines.length; i++) {
-            this.spines[i].setMaterials(this.verletMaterials.spineColor, this.verletMaterials.spineAlpha, this.verletMaterials.nodeColor);
+            this.spines[i].setMaterials(this.verletMaterials.spineColor, this.verletMaterials.spineAlpha, this.verletMaterials.spineNodeColor);
             if (this.hasTendrils) {
-                this.tendrils[i].setMaterials(this.verletMaterials.tendrilColor, this.verletMaterials.tendrilAlpha, this.verletMaterials.nodeColor);
+                this.tendrils[i].setMaterials(this.verletMaterials.tendrilColor, this.verletMaterials.tendrilAlpha, this.verletMaterials.tendrilNodeColor);
             }
         }
         for (var i = 0; i < this.slices.length; i++) {
@@ -145,18 +149,38 @@ export class EpidermalHood extends THREE.Group {
             this.sliceLines[i].material.opacity = this.verletMaterials.sliceAlpha;
             this.sliceLines[i].material.transparent = true;
         }
-    }
-    setNodesScale(scale, isRandom = false) {
-        for (var i = 0; i < this.spines.length; i++) {
-            this.spines[i].setNodesScale(scale);
+        for (var i = 0; i < this.cilia.length; i++) {
+            if (this.hasCilia) {
+                this.cilia[i].setMaterials(this.verletMaterials.ciliaColor, this.verletMaterials.ciliaAlpha, this.verletMaterials.ciliaNodeColor);
+            }
         }
     }
-    setNodesVisible(areSpineNodesVisible, areTendrilNodesVisible) {
+    setNodesScale(hoodNodeScale = 1.0, tendrilNodeScale = 1.0, ciliaNodeScale = 1.0, isNodeScaleRandom = false) {
+        for (var i = 0; i < this.spines.length; i++) {
+            this.spines[i].setNodesScale(hoodNodeScale);
+        }
+        if (this.hasTendrils) {
+            for (var i = 0; i < this.tendrils.length; i++) {
+                this.tendrils[i].setNodesScale(tendrilNodeScale);
+            }
+        }
+        if (this.hasCilia) {
+            for (var i = 0; i < this.cilia.length; i++) {
+                this.cilia[i].setNodesScale(ciliaNodeScale);
+            }
+        }
+    }
+    setNodesVisible(areSpineNodesVisible = true, areTendrilNodesVisible = true, areCiliaNodesVisible = true) {
         for (var i = 0; i < this.spines.length; i++) {
             this.spines[i].setNodesVisible(areSpineNodesVisible);
         }
         for (var i = 0; i < this.tendrils.length; i++) {
             this.tendrils[i].setNodesVisible(areTendrilNodesVisible);
+        }
+        if (this.hasCilia) {
+            for (var i = 0; i < this.cilia.length; i++) {
+                this.cilia[i].setNodesVisible(areCiliaNodesVisible);
+            }
         }
     }
     // Returns base nodes for tendril attachment
@@ -169,10 +193,11 @@ export class EpidermalHood extends THREE.Group {
     }
     // Returns all spine nodes for cilia attachment
     getSpineNodes() {
-        let spineNodes = new Array();
+        let spineNodes = new Array(this.spines.length * (this.sliceCount = 1));
         for (var i = 0; i < this.spines.length; i++) {
             for (var j = 0; j < this.spines[i].nodes.length; j++) {
-                spineNodes.push(this.spines[i].nodes[j]);
+                let k = this.spines[i].nodes.length * i + j;
+                spineNodes[k] = this.spines[i].nodes[j];
             }
         }
         return spineNodes;
@@ -181,7 +206,7 @@ export class EpidermalHood extends THREE.Group {
         return this.spines[0].nodes[this.spines[0].nodes.length - 1].position.clone();
     }
     pulse() {
-        // console.log(this.hasTendrils);
+        // Tendrils and Spines
         for (var i = 0; i < this.spines.length; i++) {
             this.spines[i].verlet();
             if (this.hasTendrils) {
@@ -194,14 +219,16 @@ export class EpidermalHood extends THREE.Group {
             this.spines[i].nodes[0].position.y = this.pos.y + Math.cos(this.dynamicsThetas.y) * this.dynamics.force.y * .5;
             this.dynamicsThetas.add(this.dynamics.frequency);
         }
+        // slices
         for (var i = 0; i < this.slices.length; i++) {
             this.slices[i].constrainLen();
             this.sliceLines[i].geometry.verticesNeedUpdate = true;
         }
-        if (this.hasCilia) {
-            for (var i = 0; i < this.spines.length; i++) {
-                for (var j = 0; j < this.spines[i].nodes.length; j++) {
-                    let k = this.cilia[i].nodes.length * i + j;
+        // Cilia
+        for (var i = 0; i < this.spines.length; i++) {
+            for (var j = 0; j < this.spines[i].nodes.length; j++) {
+                let k = this.spines[i].nodes.length * i + j;
+                if (this.hasCilia) {
                     this.cilia[k].verlet();
                     this.cilia[k].nodes[0].position.x = this.spines[i].nodes[j].position.x;
                     this.cilia[k].nodes[0].position.y = this.spines[i].nodes[j].position.y;
@@ -228,10 +255,10 @@ export class EpidermalHood extends THREE.Group {
             this.slices[i].constrainLen();
             this.sliceLines[i].geometry.verticesNeedUpdate = true;
         }
-        if (this.hasCilia) {
-            for (var i = 0; i < this.spines.length; i++) {
-                for (var j = 0; j < this.spines[i].nodes.length; j++) {
-                    let k = this.cilia[i].nodes.length * i + j;
+        for (var i = 0; i < this.spines.length; i++) {
+            for (var j = 0; j < this.spines[i].nodes.length; j++) {
+                let k = this.spines[i].nodes.length * i + j;
+                if (this.hasCilia) {
                     this.cilia[k].verlet();
                     this.cilia[k].nodes[0].position.x = this.spines[i].nodes[j].position.x;
                     this.cilia[k].nodes[0].position.y = this.spines[i].nodes[j].position.y;
