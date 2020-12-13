@@ -6,10 +6,14 @@
 import * as THREE from '/build/three.module.js';
 import { VerletNode } from './VerletNode.js';
 import { VerletStick } from './VerletStick.js';
-import { AnchorPoint } from './IJGUtils.js';
+import { AnchorPoint, GeometryDetail } from './IJGUtils.js';
+// helper customcurvepath
+// class TendrilCurve extends THREE.Curve {
+// }
 export class VerletStrand extends THREE.Group {
     constructor(head, tail, segmentCount, anchorPointDetail = AnchorPoint.NONE, elasticity = .5) {
         super();
+        this.areNodesVisible = true;
         this.geometry = new THREE.Geometry();
         this.material = new THREE.MeshBasicMaterial({ color: 0xffffff, });
         this.head = head;
@@ -30,7 +34,7 @@ export class VerletStrand extends THREE.Group {
         let segLen = chainLen / this.segments.length;
         deltaVec.normalize();
         for (var i = 0; i < this.nodes.length; i++) {
-            this.nodes[i] = new VerletNode(new THREE.Vector3(this.head.x + deltaVec.x * segLen * i, this.head.y + deltaVec.y * segLen * i, this.head.z + deltaVec.z * segLen * i), THREE.MathUtils.randFloat(.0002, .0007));
+            this.nodes[i] = new VerletNode(new THREE.Vector3(this.head.x + deltaVec.x * segLen * i, this.head.y + deltaVec.y * segLen * i, this.head.z + deltaVec.z * segLen * i), THREE.MathUtils.randFloat(.0002, .0007), new THREE.Color(.5, .5, .5), GeometryDetail.SPHERE_LOW);
             // show nodes
             this.add(this.nodes[i]);
         }
@@ -161,6 +165,11 @@ export class VerletStrand extends THREE.Group {
         }
         for (var i = 0; i < this.segmentCount; i++) {
             this.segments[i].reinitializeLen();
+        }
+    }
+    setNodesVisible(areNodesVisible) {
+        for (var i = 0; i < this.nodes.length; i++) {
+            this.nodes[i].setNodeVisible(areNodesVisible);
         }
     }
     setMaterials(tendrilColor, alpha, nodeColor) {

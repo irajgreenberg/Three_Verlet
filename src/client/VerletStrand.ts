@@ -8,8 +8,11 @@
 import * as THREE from '/build/three.module.js';
 import { VerletNode } from './VerletNode.js';
 import { VerletStick } from './VerletStick.js';
-import { AnchorPoint } from './IJGUtils.js';
+import { AnchorPoint, GeometryDetail } from './IJGUtils.js';
 
+// helper customcurvepath
+// class TendrilCurve extends THREE.Curve {
+// }
 
 export class VerletStrand extends THREE.Group {
     public head: THREE.Vector3
@@ -21,6 +24,7 @@ export class VerletStrand extends THREE.Group {
     private anchorPointDetail: AnchorPoint;
     // controls spring tension between adjacent nodes
     elasticity: number;
+    areNodesVisible: boolean = true;
     geometry = new THREE.Geometry();
     material = new THREE.MeshBasicMaterial({ color: 0xffffff, });
     public tendril: THREE.Line;
@@ -49,7 +53,8 @@ export class VerletStrand extends THREE.Group {
         deltaVec.normalize();
 
         for (var i = 0; i < this.nodes.length; i++) {
-            this.nodes[i] = new VerletNode(new THREE.Vector3(this.head.x + deltaVec.x * segLen * i, this.head.y + deltaVec.y * segLen * i, this.head.z + deltaVec.z * segLen * i), THREE.MathUtils.randFloat(.0002, .0007));
+            this.nodes[i] = new VerletNode(new THREE.Vector3(this.head.x + deltaVec.x * segLen * i, this.head.y + deltaVec.y * segLen * i, this.head.z + deltaVec.z * segLen * i), THREE.MathUtils.randFloat(.0002, .0007),
+                new THREE.Color(.5, .5, .5), GeometryDetail.SPHERE_LOW);
             // show nodes
             this.add(this.nodes[i]);
         }
@@ -168,6 +173,12 @@ export class VerletStrand extends THREE.Group {
         }
     }
 
+    setNodesVisible(areNodesVisible: boolean): void {
+        for (var i = 0; i < this.nodes.length; i++) {
+            this.nodes[i].setNodeVisible(areNodesVisible);
+        }
+    }
+
     setMaterials(tendrilColor: THREE.Color, alpha: number, nodeColor: THREE.Color): void {
         this.tendril.material.color = tendrilColor;
         this.tendril.material.transparent = true; //annoying ide can't
@@ -183,5 +194,14 @@ export class VerletStrand extends THREE.Group {
             this.nodes[i].geometry.scale(scale, scale, scale);
         }
     }
+
+    // createSkin() {
+    //     const path = new CustomSinCurve(10);
+    //     const geometry = new THREE.TubeGeometry(path, 20, 2, 8, false);
+    //     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    //     const mesh = new THREE.Mesh(geometry, material);
+    //     scene.add(mesh);
+
+    // }
 
 }

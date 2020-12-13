@@ -20,6 +20,10 @@ export class EpidermalHood extends THREE.Group {
         this.tendrilSegments = 0.0;
         this.tendrilLength = 0.0;
         this.tendrilTension = 0.0;
+        this.cilia = new Array();
+        this.ciliaSegments = 0.0;
+        this.cilialLength = 0.0;
+        this.ciliaTension = 0.0;
         this.dynamicsThetas = new THREE.Vector3(0.0, 0.0, 0.0);
         this.hasTendrils = false;
         this.pos = position;
@@ -34,6 +38,8 @@ export class EpidermalHood extends THREE.Group {
         this.sliceLines = new Array(sliceCount * spineCount);
         this.sliceGeoms = new Array(sliceCount * spineCount);
         this.sliceMats = new Array(sliceCount * spineCount);
+        // cilia
+        this.hasCilia = false;
         this.dynamics = new Propulsion();
         // materials
         this.verletMaterials = new VerletMaterials();
@@ -41,6 +47,21 @@ export class EpidermalHood extends THREE.Group {
         this.tendrils = new Array(spineCount);
         // construct hood
         this.constructHood();
+    }
+    // not attaching???
+    addCilia(ciliaSegments = 0.0, cilialLength = 0.0, ciliaTension) {
+        let ciliaNodes = this.getSpineNodes();
+        this.hasCilia = true;
+        for (var i = 0; i < this.spines.length; i++) {
+            for (var j = 0; j < this.spines[i].nodes.length; j++) {
+                let k = this.spines[i].nodes.length * i + j;
+                let cil = new VerletStrand(ciliaNodes[k].position, new THREE.Vector3(ciliaNodes[k].position.x, ciliaNodes[k].position.y + .02, ciliaNodes[k].position.z), ciliaSegments, AnchorPoint.TAIL, this.ciliaTension);
+                this.cilia.push(cil);
+                // cilialLength: number = 0.0;
+                // ciliaTension: number = 0.0;
+                this.add(this.cilia[k]);
+            }
+        }
     }
     addHangingTendrils(tendrilSegments = 20, tendrilLength = .3, tendrilTension = 0.95) {
         let tendrilNodes = this.getBaseNodes();
@@ -51,7 +72,7 @@ export class EpidermalHood extends THREE.Group {
         this.tendrilTension = tendrilTension;
         for (var i = 0; i < this.spines.length; i++) {
             // console.log(tendrilNodes[i].position);
-            this.tendrils[i] = new VerletStrand(tendrilNodes[i].position, new Vector3(tendrilNodes[i].position.x, tendrilNodes[i].position.y - tendrilLength, tendrilNodes[i].position.z), this.tendrilSegments, AnchorPoint.HEAD_TAIL, this.tendrilTension);
+            this.tendrils[i] = new VerletStrand(tendrilNodes[i].position, new Vector3(tendrilNodes[i].position.x, tendrilNodes[i].position.y - tendrilLength, tendrilNodes[i].position.z), this.tendrilSegments, AnchorPoint.HEAD, this.tendrilTension);
             this.add(this.tendrils[i]);
         }
     }
@@ -115,9 +136,9 @@ export class EpidermalHood extends THREE.Group {
         this.verletMaterials = verletMaterials;
         for (var i = 0; i < this.spines.length; i++) {
             this.spines[i].setMaterials(this.verletMaterials.spineColor, this.verletMaterials.spineAlpha, this.verletMaterials.nodeColor);
-            // if (this.hasTendrils) {
-            //     this.tendrils[i].setMaterials(this.verletMaterials.spineColor, this.verletMaterials.spineAlpha, this.verletMaterials.nodeColor);
-            // }
+            if (this.hasTendrils) {
+                this.tendrils[i].setMaterials(this.verletMaterials.tendrilColor, this.verletMaterials.tendrilAlpha, this.verletMaterials.nodeColor);
+            }
         }
         for (var i = 0; i < this.slices.length; i++) {
             this.sliceLines[i].material.color = this.verletMaterials.sliceColor;
@@ -130,6 +151,14 @@ export class EpidermalHood extends THREE.Group {
             this.spines[i].setNodesScale(scale);
         }
     }
+    setNodesVisible(areSpineNodesVisible, areTendrilNodesVisible) {
+        for (var i = 0; i < this.spines.length; i++) {
+            this.spines[i].setNodesVisible(areSpineNodesVisible);
+        }
+        for (var i = 0; i < this.tendrils.length; i++) {
+            this.tendrils[i].setNodesVisible(areTendrilNodesVisible);
+        }
+    }
     // Returns base nodes for tendril attachment
     getBaseNodes() {
         let baseNodes = new Array(this.spineCount);
@@ -137,6 +166,16 @@ export class EpidermalHood extends THREE.Group {
             baseNodes[i] = this.spines[i].nodes[0];
         }
         return baseNodes;
+    }
+    // Returns all spine nodes for cilia attachment
+    getSpineNodes() {
+        let spineNodes = new Array();
+        for (var i = 0; i < this.spines.length; i++) {
+            for (var j = 0; j < this.spines[i].nodes.length; j++) {
+                spineNodes.push(this.spines[i].nodes[j]);
+            }
+        }
+        return spineNodes;
     }
     getApex() {
         return this.spines[0].nodes[this.spines[0].nodes.length - 1].position.clone();
@@ -159,6 +198,17 @@ export class EpidermalHood extends THREE.Group {
             this.slices[i].constrainLen();
             this.sliceLines[i].geometry.verticesNeedUpdate = true;
         }
+        if (this.hasCilia) {
+            for (var i = 0; i < this.spines.length; i++) {
+                for (var j = 0; j < this.spines[i].nodes.length; j++) {
+                    let k = this.cilia[i].nodes.length * i + j;
+                    this.cilia[k].verlet();
+                    this.cilia[k].nodes[0].position.x = this.spines[i].nodes[j].position.x;
+                    this.cilia[k].nodes[0].position.y = this.spines[i].nodes[j].position.y;
+                    this.cilia[k].nodes[0].position.z = this.spines[i].nodes[j].position.z;
+                }
+            }
+        }
     }
     follow(apex) {
         for (var i = 0; i < this.spines.length; i++) {
@@ -177,6 +227,17 @@ export class EpidermalHood extends THREE.Group {
         for (var i = 0; i < this.slices.length; i++) {
             this.slices[i].constrainLen();
             this.sliceLines[i].geometry.verticesNeedUpdate = true;
+        }
+        if (this.hasCilia) {
+            for (var i = 0; i < this.spines.length; i++) {
+                for (var j = 0; j < this.spines[i].nodes.length; j++) {
+                    let k = this.cilia[i].nodes.length * i + j;
+                    this.cilia[k].verlet();
+                    this.cilia[k].nodes[0].position.x = this.spines[i].nodes[j].position.x;
+                    this.cilia[k].nodes[0].position.y = this.spines[i].nodes[j].position.y;
+                    this.cilia[k].nodes[0].position.z = this.spines[i].nodes[j].position.z;
+                }
+            }
         }
     }
     constrainBounds(bounds) {
