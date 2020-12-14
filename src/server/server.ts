@@ -2,7 +2,7 @@ import express from "express"
 import path from "path"
 import http from "http"
 
-const port: number = 3000
+const port: number = 5000
 
 class App {
     private server: http.Server
@@ -15,13 +15,13 @@ class App {
         app.use('/build/three.module.js', express.static(path.join(__dirname, '../../node_modules/three/build/three.module.js')))
         app.use('/jsm/controls/OrbitControls', express.static(path.join(__dirname, '../../node_modules/three/examples/jsm/controls/OrbitControls.js')))
         app.use('/jsm/controls/OrbitControls', express.static(path.join(__dirname, '../../node_modules/three/examples/jsm/controls/OrbitControls.js')))
-        
+
         this.server = new http.Server(app);
     }
 
     public Start() {
         this.server.listen(this.port, () => {
-            console.log( `Server listening on port ${this.port}.` )
+            console.log(`Server listening on port ${this.port}.`)
         })
     }
 }
