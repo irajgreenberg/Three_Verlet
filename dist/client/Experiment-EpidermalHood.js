@@ -16,7 +16,7 @@
 import * as THREE from '/build/three.module.js';
 import { OrbitControls } from '/jsm/controls/OrbitControls';
 import { EpidermalHood } from './EpidermalHood.js';
-import { Propulsion, VerletMaterials } from './IJGUtils.js';
+import { GeometryDetail, Propulsion, VerletMaterials } from './IJGUtils.js';
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
@@ -27,7 +27,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 const bounds = new THREE.Vector3(2, 1.75, 1);
 // Create Epidermal Hood
 // cover
-let epidermalCover = new EpidermalHood(new THREE.Vector3(0, 0, 0), .27, .5, 30, 50, .875);
+let epidermalCover = new EpidermalHood(new THREE.Vector3(0, 0, 0), .27, .5, 30, 50, .875, [GeometryDetail.ICOSA, GeometryDetail.TETRA, GeometryDetail.TRI]);
 epidermalCover.addHangingTendrils(10, .4, .9);
 epidermalCover.addCilia(2, .05, .85);
 epidermalCover.setDynamics(new Propulsion(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, -.04, 0), new THREE.Vector3(0, Math.PI / 1500, 0)));

@@ -25,7 +25,8 @@ import { visitNodes } from 'typescript';
 import { VerletStick } from './VerletStick.js';
 import { VerletStrand } from './VerletStrand.js';
 import { EpidermalHood } from './EpidermalHood.js';
-import { Propulsion, VerletMaterials } from './IJGUtils.js';
+import { GeometryDetail, Propulsion, VerletMaterials } from './IJGUtils.js';
+import { Geometry } from '/build/three.module.js';
 
 const scene: THREE.Scene = new THREE.Scene();
 const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
@@ -40,7 +41,7 @@ const bounds: THREE.Vector3 = new THREE.Vector3(2, 1.75, 1);
 
 // Create Epidermal Hood
 // cover
-let epidermalCover = new EpidermalHood(new THREE.Vector3(0, 0, 0), .27, .5, 30, 50, .875);
+let epidermalCover = new EpidermalHood(new THREE.Vector3(0, 0, 0), .27, .5, 30, 50, .875, [GeometryDetail.ICOSA, GeometryDetail.TETRA, GeometryDetail.TRI]);
 epidermalCover.addHangingTendrils(10, .4, .9);
 epidermalCover.addCilia(2, .05, .85);
 epidermalCover.setDynamics(new Propulsion(new THREE.Vector3(0, 1, 0),
