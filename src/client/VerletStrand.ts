@@ -24,13 +24,14 @@ export class VerletStrand extends THREE.Group {
     private anchorPointDetail: AnchorPoint;
     // controls spring tension between adjacent nodes
     elasticity: number;
+    nodeType: GeometryDetail;
     areNodesVisible: boolean = true;
     geometry = new THREE.Geometry();
     material = new THREE.MeshBasicMaterial({ color: 0xffffff, });
     public tendril: THREE.Line;
 
 
-    constructor(head: THREE.Vector3, tail: THREE.Vector3, segmentCount: number, anchorPointDetail: AnchorPoint = AnchorPoint.NONE, elasticity: number = .5) {
+    constructor(head: THREE.Vector3, tail: THREE.Vector3, segmentCount: number, anchorPointDetail: AnchorPoint = AnchorPoint.NONE, elasticity: number = .5, nodeType: GeometryDetail = GeometryDetail.SPHERE_LOW) {
         super();
         this.head = head;
         this.tail = tail;
@@ -39,6 +40,7 @@ export class VerletStrand extends THREE.Group {
         this.nodes = new Array(segmentCount + 1);
         this.anchorPointDetail = anchorPointDetail;
         this.elasticity = elasticity;
+        this.nodeType = nodeType;
         // encapsulaes stick data
         this.tendril = new THREE.Line();
 
@@ -54,7 +56,7 @@ export class VerletStrand extends THREE.Group {
 
         for (var i = 0; i < this.nodes.length; i++) {
             this.nodes[i] = new VerletNode(new THREE.Vector3(this.head.x + deltaVec.x * segLen * i, this.head.y + deltaVec.y * segLen * i, this.head.z + deltaVec.z * segLen * i), THREE.MathUtils.randFloat(.0002, .0007),
-                new THREE.Color(.5, .5, .5), GeometryDetail.ICOSA);
+                new THREE.Color(.5, .5, .5), this.nodeType);
             // show nodes
             this.add(this.nodes[i]);
         }

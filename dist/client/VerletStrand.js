@@ -11,7 +11,7 @@ import { AnchorPoint, GeometryDetail } from './IJGUtils.js';
 // class TendrilCurve extends THREE.Curve {
 // }
 export class VerletStrand extends THREE.Group {
-    constructor(head, tail, segmentCount, anchorPointDetail = AnchorPoint.NONE, elasticity = .5) {
+    constructor(head, tail, segmentCount, anchorPointDetail = AnchorPoint.NONE, elasticity = .5, nodeType = GeometryDetail.SPHERE_LOW) {
         super();
         this.areNodesVisible = true;
         this.geometry = new THREE.Geometry();
@@ -23,6 +23,7 @@ export class VerletStrand extends THREE.Group {
         this.nodes = new Array(segmentCount + 1);
         this.anchorPointDetail = anchorPointDetail;
         this.elasticity = elasticity;
+        this.nodeType = nodeType;
         // encapsulaes stick data
         this.tendril = new THREE.Line();
         // local vars for segment calcuations
@@ -34,7 +35,7 @@ export class VerletStrand extends THREE.Group {
         let segLen = chainLen / this.segments.length;
         deltaVec.normalize();
         for (var i = 0; i < this.nodes.length; i++) {
-            this.nodes[i] = new VerletNode(new THREE.Vector3(this.head.x + deltaVec.x * segLen * i, this.head.y + deltaVec.y * segLen * i, this.head.z + deltaVec.z * segLen * i), THREE.MathUtils.randFloat(.0002, .0007), new THREE.Color(.5, .5, .5), GeometryDetail.ICOSA);
+            this.nodes[i] = new VerletNode(new THREE.Vector3(this.head.x + deltaVec.x * segLen * i, this.head.y + deltaVec.y * segLen * i, this.head.z + deltaVec.z * segLen * i), THREE.MathUtils.randFloat(.0002, .0007), new THREE.Color(.5, .5, .5), this.nodeType);
             // show nodes
             this.add(this.nodes[i]);
         }

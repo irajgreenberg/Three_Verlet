@@ -9,7 +9,7 @@ import * as THREE from '/build/three.module.js';
 import { VerletNode } from './VerletNode.js';
 import { VerletStick } from './VerletStick.js';
 import { VerletStrand } from './VerletStrand.js';
-import { AnchorPoint, Propulsion, VerletMaterials } from './IJGUtils.js';
+import { AnchorPoint, Propulsion, VerletMaterials, GeometryDetail } from './IJGUtils.js';
 import { Vector3 } from '/build/three.module.js';
 //import { Vector3 } from '/build/three.module.js';
 
@@ -21,6 +21,7 @@ export class EpidermalHood extends THREE.Group {
     spineCount: number = 12;
     sliceCount: number = 12;
     constraintFactor: number;
+    nodeTypes: GeometryDetail[];
 
     // down spines
     spines: VerletStrand[];
@@ -54,7 +55,7 @@ export class EpidermalHood extends THREE.Group {
     // leader: THREE.Vector3;
 
 
-    constructor(position: THREE.Vector3, radius: number, height: number, spineCount: number, sliceCount: number, constraintFactor: number) {
+    constructor(position: THREE.Vector3, radius: number, height: number, spineCount: number, sliceCount: number, constraintFactor: number, nodeTypes: GeometryDetail[] = [GeometryDetail.SPHERE_LOW, GeometryDetail.TETRA, GeometryDetail.TRI]) {
         super();
         this.hasTendrils = false;
         this.pos = position;
@@ -63,6 +64,7 @@ export class EpidermalHood extends THREE.Group {
         this.spineCount = spineCount;
         this.sliceCount = sliceCount;
         this.constraintFactor = constraintFactor;
+        this.nodeTypes = nodeTypes;
 
         this.spines = new Array(spineCount);
 
@@ -93,7 +95,7 @@ export class EpidermalHood extends THREE.Group {
         let phi = 0.0; // rotation around Y-axis
         let k = 0; // poorly named slice counter
         for (var i = 0; i < this.spines.length; i++) {
-            this.spines[i] = new VerletStrand(new THREE.Vector3(), new THREE.Vector3(), this.sliceCount, AnchorPoint.HEAD_TAIL, this.constraintFactor);
+            this.spines[i] = new VerletStrand(new THREE.Vector3(), new THREE.Vector3(), this.sliceCount, AnchorPoint.HEAD_TAIL, this.constraintFactor, this.nodeTypes[0]);
             let theta = 0.0; // rotation around Z-axis
             for (var j = 0; j < this.sliceCount + 1; j++) {
                 // plot around z-axis
@@ -151,6 +153,28 @@ export class EpidermalHood extends THREE.Group {
         }
     }
 
+
+    // Tendrils
+    addHangingTendrils(tendrilSegments: number = 20, tendrilLength: number = .3, tendrilTension: number = 0.95): void {
+        let tendrilNodes: VerletNode[] = this.getBaseNodes();
+        this.hasTendrils = true; // useful if I want oeventually remove dynamically
+        //console.log(this.hasTendrils);
+        this.tendrilSegments = tendrilSegments; // don't really need to retain this.
+        this.tendrilLength = tendrilLength;
+        this.tendrilTension = tendrilTension;
+        for (var i = 0; i < this.spines.length; i++) {
+            // console.log(tendrilNodes[i].position);
+            this.tendrils[i] = new VerletStrand(
+                tendrilNodes[i].position,
+                new Vector3(tendrilNodes[i].position.x, tendrilNodes[i].position.y - tendrilLength, tendrilNodes[i].position.z),
+                this.tendrilSegments,
+                AnchorPoint.HEAD,
+                this.tendrilTension, this.nodeTypes[1]);
+
+            this.add(this.tendrils[i]);
+        }
+    }
+
     // Cilia
     addCilia(ciliaSegments: number = 0.0, cilialLength: number = 0.0, ciliaTension: number) {
         let ciliaNodes: VerletNode[] = this.getSpineNodes();
@@ -170,30 +194,10 @@ export class EpidermalHood extends THREE.Group {
                         ciliaNodes[k].position.z - vec.z),
                     ciliaSegments,
                     AnchorPoint.HEAD,
-                    this.ciliaTension);
+                    this.ciliaTension, this.nodeTypes[2]);
 
                 this.add(this.cilia[k]);
             }
-        }
-    }
-    // Tendrils
-    addHangingTendrils(tendrilSegments: number = 20, tendrilLength: number = .3, tendrilTension: number = 0.95): void {
-        let tendrilNodes: VerletNode[] = this.getBaseNodes();
-        this.hasTendrils = true; // useful if I want oeventually remove dynamically
-        //console.log(this.hasTendrils);
-        this.tendrilSegments = tendrilSegments; // don't really need to retain this.
-        this.tendrilLength = tendrilLength;
-        this.tendrilTension = tendrilTension;
-        for (var i = 0; i < this.spines.length; i++) {
-            // console.log(tendrilNodes[i].position);
-            this.tendrils[i] = new VerletStrand(
-                tendrilNodes[i].position,
-                new Vector3(tendrilNodes[i].position.x, tendrilNodes[i].position.y - tendrilLength, tendrilNodes[i].position.z),
-                this.tendrilSegments,
-                AnchorPoint.HEAD,
-                this.tendrilTension);
-
-            this.add(this.tendrils[i]);
         }
     }
 
