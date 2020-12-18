@@ -30,6 +30,9 @@ export class VerletStrand extends THREE.Group {
     material = new THREE.MeshBasicMaterial({ color: 0xffffff, });
     public tendril: THREE.Line;
 
+    // used to cheaply rotate nodes around their local axis
+    // should eventually be set as a per node property
+    testRot = 0;
 
     constructor(head: THREE.Vector3, tail: THREE.Vector3, segmentCount: number, anchorPointDetail: AnchorPoint = AnchorPoint.NONE, elasticity: number = .5, nodeType: GeometryDetail = GeometryDetail.SPHERE_LOW) {
         super();
@@ -145,10 +148,14 @@ export class VerletStrand extends THREE.Group {
     public verlet(isConstrained: boolean = true): void {
         for (var i = 0; i < this.nodes.length; i++) {
             this.nodes[i].verlet();
+            this.nodes[i].rotateX(this.testRot * .1);
+            this.nodes[i].rotateY(this.testRot);
+            this.nodes[i].rotateZ(-this.testRot * .3);
         }
         if (isConstrained) {
             this.constrain();
         }
+        this.testRot += Math.PI / 7280;
     }
 
     private constrain(): void {

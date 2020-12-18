@@ -16,6 +16,9 @@ export class VerletStrand extends THREE.Group {
         this.areNodesVisible = true;
         this.geometry = new THREE.Geometry();
         this.material = new THREE.MeshBasicMaterial({ color: 0xffffff, });
+        // used to cheaply rotate nodes around their local axis
+        // should eventually be set as a per node property
+        this.testRot = 0;
         this.head = head;
         this.tail = tail;
         this.segmentCount = segmentCount;
@@ -142,10 +145,14 @@ export class VerletStrand extends THREE.Group {
     verlet(isConstrained = true) {
         for (var i = 0; i < this.nodes.length; i++) {
             this.nodes[i].verlet();
+            this.nodes[i].rotateX(this.testRot * .1);
+            this.nodes[i].rotateY(this.testRot);
+            this.nodes[i].rotateZ(-this.testRot * .3);
         }
         if (isConstrained) {
             this.constrain();
         }
+        this.testRot += Math.PI / 7280;
     }
     constrain() {
         for (var i = 0; i < this.segmentCount; i++) {

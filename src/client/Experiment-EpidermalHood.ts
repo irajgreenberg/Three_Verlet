@@ -30,7 +30,7 @@ import { Geometry } from '/build/three.module.js';
 
 const scene: THREE.Scene = new THREE.Scene();
 const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
-    75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    75, window.innerWidth / window.innerHeight, 0.001, 2000);
 const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -129,7 +129,9 @@ scene.add(light2);
 
 
 
-camera.position.z = .85;
+camera.position.y = .05;
+camera.position.z = .20;
+
 
 // animation vars
 // let spd: THREE.Vector3 = new THREE.Vector3(.01, .1, .1);
@@ -156,7 +158,10 @@ var animate = function () {
     epidermalHood2.follow(epidermalHood.getApex().add(new THREE.Vector3(0, -.125, 0)));
     epidermalHood2.constrainBounds(bounds);
 
-
+    // camera.position.y = .05;
+    camera.position.x = Math.cos(renderer.info.render.frame * Math.PI / 360) * .15;
+    camera.position.y = Math.cos(renderer.info.render.frame * Math.PI / 720) * .15;
+    camera.position.z = Math.sin(renderer.info.render.frame * Math.PI / 720) * .35;
 
 
     controls.update()
