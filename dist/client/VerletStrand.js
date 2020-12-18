@@ -152,7 +152,7 @@ export class VerletStrand extends THREE.Group {
         if (isConstrained) {
             this.constrain();
         }
-        this.testRot += Math.PI / 7280;
+        this.testRot += Math.PI / 15080;
     }
     constrain() {
         for (var i = 0; i < this.segmentCount; i++) {
