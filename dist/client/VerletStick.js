@@ -8,6 +8,7 @@
 // Center of Creative Computation, SMU
 //----------------------------------------------
 import * as THREE from '/build/three.module.js';
+//import { Line } from '/build/three.module.js';
 export class VerletStick {
     constructor(start, end, stickTension = .4, anchorTerminal = 0) {
         this.start = start;

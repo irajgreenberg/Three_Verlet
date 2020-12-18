@@ -12,7 +12,7 @@
 
 import * as THREE from '/build/three.module.js';
 import { VerletNode } from './VerletNode.js';
-import { Line } from '/build/three.module.js';
+//import { Line } from '/build/three.module.js';
 
 
 export class VerletStick {
