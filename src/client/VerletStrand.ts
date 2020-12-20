@@ -139,8 +139,9 @@ export class VerletStrand extends THREE.Group {
         }
         let lineMaterial = new THREE.LineBasicMaterial({ color: 0xcc55cc });
         this.tendril = new THREE.Line(this.geometry, lineMaterial);
-        this.tendril.material.transparent = true; //annoying ide can't accurately track this
-        this.tendril.material.opacity = .25; //annoying ide can't accurately track this
+        let tenMat = this.tendril.material as THREE.Material; // assertion to keep TS Intellisence happy
+        tenMat.transparent = true; //annoying ide can't accurately track this w/o insertion
+        tenMat.opacity = .25; //annoying ide can't accurately track this w/o insertion
         //this.tendril.
         this.add(this.tendril);
     }
@@ -189,12 +190,14 @@ export class VerletStrand extends THREE.Group {
     }
 
     setMaterials(tendrilColor: THREE.Color, alpha: number, nodeColor: THREE.Color): void {
-        this.tendril.material.color = tendrilColor;
-        this.tendril.material.transparent = true; //annoying ide can't
-        this.tendril.material.opacity = alpha;
+        let tenMat = this.tendril.material as THREE.MeshBasicMaterial;
+        tenMat.color = tendrilColor;
+        tenMat.transparent = true; //annoying ide can't
+        tenMat.opacity = alpha;
 
         for (var i = 0; i < this.nodes.length; i++) {
-            this.nodes[i].material.color = nodeColor;
+            let tenMat = this.nodes[i].material as THREE.MeshBasicMaterial;
+            tenMat.color = nodeColor;
         }
     }
 

@@ -46,7 +46,8 @@ export class EulerStrand extends THREE.Group {
         let lineMaterial = new THREE.LineBasicMaterial({ color: 0x22ff22, linewidth: 5 });
         this.tendril = new THREE.Line(this.geometry, lineMaterial);
         //this.tendril.material.transparent = true; //annoying ide can't accurately track this
-        this.tendril.material.opacity = .25; //annoying ide can't accurately track this
+        let tenMat = this.tendril.material; // need assertion  
+        tenMat.opacity = .25; //annoying ide can't accurately track this
         //this.tendril.
         this.add(this.tendril);
     }
