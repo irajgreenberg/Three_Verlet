@@ -105,7 +105,8 @@ export class VerletNode extends THREE.Mesh {
 
     // console.log(geomDetail);
     if (geomDetail < 13) { // show backs of poly nodes
-      this.material.side = THREE.DoubleSide;
+      let mat = this.material as THREE.MeshBasicMaterial;
+      mat.side = THREE.DoubleSide;
     }
     this.radius = radius;
     this.color = color;
@@ -154,12 +155,13 @@ export class VerletNode extends THREE.Mesh {
   }
 
   setNodeVisible(isNodeVisible: boolean): void {
+    let mat = this.material as THREE.MeshBasicMaterial;
     if (isNodeVisible) {
-      this.material.transparent = false;
-      this.material.opacity = 1.0;
+      mat.transparent = false;
+      mat.opacity = 1.0;
     } else {
-      this.material.transparent = true;
-      this.material.opacity = 0.0;
+      mat.transparent = true;
+      mat.opacity = 0.0;
     }
 
   }

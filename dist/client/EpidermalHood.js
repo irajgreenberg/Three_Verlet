@@ -146,9 +146,10 @@ export class EpidermalHood extends THREE.Group {
             }
         }
         for (var i = 0; i < this.slices.length; i++) {
-            this.sliceLines[i].material.color = this.verletMaterials.sliceColor;
-            this.sliceLines[i].material.opacity = this.verletMaterials.sliceAlpha;
-            this.sliceLines[i].material.transparent = true;
+            let mat = this.sliceLines[i].material;
+            mat.color = this.verletMaterials.sliceColor;
+            mat.opacity = this.verletMaterials.sliceAlpha;
+            mat.transparent = true;
         }
         for (var i = 0; i < this.cilia.length; i++) {
             if (this.hasCilia) {
@@ -223,7 +224,8 @@ export class EpidermalHood extends THREE.Group {
         // slices
         for (var i = 0; i < this.slices.length; i++) {
             this.slices[i].constrainLen();
-            this.sliceLines[i].geometry.verticesNeedUpdate = true;
+            let geo = this.sliceLines[i].geometry;
+            geo.verticesNeedUpdate = true;
         }
         // Cilia
         for (var i = 0; i < this.spines.length; i++) {
@@ -254,7 +256,8 @@ export class EpidermalHood extends THREE.Group {
         }
         for (var i = 0; i < this.slices.length; i++) {
             this.slices[i].constrainLen();
-            this.sliceLines[i].geometry.verticesNeedUpdate = true;
+            let geo = this.sliceLines[i].geometry;
+            geo.verticesNeedUpdate = true;
         }
         for (var i = 0; i < this.spines.length; i++) {
             for (var j = 0; j < this.spines[i].nodes.length; j++) {
