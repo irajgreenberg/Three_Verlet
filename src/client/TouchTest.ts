@@ -47,6 +47,9 @@ let hubNode: VerletNode;
 let leaderNode: VerletNode;
 let leader = new THREE.Vector3(); // moves creatures through world
 
+//crossBraces
+let braces: VerletStick[] = new Array(0);
+
 
 // Create/add outer box
 const geometry2: THREE.BoxGeometry = new THREE.BoxGeometry(bounds.x, bounds.y, bounds.z);
@@ -70,10 +73,103 @@ light2.position.set(-2, 6, 1);
 scene.add(light2);
 //scene.add(light2.target);
 
-
-
 camera.position.y = .05;
 camera.position.z = 3;
+
+//create centered, invisible and anchored node
+function init() {
+    hubNode = new VerletNode(getScreenPos(new THREE.Vector2()), .001,
+        new THREE.Color(0), GeometryDetail.TRI);
+    nodes.push(hubNode);
+
+    leaderNode = new VerletNode(getScreenPos(new THREE.Vector2()), .01, new THREE.Color(.4, .3, .6), GeometryDetail.ICOSA);
+    scene.add(leaderNode);
+}
+
+// enables placement of nodes in world space based on mousepress (screen space placement)
+function getScreenPos(clientPos2: THREE.Vector2): THREE.Vector3 {
+    // unproject algorithm from: WestLangley
+    // https://stackoverflow.com/questions/13055214/mouse-canvas-x-y-to-three-js-world-x-y-z
+    var vec = new THREE.Vector3(); // create once and reuse
+    var pos = new THREE.Vector3(); // create once and reuse
+
+    vec.set(
+        (clientPos2.x / window.innerWidth) * 2 - 1,
+        - (clientPos2.y / window.innerHeight) * 2 + 1,
+        0.5);
+
+    vec.unproject(camera);
+    vec.sub(camera.position).normalize();
+    var distance = - camera.position.z / vec.z;
+    pos.copy(camera.position).add(vec.multiplyScalar(distance));
+    return pos;
+}
+
+function addNode(pos: THREE.Vector3) {
+    const n = new VerletNode(new THREE.Vector3(pos.x, pos.y, pos.z), THREE.MathUtils.randFloat(.01, .1),
+        new THREE.Color(.7, .5, .7), GeometryDetail.DODECA);
+    nodes.push(n);
+    // scene.add(n);
+    // don't move base node
+    if (nodes.length > 1) {
+        n.position.x += THREE.MathUtils.randFloatSpread(.02);
+        n.position.y += THREE.MathUtils.randFloatSpread(.02);
+        n.position.z += THREE.MathUtils.randFloatSpread(.02);
+        let v = new THREE.Vector3(leader.x - n.position.x, leader.y - n.position.y, leader.z - n.position.z);
+        // let l = leader.x - n.position.x;
+        // console.log(l);
+
+        let segCount = Math.round(v.length() * 20);
+        //let SegCount = THREE.MathUtils.randInt(5, 20)
+        let ns = new VerletStrand(hubNode.position, n.position, segCount, AnchorPoint.HEAD,
+            THREE.MathUtils.randFloat(.001, .4), GeometryDetail.OCTA);
+        ns.setNodesScale(THREE.MathUtils.randInt(10, 20));
+        ns.setNodesColor(new THREE.Color(.7, .435, .2));
+        strands.push(ns);
+        ns.setNodeVisible(0, false);
+        scene.add(ns);
+
+        ns.moveNode(ns.nodes.length - 1,
+            new THREE.Vector3(THREE.MathUtils.randFloatSpread(.08),
+                THREE.MathUtils.randFloatSpread(.08),
+                THREE.MathUtils.randFloatSpread(.08)))
+    }
+
+    // //add cross braces
+    // if (strands.length > 3) {
+    //     for (var i = 0; i < strands.length; i++) {
+    //         if (i > 0) {
+    //             let mat = new THREE.MeshBasicMaterial({ color: 0xAAAA00 });
+    //             mat.transparent = true;
+    //             mat.opacity = .3;
+
+    //             const points = [];
+    //             points.push(strands[i - 1].nodes[2].position);
+    //             points.push(strands[i].nodes[2].position);
+    //             let geo = new THREE.BufferGeometry().setFromPoints(points);
+    //             braces.push(new VerletStick(strands[i - 1].nodes[2], strands[i].nodes[2]));
+    //             let line = new THREE.Line(geo, mat);
+    //             scene.add(line);
+    //         }
+    //     }
+
+}
+
+function updateNodes() {
+    if (nodes.length > 1) {
+        // for (var i = 0; i < nodes.length; i++) {
+        //     // show nodes
+        //     //nodes[i].verlet();
+        // }
+        for (var i = 0; i < strands.length; i++) {
+            strands[i].verlet();
+            //hubNode.position.x += .002;
+            strands[i].setHeadPosition(leader);
+            strands[i].constrainBounds(bounds);
+
+        }
+    }
+}
 
 init();
 
@@ -94,16 +190,13 @@ var animate = function () {
     controls.autoRotate = true;
     camera.lookAt(scene.position); //0,0,0
 
-    //nodes[0].position.x += .002;
-
-    // camera.position.y = .05;
-    // camera.position.x = Math.cos(renderer.info.render.frame * Math.PI / 360) * .15;
-    // camera.position.y = Math.cos(renderer.info.render.frame * Math.PI / 720) * .15;
-    // camera.position.z = Math.sin(renderer.info.render.frame * Math.PI / 720) * .35;
-
     leader.x = Math.cos(renderer.info.render.frame * Math.PI / 360) * .55;
     leader.y = Math.cos(renderer.info.render.frame * Math.PI / 720) * .55;
     leader.z = Math.sin(renderer.info.render.frame * Math.PI / 720) * .75;
+
+    leaderNode.position.set(leader.x, leader.y, leader.z);
+    leaderNode.constrainBounds(bounds);
+    leaderNode.verlet();
 
     updateNodes();
 
@@ -111,15 +204,6 @@ var animate = function () {
     render();
 };
 
-//create centered, invisible and anchored node
-function init() {
-    hubNode = new VerletNode(getScreenPos(new THREE.Vector2()), .001,
-        new THREE.Color(0), GeometryDetail.TRI);
-    nodes.push(hubNode);
-
-    // leaderNode = new VerletNode(getScreenPos(new THREE.Vector2()), 3, new THREE.Color(.8, .8, .1), GeometryDetail.SPHERE_LOW);
-    // scene.add(leaderNode);
-}
 
 function onMouse(event: MouseEvent) {
     // convert from screenspace to worldspace
@@ -127,24 +211,6 @@ function onMouse(event: MouseEvent) {
     addNode(pos);
 }
 
-function getScreenPos(clientPos2: THREE.Vector2): THREE.Vector3 {
-    // unproject algorithm from: WestLangley
-    // enables placement of nodes in world space based on mousepress (screen space placement)
-    // https://stackoverflow.com/questions/13055214/mouse-canvas-x-y-to-three-js-world-x-y-z
-    var vec = new THREE.Vector3(); // create once and reuse
-    var pos = new THREE.Vector3(); // create once and reuse
-
-    vec.set(
-        (clientPos2.x / window.innerWidth) * 2 - 1,
-        - (clientPos2.y / window.innerHeight) * 2 + 1,
-        0.5);
-
-    vec.unproject(camera);
-    vec.sub(camera.position).normalize();
-    var distance = - camera.position.z / vec.z;
-    pos.copy(camera.position).add(vec.multiplyScalar(distance));
-    return pos;
-}
 
 function render() {
     renderer.render(scene, camera);
@@ -152,46 +218,7 @@ function render() {
 animate();
 
 
-function addNode(pos: THREE.Vector3) {
-    const n = new VerletNode(new THREE.Vector3(pos.x, pos.y, pos.z), THREE.MathUtils.randFloat(.01, .1),
-        new THREE.Color(.7, .5, .7), GeometryDetail.DODECA);
-    nodes.push(n);
-    // scene.add(n);
-    // don't move base node
-    if (nodes.length > 1) {
-        n.position.x += THREE.MathUtils.randFloatSpread(.02);
-        n.position.y += THREE.MathUtils.randFloatSpread(.02);
-        n.position.z += THREE.MathUtils.randFloatSpread(.02);
-
-        let ns = new VerletStrand(hubNode.position, n.position, 10, AnchorPoint.HEAD,
-            THREE.MathUtils.randFloat(.001, .8), GeometryDetail.OCTA);
-        ns.setNodesScale(30);
-        strands.push(ns);
-        scene.add(ns);
-
-        ns.moveNode(ns.nodes.length - 1,
-            new THREE.Vector3(THREE.MathUtils.randFloatSpread(.08),
-                THREE.MathUtils.randFloatSpread(.08),
-                THREE.MathUtils.randFloatSpread(.08)))
-    }
-}
 
 
-function updateNodes() {
-    // leaderNode.position.set(leader.x, leader.y, leader.z);
-    // leaderNode.constrainBounds(bounds);
-    //leaderNode.verlet();
-    if (nodes.length > 1) {
-        for (var i = 0; i < nodes.length; i++) {
-            // show nodes
-            // nodes[i].verlet();
-        }
-        for (var i = 0; i < strands.length; i++) {
-            strands[i].verlet();
-            //hubNode.position.x += .002;
-            strands[i].setHeadPosition(leader);
-            strands[i].constrainBounds(bounds);
 
-        }
-    }
-}
+

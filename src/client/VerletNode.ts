@@ -9,6 +9,7 @@
 //----------------------------------------------
 
 import * as THREE from '/build/three.module.js';
+//import * as THREE from 'three';
 import { GeometryDetail } from './IJGUtils.js';
 
 export class VerletNode extends THREE.Mesh {
@@ -153,6 +154,12 @@ export class VerletNode extends THREE.Mesh {
     }
 
   }
+
+  setNodeColor(color: THREE.Color): void {
+    let mat = this.material as THREE.MeshBasicMaterial;
+    mat.color = color;
+  }
+
 
   setNodeVisible(isNodeVisible: boolean): void {
     let mat = this.material as THREE.MeshBasicMaterial;

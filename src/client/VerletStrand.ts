@@ -210,6 +210,17 @@ export class VerletStrand extends THREE.Group {
         }
     }
 
+    // enables setting individual node visibiliity by index
+    setNodeVisible(index: number, isNodesVisible: boolean): void {
+        this.nodes[index].setNodeVisible(isNodesVisible);
+    }
+
+    setNodesColor(color: THREE.Color): void {
+        for (var i = 0; i < this.nodes.length; i++) {
+            this.nodes[i].setNodeColor(color);
+        }
+    }
+
     setMaterials(tendrilColor: THREE.Color, alpha: number, nodeColor: THREE.Color): void {
         let tenMat = this.tendril.material as THREE.MeshBasicMaterial;
         tenMat.color = tendrilColor;

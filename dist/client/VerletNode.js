@@ -7,6 +7,7 @@
 // Center of Creative Computation, SMU
 //----------------------------------------------
 import * as THREE from '/build/three.module.js';
+//import * as THREE from 'three';
 import { GeometryDetail } from './IJGUtils.js';
 export class VerletNode extends THREE.Mesh {
     constructor(pos, radius = 0.005, color = new THREE.Color(.5, .5, .5), geomDetail = GeometryDetail.SPHERE_LOW, isNodeVisible = true) {
@@ -136,6 +137,10 @@ export class VerletNode extends THREE.Mesh {
         else if (this.position.z < -bounds.z / 2 + this.radius) {
             this.position.z = -bounds.z / 2 + this.radius;
         }
+    }
+    setNodeColor(color) {
+        let mat = this.material;
+        mat.color = color;
     }
     setNodeVisible(isNodeVisible) {
         let mat = this.material;
