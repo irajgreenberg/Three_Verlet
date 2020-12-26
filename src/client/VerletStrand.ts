@@ -58,8 +58,17 @@ export class VerletStrand extends THREE.Group {
         deltaVec.normalize();
 
         for (var i = 0; i < this.nodes.length; i++) {
+            // working, but copies values - so lose reference to node object pesition in memory
             this.nodes[i] = new VerletNode(new THREE.Vector3(this.head.x + deltaVec.x * segLen * i, this.head.y + deltaVec.y * segLen * i, this.head.z + deltaVec.z * segLen * i), THREE.MathUtils.randFloat(.0002, .0007),
                 new THREE.Color(.5, .5, .5), this.nodeType);
+
+            // NOT working
+            // deltaVec.multiplyScalar(segLen * i);
+            // this.head.add(deltaVec);
+            // console.log(this.head);
+            // this.nodes[i] = new VerletNode(this.head, THREE.MathUtils.randFloat(.0002, .0007),
+            //     new THREE.Color(.5, .5, .5), this.nodeType);
+
             // show nodes
             this.add(this.nodes[i]);
         }
@@ -146,6 +155,12 @@ export class VerletStrand extends THREE.Group {
         this.add(this.tendril);
     }
 
+    public moveNode(index: number, vec: THREE.Vector3): void {
+        this.nodes[index].position.x += vec.x;
+        this.nodes[index].position.y += vec.y;
+        this.nodes[index].position.z += vec.z;
+    }
+
     public verlet(isConstrained: boolean = true): void {
         for (var i = 0; i < this.nodes.length; i++) {
             this.nodes[i].verlet();
@@ -181,6 +196,12 @@ export class VerletStrand extends THREE.Group {
         for (var i = 0; i < this.segmentCount; i++) {
             this.segments[i].reinitializeLen();
         }
+    }
+
+    setHeadPosition(pos: THREE.Vector3): void {
+        this.nodes[0].position.x = pos.x;
+        this.nodes[0].position.y = pos.y;
+        this.nodes[0].position.z = pos.z;
     }
 
     setNodesVisible(areNodesVisible: boolean): void {
