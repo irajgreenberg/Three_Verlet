@@ -16,7 +16,7 @@
 import * as THREE from '/build/three.module.js';
 import { OrbitControls } from '/jsm/controls/OrbitControls';
 import { EpidermalHood } from './EpidermalHood.js';
-import { GeometryDetail, Propulsion, VerletMaterials } from './IJGUtils.js';
+import { GeometryDetail, Propulsion, VerletMaterials } from './PByte3/IJGUtils.js';
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.001, 2000);
 const renderer = new THREE.WebGLRenderer();

@@ -20,12 +20,12 @@
 
 import * as THREE from '/build/three.module.js';
 import { OrbitControls } from '/jsm/controls/OrbitControls';
-import { VerletNode } from './VerletNode.js';
+import { VerletNode } from './PByte3/VerletNode.js';
 import { visitNodes } from 'typescript';
-import { VerletStick } from './VerletStick.js';
-import { VerletStrand } from './VerletStrand.js';
+import { VerletStick } from './PByte3/VerletStick.js';
+import { VerletStrand } from './PByte3/VerletStrand.js';
 import { EpidermalHood } from './EpidermalHood.js';
-import { GeometryDetail, Propulsion, VerletMaterials } from './IJGUtils.js';
+import { GeometryDetail, Propulsion, VerletMaterials } from './PByte3/IJGUtils.js';
 import { Geometry } from '/build/three.module.js';
 
 const scene: THREE.Scene = new THREE.Scene();

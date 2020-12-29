@@ -12,10 +12,10 @@
 
 import * as THREE from '/build/three.module.js';
 import { VerletNode } from './VerletNode.js';
-//import { Line } from '/build/three.module.js';
+//import { Line3 } from '/build/three.module.js';
 
 
-export class VerletStick {
+export class VerletStick extends THREE.Group {
 
   private stickTension: number;
   // // anchor stick detail
@@ -23,14 +23,28 @@ export class VerletStick {
   start: VerletNode;
   end: VerletNode;
   len: number;
+  line: THREE.Line
+  lineGeometry = new THREE.Geometry();
 
 
   constructor(start: VerletNode, end: VerletNode, stickTension: number = .4, anchorTerminal: number = 0) {
+    super();
     this.start = start;
     this.end = end;
     this.len = this.start.position.distanceTo(this.end.position);
     this.stickTension = stickTension;
     this.anchorTerminal = anchorTerminal;
+
+    this.lineGeometry.vertices.push(this.start.position);
+    this.lineGeometry.vertices.push(this.end.position);
+    let lineMaterial = new THREE.LineBasicMaterial({ color: 0xcc55cc });
+    this.line = new THREE.Line(this.lineGeometry, lineMaterial);
+    lineMaterial.transparent = true;
+    lineMaterial.opacity = .25;
+  }
+
+  enableDrawable() {
+    this.add(this.line);
   }
 
   constrainLen(): void {
@@ -63,6 +77,7 @@ export class VerletStick {
       this.end.position.y -= delta.y * (node2ConstrainFactor * this.stickTension * difference);
       this.end.position.z -= delta.z * (node2ConstrainFactor * this.stickTension * difference);
     }
+    this.lineGeometry.verticesNeedUpdate = true;
   }
 
   reinitializeLen(): void {

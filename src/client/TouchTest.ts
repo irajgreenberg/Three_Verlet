@@ -20,12 +20,12 @@
 
 import * as THREE from '/build/three.module.js';
 import { OrbitControls } from '/jsm/controls/OrbitControls';
-import { VerletNode } from './VerletNode.js';
+import { VerletNode } from './PByte3/VerletNode.js';
 import { visitNodes } from 'typescript';
-import { VerletStick } from './VerletStick.js';
-import { VerletStrand } from './VerletStrand.js';
+import { VerletStick } from './PByte3/VerletStick.js';
+import { VerletStrand } from './PByte3/VerletStrand.js';
 import { EpidermalHood } from './EpidermalHood.js';
-import { AnchorPoint, GeometryDetail, Propulsion, VerletMaterials } from './IJGUtils.js';
+import { AnchorPoint, GeometryDetail, Propulsion, VerletMaterials } from './PByte3/IJGUtils.js';
 import { Geometry } from '/build/three.module.js';
 
 const scene: THREE.Scene = new THREE.Scene();
@@ -48,7 +48,7 @@ let leaderNode: VerletNode;
 let leader = new THREE.Vector3(); // moves creatures through world
 
 //crossBraces
-let braces: VerletStick[] = new Array(0);
+let braces: VerletStrand[] = [];
 
 
 // Create/add outer box
@@ -120,6 +120,7 @@ function addNode(pos: THREE.Vector3) {
         // console.log(l);
 
         let segCount = Math.round(v.length() * 20);
+        //segCount = 100;
         //let SegCount = THREE.MathUtils.randInt(5, 20)
         let ns = new VerletStrand(hubNode.position, n.position, segCount, AnchorPoint.HEAD,
             THREE.MathUtils.randFloat(.001, .4), GeometryDetail.OCTA);
@@ -134,7 +135,18 @@ function addNode(pos: THREE.Vector3) {
                 THREE.MathUtils.randFloatSpread(.08),
                 THREE.MathUtils.randFloatSpread(.08)))
     }
-
+    // if (strands.length > 3) {
+    //     for (var i = 0; i < strands.length; i++) {
+    //         if (i > 0) {
+    //             let b = new VerletStrand(strands[i - 1].nodes[1].position,
+    //                 strands[i].nodes[1].position, 1, AnchorPoint.NONE,
+    //                 1, GeometryDetail.TRI);
+    //             braces.push(b);
+    //             b.setNodesVisible(false);
+    //             scene.add(b);
+    //         }
+    //     }
+    // }
     // //add cross braces
     // if (strands.length > 3) {
     //     for (var i = 0; i < strands.length; i++) {
@@ -169,6 +181,12 @@ function updateNodes() {
 
         }
     }
+
+    // if (strands.length > 3) {
+    //     for (var i = 0; i < braces.length; i++) {
+    //         braces[i].verlet();
+    //     }
+    // }
 }
 
 init();

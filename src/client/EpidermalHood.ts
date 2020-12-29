@@ -6,10 +6,10 @@
 // Creates Jellyfish like epidermal hood, powered by verlet strands
 
 import * as THREE from '/build/three.module.js';
-import { VerletNode } from './VerletNode.js';
-import { VerletStick } from './VerletStick.js';
-import { VerletStrand } from './VerletStrand.js';
-import { AnchorPoint, Propulsion, VerletMaterials, GeometryDetail } from './IJGUtils.js';
+import { VerletNode } from './PByte3/VerletNode.js';
+import { VerletStick } from './PByte3/VerletStick.js';
+import { VerletStrand } from './PByte3/VerletStrand.js';
+import { AnchorPoint, Propulsion, VerletMaterials, GeometryDetail } from './PByte3/IJGUtils.js';
 import { Vector3 } from '/build/three.module.js';
 //import { Vector3 } from '/build/three.module.js';
 

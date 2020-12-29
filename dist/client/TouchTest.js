@@ -15,9 +15,9 @@
 //----------------------------------------------
 import * as THREE from '/build/three.module.js';
 import { OrbitControls } from '/jsm/controls/OrbitControls';
-import { VerletNode } from './VerletNode.js';
-import { VerletStrand } from './VerletStrand.js';
-import { AnchorPoint, GeometryDetail } from './IJGUtils.js';
+import { VerletNode } from './PByte3/VerletNode.js';
+import { VerletStrand } from './PByte3/VerletStrand.js';
+import { AnchorPoint, GeometryDetail } from './PByte3/IJGUtils.js';
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.001, 2000);
 const renderer = new THREE.WebGLRenderer();
@@ -34,7 +34,7 @@ let hubNode;
 let leaderNode;
 let leader = new THREE.Vector3(); // moves creatures through world
 //crossBraces
-let braces = new Array(0);
+let braces = [];
 // Create/add outer box
 const geometry2 = new THREE.BoxGeometry(bounds.x, bounds.y, bounds.z);
 const material2 = new THREE.MeshBasicMaterial({ color: 0x22ee00, wireframe: true });
@@ -89,6 +89,7 @@ function addNode(pos) {
         // let l = leader.x - n.position.x;
         // console.log(l);
         let segCount = Math.round(v.length() * 20);
+        //segCount = 100;
         //let SegCount = THREE.MathUtils.randInt(5, 20)
         let ns = new VerletStrand(hubNode.position, n.position, segCount, AnchorPoint.HEAD, THREE.MathUtils.randFloat(.001, .4), GeometryDetail.OCTA);
         ns.setNodesScale(THREE.MathUtils.randInt(10, 20));
@@ -98,6 +99,18 @@ function addNode(pos) {
         scene.add(ns);
         ns.moveNode(ns.nodes.length - 1, new THREE.Vector3(THREE.MathUtils.randFloatSpread(.08), THREE.MathUtils.randFloatSpread(.08), THREE.MathUtils.randFloatSpread(.08)));
     }
+    // if (strands.length > 3) {
+    //     for (var i = 0; i < strands.length; i++) {
+    //         if (i > 0) {
+    //             let b = new VerletStrand(strands[i - 1].nodes[1].position,
+    //                 strands[i].nodes[1].position, 1, AnchorPoint.NONE,
+    //                 1, GeometryDetail.TRI);
+    //             braces.push(b);
+    //             b.setNodesVisible(false);
+    //             scene.add(b);
+    //         }
+    //     }
+    // }
     // //add cross braces
     // if (strands.length > 3) {
     //     for (var i = 0; i < strands.length; i++) {
@@ -128,6 +141,11 @@ function updateNodes() {
             strands[i].constrainBounds(bounds);
         }
     }
+    // if (strands.length > 3) {
+    //     for (var i = 0; i < braces.length; i++) {
+    //         braces[i].verlet();
+    //     }
+    // }
 }
 init();
 // animation vars
