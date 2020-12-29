@@ -40,11 +40,10 @@ export class VerletTetrahedron extends THREE.Group {
         this.sticks.push(new VerletStick(this.nodes[1], this.nodes[2], .01));
         this.sticks.push(new VerletStick(this.nodes[2], this.nodes[3], .01));
         this.sticks.push(new VerletStick(this.nodes[3], this.nodes[1], .01));
+        this.sticks.push(new VerletStick(this.nodes[0], this.nodes[4], 0));
         // add sticks to group
         for (var s of this.sticks) {
             this.add(s);
-            // enable drawable (evetually design this feature better)
-            s.enableDrawable();
         }
     }
     verlet() {
@@ -59,6 +58,10 @@ export class VerletTetrahedron extends THREE.Group {
         for (var n of this.nodes) {
             // n.setScale(scl);
         }
+    }
+    setStickVisibility(index, isVisible) {
+        // To Do: add throw safety
+        this.sticks[index].setVisibility(isVisible);
     }
     pulseNode(index, amp, freq) {
         this.nodesOrig[index].position.addScalar(Math.sin(this.pulseTheta) * amp);

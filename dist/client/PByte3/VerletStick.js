@@ -8,9 +8,8 @@
 // Center of Creative Computation, SMU
 //----------------------------------------------
 import * as THREE from '/build/three.module.js';
-//import { Line3 } from '/build/three.module.js';
 export class VerletStick extends THREE.Group {
-    constructor(start, end, stickTension = .4, anchorTerminal = 0) {
+    constructor(start, end, stickTension = .4, anchorTerminal = 0, isVisible = true) {
         super();
         this.lineGeometry = new THREE.Geometry();
         this.start = start;
@@ -18,14 +17,14 @@ export class VerletStick extends THREE.Group {
         this.len = this.start.position.distanceTo(this.end.position);
         this.stickTension = stickTension;
         this.anchorTerminal = anchorTerminal;
+        this.isVisible = isVisible;
+        this.lineMaterial = new THREE.LineBasicMaterial({ color: 0xcc55cc });
         this.lineGeometry.vertices.push(this.start.position);
         this.lineGeometry.vertices.push(this.end.position);
-        let lineMaterial = new THREE.LineBasicMaterial({ color: 0xcc55cc });
-        this.line = new THREE.Line(this.lineGeometry, lineMaterial);
-        lineMaterial.transparent = true;
-        lineMaterial.opacity = .25;
-    }
-    enableDrawable() {
+        this.lineMaterial = new THREE.LineBasicMaterial({ color: 0xcc55cc });
+        this.line = new THREE.Line(this.lineGeometry, this.lineMaterial);
+        this.lineMaterial.transparent = true;
+        this.lineMaterial.opacity = .25;
         this.add(this.line);
     }
     constrainLen() {
@@ -54,6 +53,13 @@ export class VerletStick extends THREE.Group {
             this.end.position.z -= delta.z * (node2ConstrainFactor * this.stickTension * difference);
         }
         this.lineGeometry.verticesNeedUpdate = true;
+        this.lineMaterial.needsUpdate = true;
+        if (!this.isVisible) {
+            this.line.visible = false;
+        }
+    }
+    setVisibility(isVisible) {
+        this.isVisible = isVisible;
     }
     reinitializeLen() {
         this.len = this.start.position.distanceTo(this.end.position);

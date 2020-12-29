@@ -24,7 +24,7 @@ import { VerletNode } from './PByte3/VerletNode.js';
 import { visitNodes } from 'typescript';
 import { VerletStick } from './PByte3/VerletStick.js';
 import { VerletStrand } from './PByte3/VerletStrand.js';
-import { EpidermalHood } from './EpidermalHood.js';
+import { EpidermalHood } from './PByte3/EpidermalHood.js';
 import { GeometryDetail, Propulsion, VerletMaterials } from './PByte3/IJGUtils.js';
 import { Geometry } from '/build/three.module.js';
 

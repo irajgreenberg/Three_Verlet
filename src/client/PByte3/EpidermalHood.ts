@@ -6,11 +6,11 @@
 // Creates Jellyfish like epidermal hood, powered by verlet strands
 
 import * as THREE from '/build/three.module.js';
-import { VerletNode } from './PByte3/VerletNode.js';
-import { VerletStick } from './PByte3/VerletStick.js';
-import { VerletStrand } from './PByte3/VerletStrand.js';
-import { AnchorPoint, Propulsion, VerletMaterials, GeometryDetail } from './PByte3/IJGUtils.js';
-import { Vector3 } from '/build/three.module.js';
+import { VerletNode } from './VerletNode.js';
+import { VerletStick } from './VerletStick.js';
+import { VerletStrand } from './VerletStrand.js';
+import { AnchorPoint, Propulsion, VerletMaterials, GeometryDetail } from './IJGUtils.js';
+import { Color, Vector3 } from '/build/three.module.js';
 //import { Vector3 } from '/build/three.module.js';
 
 export class EpidermalHood extends THREE.Group {
@@ -117,33 +117,19 @@ export class EpidermalHood extends THREE.Group {
 
                 // create slices
                 if (i > 0) {
-                    this.sliceGeoms[k] = new THREE.Geometry();
-                    this.sliceMats[k] = new THREE.MeshBasicMaterial({ color: this.verletMaterials.sliceColor });
-                    this.sliceMats[k].transparent = true;
-                    this.sliceMats[k].opacity = this.verletMaterials.sliceAlpha;
-
                     this.slices[k] = new VerletStick(this.spines[i - 1].nodes[j], this.spines[i].nodes[j]);
-                    this.sliceGeoms[k].vertices.push(this.slices[k].start.position);
-                    this.sliceGeoms[k].vertices.push(this.slices[k].end.position);
-                    this.sliceLines[k] = new THREE.Line(this.sliceGeoms[k], this.sliceMats[k]);
-                    this.add(this.sliceLines[k]);
+                    this.slices[k].lineMaterial.color = this.verletMaterials.sliceColor;
+                    this.slices[k].lineMaterial.opacity = this.verletMaterials.sliceAlpha;
+                    this.add(this.slices[k]);
                     k++;
                 }
 
                 // close hood
                 if (i === this.spines.length - 1) {
-                    this.sliceGeoms[k] = new THREE.Geometry();
-                    this.sliceMats[k] = new THREE.MeshBasicMaterial({ color: this.verletMaterials.sliceColor });
-                    this.sliceMats[k].transparent = true; //annoying ide can't accurately track this
-                    this.sliceMats[k].opacity = this.verletMaterials.sliceAlpha;
-
-
-                    // this.slices[k] = new VerletStick(this.spines[i-1].nodes[j], this.spines[i].nodes[j], .4, AnchorPoint.TAIL);
                     this.slices[k] = new VerletStick(this.spines[i].nodes[j], this.spines[0].nodes[j]);
-                    this.sliceGeoms[k].vertices.push(this.slices[k].start.position);
-                    this.sliceGeoms[k].vertices.push(this.slices[k].end.position);
-                    this.sliceLines[k] = new THREE.Line(this.sliceGeoms[k], this.sliceMats[k]);
-                    this.add(this.sliceLines[k]);
+                    this.slices[k].lineMaterial.color = this.verletMaterials.sliceColor;
+                    this.slices[k].lineMaterial.opacity = this.verletMaterials.sliceAlpha;
+                    this.add(this.slices[k]);
                     k++;
                 }
             }
@@ -215,10 +201,9 @@ export class EpidermalHood extends THREE.Group {
             }
         }
         for (var i = 0; i < this.slices.length; i++) {
-            let mat = this.sliceLines[i].material as THREE.MeshBasicMaterial;
-            mat.color = this.verletMaterials.sliceColor;
-            mat.opacity = this.verletMaterials.sliceAlpha;
-            mat.transparent = true;
+            this.slices[i].lineMaterial.color = this.verletMaterials.sliceColor;
+            this.slices[i].lineMaterial.opacity = this.verletMaterials.sliceAlpha;
+            this.slices[i].lineMaterial.transparent = true;
         }
 
         for (var i = 0; i < this.cilia.length; i++) {
@@ -307,8 +292,6 @@ export class EpidermalHood extends THREE.Group {
         // slices
         for (var i = 0; i < this.slices.length; i++) {
             this.slices[i].constrainLen();
-            let geo = this.sliceLines[i].geometry as THREE.Geometry;
-            geo.verticesNeedUpdate = true;
         }
 
 
@@ -348,8 +331,6 @@ export class EpidermalHood extends THREE.Group {
 
         for (var i = 0; i < this.slices.length; i++) {
             this.slices[i].constrainLen();
-            let geo = this.sliceLines[i].geometry as THREE.Geometry;
-            geo.verticesNeedUpdate = true;
         }
 
 

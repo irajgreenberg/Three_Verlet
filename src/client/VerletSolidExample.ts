@@ -37,7 +37,10 @@ document.addEventListener('click', onMouse, false);
 //pos: Vector3, radius: number, tension: number
 let tet: VerletTetrahedron = new VerletTetrahedron(new Vector3(0), .4, .03);
 tet.setNodesScale(30.245);
-//tet.enableDrawable();
+// tet.setStickVisibility(0, false);
+// tet.setStickVisibility(1, false);
+// tet.setStickVisibility(2, false);
+//tet.setStickVisibility(tet.sticks.length - 1, false);
 scene.add(tet);
 tet.moveNode(0, new Vector3(.02, .003, 0))
 
