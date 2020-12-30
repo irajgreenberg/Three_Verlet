@@ -24,9 +24,10 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 document.addEventListener('click', onMouse, false);
-//pos: Vector3, radius: number, tension: number
-let tet = new VerletTetrahedron(new Vector3(0), .4, .03);
-tet.setNodesScale(30.245);
+//pos: Vector3, radius: number, tension: number, isGrowable: boolean
+let tet = new VerletTetrahedron(new Vector3(0), .1, .03, true);
+tet.setNodesScale(1.5);
+tet.setNodesColor(new THREE.Color(0X994411));
 // tet.setStickVisibility(0, false);
 // tet.setStickVisibility(1, false);
 // tet.setStickVisibility(2, false);
@@ -41,7 +42,7 @@ const material2 = new THREE.MeshBasicMaterial({ color: 0x22ee00, wireframe: true
 material2.transparent = true;
 material2.opacity = .08;
 const cube2 = new THREE.Mesh(geometry2, material2);
-scene.add(cube2);
+//scene.add(cube2);
 // Simple lighting calculations
 const color = 0xEEEEFF;
 const intensity = .65;
@@ -74,6 +75,7 @@ var animate = function () {
     render();
 };
 function onMouse(event) {
+    tet.setNode();
 }
 function render() {
     renderer.render(scene, camera);
