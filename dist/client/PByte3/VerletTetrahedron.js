@@ -80,9 +80,19 @@ export class VerletTetrahedron extends THREE.Group {
             n.verlet();
         }
     }
+    setNodesGeom(geom) {
+        for (var n of this.nodes) {
+            // to do
+        }
+    }
     setNodesColor(color) {
         for (var n of this.nodes) {
             n.setNodeColor(color);
+        }
+    }
+    setSticksColor(color) {
+        for (var s of this.sticks) {
+            s.setColor(color);
         }
     }
     setNodesScale(scl) {

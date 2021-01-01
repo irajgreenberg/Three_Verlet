@@ -99,34 +99,6 @@ function addNode(pos) {
         scene.add(ns);
         ns.moveNode(ns.nodes.length - 1, new THREE.Vector3(THREE.MathUtils.randFloatSpread(.08), THREE.MathUtils.randFloatSpread(.08), THREE.MathUtils.randFloatSpread(.08)));
     }
-    // if (strands.length > 3) {
-    //     for (var i = 0; i < strands.length; i++) {
-    //         if (i > 0) {
-    //             let b = new VerletStrand(strands[i - 1].nodes[1].position,
-    //                 strands[i].nodes[1].position, 1, AnchorPoint.NONE,
-    //                 1, GeometryDetail.TRI);
-    //             braces.push(b);
-    //             b.setNodesVisible(false);
-    //             scene.add(b);
-    //         }
-    //     }
-    // }
-    // //add cross braces
-    // if (strands.length > 3) {
-    //     for (var i = 0; i < strands.length; i++) {
-    //         if (i > 0) {
-    //             let mat = new THREE.MeshBasicMaterial({ color: 0xAAAA00 });
-    //             mat.transparent = true;
-    //             mat.opacity = .3;
-    //             const points = [];
-    //             points.push(strands[i - 1].nodes[2].position);
-    //             points.push(strands[i].nodes[2].position);
-    //             let geo = new THREE.BufferGeometry().setFromPoints(points);
-    //             braces.push(new VerletStick(strands[i - 1].nodes[2], strands[i].nodes[2]));
-    //             let line = new THREE.Line(geo, mat);
-    //             scene.add(line);
-    //         }
-    //     }
 }
 function updateNodes() {
     if (nodes.length > 1) {
@@ -160,7 +132,7 @@ function onWindowResize() {
 }
 var animate = function () {
     requestAnimationFrame(animate);
-    controls.autoRotate = true;
+    //controls.autoRotate = true;
     camera.lookAt(scene.position); //0,0,0
     leader.x = Math.cos(renderer.info.render.frame * Math.PI / 360) * .55;
     leader.y = Math.cos(renderer.info.render.frame * Math.PI / 720) * .55;
@@ -176,6 +148,9 @@ function onMouse(event) {
     // convert from screenspace to worldspace
     const pos = getScreenPos(new THREE.Vector2(event.clientX, event.clientY));
     addNode(pos);
+    for (var i = 0; i < nodes.length; i++) {
+        nodes[i].remove();
+    }
 }
 function render() {
     renderer.render(scene, camera);

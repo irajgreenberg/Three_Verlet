@@ -24,14 +24,12 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 document.addEventListener('click', onMouse, false);
+//incrementally controlls development of the organism
+let globalCounter = 0;
 //pos: Vector3, radius: number, tension: number, isGrowable: boolean
 let tet = new VerletTetrahedron(new Vector3(0), .1, .03, true);
 tet.setNodesScale(1.5);
 tet.setNodesColor(new THREE.Color(0X994411));
-// tet.setStickVisibility(0, false);
-// tet.setStickVisibility(1, false);
-// tet.setStickVisibility(2, false);
-//tet.setStickVisibility(tet.sticks.length - 1, false);
 scene.add(tet);
 tet.moveNode(0, new Vector3(.02, .003, 0));
 // cube bounds
@@ -75,7 +73,10 @@ var animate = function () {
     render();
 };
 function onMouse(event) {
-    tet.setNode();
+    if (globalCounter < 12) {
+        tet.setNode();
+    }
+    globalCounter++;
 }
 function render() {
     renderer.render(scene, camera);

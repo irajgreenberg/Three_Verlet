@@ -24,7 +24,7 @@ import { VerletNode } from './PByte3/VerletNode.js';
 import { visitNodes } from 'typescript';
 import { VerletStick } from './PByte3/VerletStick.js';
 import { VerletStrand } from './PByte3/VerletStrand.js';
-import { EpidermalHood } from './EpidermalHood.js';
+import { EpidermalHood } from './PByte3/EpidermalHood.js';
 import { AnchorPoint, GeometryDetail, Propulsion, VerletMaterials } from './PByte3/IJGUtils.js';
 import { Geometry } from '/build/three.module.js';
 
@@ -135,35 +135,6 @@ function addNode(pos: THREE.Vector3) {
                 THREE.MathUtils.randFloatSpread(.08),
                 THREE.MathUtils.randFloatSpread(.08)))
     }
-    // if (strands.length > 3) {
-    //     for (var i = 0; i < strands.length; i++) {
-    //         if (i > 0) {
-    //             let b = new VerletStrand(strands[i - 1].nodes[1].position,
-    //                 strands[i].nodes[1].position, 1, AnchorPoint.NONE,
-    //                 1, GeometryDetail.TRI);
-    //             braces.push(b);
-    //             b.setNodesVisible(false);
-    //             scene.add(b);
-    //         }
-    //     }
-    // }
-    // //add cross braces
-    // if (strands.length > 3) {
-    //     for (var i = 0; i < strands.length; i++) {
-    //         if (i > 0) {
-    //             let mat = new THREE.MeshBasicMaterial({ color: 0xAAAA00 });
-    //             mat.transparent = true;
-    //             mat.opacity = .3;
-
-    //             const points = [];
-    //             points.push(strands[i - 1].nodes[2].position);
-    //             points.push(strands[i].nodes[2].position);
-    //             let geo = new THREE.BufferGeometry().setFromPoints(points);
-    //             braces.push(new VerletStick(strands[i - 1].nodes[2], strands[i].nodes[2]));
-    //             let line = new THREE.Line(geo, mat);
-    //             scene.add(line);
-    //         }
-    //     }
 
 }
 
@@ -205,7 +176,7 @@ function onWindowResize() {
 
 var animate = function () {
     requestAnimationFrame(animate);
-    controls.autoRotate = true;
+    //controls.autoRotate = true;
     camera.lookAt(scene.position); //0,0,0
 
     leader.x = Math.cos(renderer.info.render.frame * Math.PI / 360) * .55;
@@ -227,6 +198,11 @@ function onMouse(event: MouseEvent) {
     // convert from screenspace to worldspace
     const pos = getScreenPos(new THREE.Vector2(event.clientX, event.clientY))
     addNode(pos);
+
+    for (var i = 0; i < nodes.length; i++) {
+        nodes[i].remove();
+
+    }
 }
 
 

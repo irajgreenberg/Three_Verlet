@@ -58,6 +58,9 @@ export class VerletStick extends THREE.Group {
             this.line.visible = false;
         }
     }
+    setColor(color) {
+        this.lineMaterial.color = color;
+    }
     setVisibility(isVisible) {
         this.isVisible = isVisible;
     }

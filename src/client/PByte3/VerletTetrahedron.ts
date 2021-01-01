@@ -1,4 +1,4 @@
-import { AnchorPoint } from './IJGUtils.js';
+import { AnchorPoint, GeometryDetail } from './IJGUtils.js';
 import { VerletNode } from './VerletNode.js';
 import { VerletStrand } from './VerletStrand.js';
 import { VerletStick } from './VerletStick.js';
@@ -107,9 +107,21 @@ export class VerletTetrahedron extends THREE.Group {
         }
     }
 
+    setNodesGeom(geom: GeometryDetail): void {
+        for (var n of this.nodes) {
+            // to do
+        }
+    }
+
     setNodesColor(color: THREE.Color): void {
         for (var n of this.nodes) {
             n.setNodeColor(color);
+        }
+    }
+
+    setSticksColor(color: THREE.Color): void {
+        for (var s of this.sticks) {
+            s.setColor(color);
         }
     }
 

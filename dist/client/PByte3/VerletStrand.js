@@ -207,6 +207,12 @@ export class VerletStrand extends THREE.Group {
             this.nodes[i].setNodeColor(color);
         }
     }
+    setStrandMaterials(tendrilColor, alpha) {
+        let tenMat = this.tendril.material;
+        tenMat.color = tendrilColor;
+        tenMat.transparent = true; //annoying ide can't
+        tenMat.opacity = alpha;
+    }
     setMaterials(tendrilColor, alpha, nodeColor) {
         let tenMat = this.tendril.material;
         tenMat.color = tendrilColor;
