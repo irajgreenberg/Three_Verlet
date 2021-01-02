@@ -1,3 +1,4 @@
+import { GeometryDetail } from './IJGUtils.js';
 import { VerletNode } from './VerletNode.js';
 import { VerletStick } from './VerletStick.js';
 import * as THREE from '/build/three.module.js';
@@ -19,23 +20,23 @@ export class VerletTetrahedron extends THREE.Group {
         this.radius = radius;
         this.tension = tension;
         this.isGrowable = isGrowable;
-        this.position.set(pos.x, pos.y, pos.z);
+        //this.position.set(pos.x, pos.y, pos.z);
         //top node
-        this.nodesVecs.push(new Vector3(0, radius, 0));
-        this.nodes.push(new VerletNode(new Vector3(0, radius, 0), .01));
-        this.nodesOrig.push(new VerletNode(new Vector3(0, radius, 0), .01));
+        this.nodesVecs.push(new Vector3(pos.x, pos.y + radius, pos.z));
+        this.nodes.push(new VerletNode(new Vector3(pos.x, pos.y + radius, pos.z), .01, new THREE.Color(0), GeometryDetail.ICOSA));
+        this.nodesOrig.push(new VerletNode(new Vector3(pos.x, pos.y + radius, pos.z), .01, new THREE.Color(0), GeometryDetail.ICOSA));
         // traingle ring
         let theta = 0;
         for (var i = 0; i < 3; i++) {
-            this.nodesVecs.push(new Vector3(Math.sin(theta) * radius, 0, Math.cos(theta) * radius));
-            this.nodes.push(new VerletNode(new Vector3(Math.sin(theta) * radius, 0, Math.cos(theta) * radius), .01));
-            this.nodesOrig.push(new VerletNode(new Vector3(Math.sin(theta) * radius, 0, Math.cos(theta) * radius), .01));
+            this.nodesVecs.push(new Vector3(pos.x + Math.sin(theta) * radius, pos.y, pos.z + Math.cos(theta) * radius));
+            this.nodes.push(new VerletNode(new Vector3(pos.x + Math.sin(theta) * radius, pos.y, pos.z + Math.cos(theta) * radius), .01, new THREE.Color(0), GeometryDetail.ICOSA));
+            this.nodesOrig.push(new VerletNode(new Vector3(pos.x + Math.sin(theta) * radius, pos.y, pos.z + Math.cos(theta) * radius), .01, new THREE.Color(0), GeometryDetail.ICOSA));
             theta += 120 * Math.PI / 180;
         }
         // bottom node
-        this.nodesVecs.push(new Vector3(0, -radius, -0));
-        this.nodes.push(new VerletNode(new Vector3(0, -radius, -0), .01));
-        this.nodesOrig.push(new VerletNode(new Vector3(0, -radius, -0), .01));
+        this.nodesVecs.push(new Vector3(pos.x, pos.y - radius, pos.z));
+        this.nodes.push(new VerletNode(new Vector3(pos.x, pos.y - radius, pos.z), .01, new THREE.Color(0), GeometryDetail.ICOSA));
+        this.nodesOrig.push(new VerletNode(new Vector3(pos.x, pos.y - radius, pos.z), .01, new THREE.Color(0), GeometryDetail.ICOSA));
         // add nodes and sticks to group
         if (!this.isGrowable) { // add at contruction is no growable
             for (var n of this.nodes) {
@@ -82,7 +83,7 @@ export class VerletTetrahedron extends THREE.Group {
     }
     setNodesGeom(geom) {
         for (var n of this.nodes) {
-            // to do
+            //to do
         }
     }
     setNodesColor(color) {
@@ -93,6 +94,11 @@ export class VerletTetrahedron extends THREE.Group {
     setSticksColor(color) {
         for (var s of this.sticks) {
             s.setColor(color);
+        }
+    }
+    setSticksOpacity(alpha) {
+        for (var s of this.sticks) {
+            s.setOpacity(alpha);
         }
     }
     setNodesScale(scl) {

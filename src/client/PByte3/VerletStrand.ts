@@ -34,7 +34,9 @@ export class VerletStrand extends THREE.Group {
     // should eventually be set as a per node property
     testRot = 0;
 
-    constructor(head: THREE.Vector3, tail: THREE.Vector3, segmentCount: number, anchorPointDetail: AnchorPoint = AnchorPoint.NONE, elasticity: number = .5, nodeType: GeometryDetail = GeometryDetail.SPHERE_LOW) {
+    constructor(head: THREE.Vector3, tail: THREE.Vector3, segmentCount: number,
+        anchorPointDetail: AnchorPoint = AnchorPoint.NONE, elasticity: number = .5,
+        nodeType: GeometryDetail = GeometryDetail.SPHERE_LOW, nodeRadius: number = THREE.MathUtils.randFloat(.0002, .0007)) {
         super();
         this.head = head;
         this.tail = tail;
@@ -59,7 +61,9 @@ export class VerletStrand extends THREE.Group {
 
         for (var i = 0; i < this.nodes.length; i++) {
             // working, but copies values - so lose reference to node object pesition in memory
-            this.nodes[i] = new VerletNode(new THREE.Vector3(this.head.x + deltaVec.x * segLen * i, this.head.y + deltaVec.y * segLen * i, this.head.z + deltaVec.z * segLen * i), THREE.MathUtils.randFloat(.0002, .0007),
+            this.nodes[i] = new VerletNode(new THREE.Vector3(this.head.x + deltaVec.x * segLen * i,
+                this.head.y + deltaVec.y * segLen * i, this.head.z + deltaVec.z * segLen * i),
+                THREE.MathUtils.randFloat(.0002, .0007),
                 new THREE.Color(.5, .5, .5), this.nodeType);
 
             // NOT working

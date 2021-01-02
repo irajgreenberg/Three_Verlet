@@ -101,7 +101,7 @@ export class EpidermalHood extends THREE.Group {
         this.tendrilTension = tendrilTension;
         for (var i = 0; i < this.spines.length; i++) {
             // console.log(tendrilNodes[i].position);
-            this.tendrils[i] = new VerletStrand(tendrilNodes[i].position, new Vector3(tendrilNodes[i].position.x, tendrilNodes[i].position.y - tendrilLength, tendrilNodes[i].position.z), this.tendrilSegments, AnchorPoint.HEAD, this.tendrilTension, this.nodeTypes[1]);
+            this.tendrils[i] = new VerletStrand(tendrilNodes[i].position, new Vector3(tendrilNodes[i].position.x, tendrilNodes[i].position.y - tendrilLength, tendrilNodes[i].position.z), this.tendrilSegments, AnchorPoint.HEAD_TAIL, this.tendrilTension, this.nodeTypes[1]);
             this.add(this.tendrils[i]);
         }
     }

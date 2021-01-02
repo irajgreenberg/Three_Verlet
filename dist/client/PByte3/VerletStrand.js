@@ -11,7 +11,7 @@ import { AnchorPoint, GeometryDetail } from './IJGUtils.js';
 // class TendrilCurve extends THREE.Curve {
 // }
 export class VerletStrand extends THREE.Group {
-    constructor(head, tail, segmentCount, anchorPointDetail = AnchorPoint.NONE, elasticity = .5, nodeType = GeometryDetail.SPHERE_LOW) {
+    constructor(head, tail, segmentCount, anchorPointDetail = AnchorPoint.NONE, elasticity = .5, nodeType = GeometryDetail.SPHERE_LOW, nodeRadius = THREE.MathUtils.randFloat(.0002, .0007)) {
         super();
         this.areNodesVisible = true;
         this.geometry = new THREE.Geometry();

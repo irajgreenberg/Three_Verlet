@@ -88,6 +88,10 @@ export class VerletStick extends THREE.Group {
     this.lineMaterial.color = color;
   }
 
+  setOpacity(alpha: number): void {
+    this.lineMaterial.opacity = alpha;
+  }
+
   setVisibility(isVisible: boolean): void {
     this.isVisible = isVisible;
   }
