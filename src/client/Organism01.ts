@@ -96,7 +96,7 @@ function hatch(): void {
     //test
     let vals: number[] = [0];
     //ova = new VerletSphere(new Vector3(), new Vector2(.075, .1), 18, 18);
-    ova = new VerletSphere(new Vector3(), new Vector2(.075 * 2.4, .1 * 2.3), 18, 18);
+    ova = new VerletSphere(new Vector3(), new Vector2(.075 * 2.5, .1 * 2.4), 18, 18);
     ova.setStickColor(new Color(0X7777DD), .25);
     ova.addTendrils(12, .2);
     scene.add(ova);
@@ -110,7 +110,7 @@ function hatch(): void {
     }
     //ova.push(vals, new Vector3(.02, .003, .004));
 
-    eggGeometry = new THREE.TorusKnotGeometry(.07, .04, 24, 8, 1, 2);
+    eggGeometry = new THREE.TorusKnotGeometry(.09, .05, 24, 8, 1, 2);
     const material = new THREE.MeshPhongMaterial({ color: 0XBB3300, wireframe: true });
     material.opacity = 0.25;
     material.transparent = true;
@@ -122,36 +122,17 @@ function hatch(): void {
 
 hatch();
 
-// Egg Cilia
-// function addEggCilia(ciliaSegments: number = 0.0, cilialLength: number = 0.0, ciliaTension: number) {
-//     // let ciliaNodes: VerletNode[] = getAllTendrilNodes();
-//     for (var i = 0; i < eggVerts.length; i++) {
-//         let vec = eggVerts[i].clone();
-//         vec.normalize();
-//         vec.multiplyScalar(cilialLength * .125);
-//         eggCilia.push(new VerletStrand(eggVerts[i],
-//             new THREE.Vector3(eggVerts[i].x - vec.x,
-//                 eggVerts[i].y - vec.y,
-//                 eggVerts[i].z - vec.z),
-//             ciliaSegments,
-//             AnchorPoint.HEAD,
-//             ciliaTension, GeometryDetail.TRI));
-//         scene.add(eggCilia[i]);
-//     }
-// }
-// addEggCilia(5, .2, .49);
-
 // stage 1 - Tetrahedral core
 function addTet() {
     //pos: Vector3, radius: number, tension: number, isGrowable: boolean
     //tet = new VerletTetrahedron(new Vector3(0, -.75, 0), .3, .03, true);
-    tet = new VerletTetrahedron(new Vector3(0, 0, 0), .5, .03, true);
+    tet = new VerletTetrahedron(new Vector3(0, 0, 0), .6, .03, true);
     tet.setNodesScale(2.4);
     tet.setNodesColor(new THREE.Color(0X996611));
     tet.setSticksColor(new THREE.Color(0XFF0000));
-    tet.setSticksOpacity(.4);
+    tet.setSticksOpacity(.25);
     scene.add(tet);
-    tet.moveNode(0, new Vector3(.02, -.003, 0))
+    tet.moveNode(0, new Vector3(.02, -.006, 0))
 }
 addTet();
 
@@ -321,22 +302,12 @@ var animate = function () {
         egg.rotateZ(Math.PI / 30);
     }
 
-    // egg cilia
-    // eggGeometry.verticesNeedUpdate = true;
-    // let geom = eggGeometry as THREE.Geometry;
-    // // geom.dynamic = true;
-    // eggVerts = eggGeometry.vertices;
-    // for (var i = 0; i < eggCilia.length; i++) {
-    //     eggCilia[i].nodes[0].position.x = eggVerts[i].x;
-    //     eggCilia[i].nodes[0].position.y = eggVerts[i].y;
-    //     eggCilia[i].nodes[0].position.z = eggVerts[i].z;
-    //     eggCilia[i].geometry.verticesNeedUpdate = true;
-    //     eggCilia[i].geometry.dynamic = true;
-    // }
-
     if (tet !== undefined) {
         tet.verlet();
-        tet.pulseNode(0, .003, Math.PI / 45);
+        tet.pulseNode(0, .009, Math.PI / 45);
+        let tetAmpsRange = new Vector2(.001, .007);
+        let tetFreqs = new Vector2(Math.PI / 1400, Math.PI / 25);
+        //tet.pulseNodes(tetAmps, tetFreqs);
         tet.constrain(tetBounds, new Vector3(0, -1.3, 0));
 
         for (var t of tendrils) {

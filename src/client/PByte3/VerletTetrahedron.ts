@@ -197,6 +197,16 @@ export class VerletTetrahedron extends THREE.Group {
         this.ampDrama *= this.pulseDamping;
     }
 
+    // pulseNodes(ampRange: THREE.Vector2, freqsRange: THREE.Vector2): void {
+    //     for (var i = 0; i < this.nodes.length; i++) {
+    //         this.nodesOrig[index].position.addScalar(Math.sin(this.pulseTheta) * (amp + this.ampDrama));
+    //         this.nodes[index].position.set(this.nodesOrig[index].position.x, this.nodesOrig[index].position.y, this.nodesOrig[index].position.z);
+    //         this.pulseTheta += freq + this.freqDrama;
+    //         this.freqDrama *= this.pulseDamping;
+    //         this.ampDrama *= this.pulseDamping;
+    //     }
+    // }
+
     moveNode(index: number, vec: THREE.Vector3): void {
         this.nodes[index].position.x += vec.x;
         this.nodes[index].position.y += vec.y;
