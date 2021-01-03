@@ -185,9 +185,10 @@ export class VerletStrand extends THREE.Group {
         this.geometry.verticesNeedUpdate = true;
     }
 
-    public constrainBounds(bounds: THREE.Vector3): void {
+    public constrainBounds(bounds: THREE.Vector3, offset: THREE.Vector3 = new THREE.Vector3()): void {
         for (var i = 0; i < this.nodes.length; i++) {
-            this.nodes[i].constrainBounds(bounds);
+            let v = new THREE.Vector3(bounds.x + offset.x, bounds.y + offset.y, bounds.z + offset.z);
+            this.nodes[i].constrainBounds(v);
         }
     }
 
@@ -206,6 +207,12 @@ export class VerletStrand extends THREE.Group {
         this.nodes[0].position.x = pos.x;
         this.nodes[0].position.y = pos.y;
         this.nodes[0].position.z = pos.z;
+    }
+
+    setTailPosition(pos: THREE.Vector3): void {
+        this.nodes[this.nodes.length - 1].position.x = pos.x;
+        this.nodes[this.nodes.length - 1].position.y = pos.y;
+        this.nodes[this.nodes.length - 1].position.z = pos.z;
     }
 
     setNodesVisible(areNodesVisible: boolean): void {

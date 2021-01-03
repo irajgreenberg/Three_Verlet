@@ -1,5 +1,6 @@
-import { GeometryDetail } from './IJGUtils.js';
+import { AnchorPoint, GeometryDetail } from './IJGUtils.js';
 import { VerletNode } from './VerletNode.js';
+import { VerletStrand } from './VerletStrand.js';
 import { VerletStick } from './VerletStick.js';
 import * as THREE from '/build/three.module.js';
 import { Vector3 } from '/build/three.module.js';
@@ -11,11 +12,14 @@ export class VerletTetrahedron extends THREE.Group {
         this.nodesVecs = []; //precalculates tetrahedron values
         this.nodes = [];
         this.sticks = [];
+        this.tetraTendrils = [];
         this.nodesOrig = [];
         this.pulseTheta = 0;
         this.freqDrama = 0;
         this.ampDrama = 0;
         this.pulseDamping = .795;
+        // for roating nodes
+        this.theta = Math.PI / 20;
         this.pos = pos;
         this.radius = radius;
         this.tension = tension;
@@ -43,6 +47,22 @@ export class VerletTetrahedron extends THREE.Group {
                 this.add(n);
             }
         }
+        this.tetraTendrils.push(new VerletStrand(this.nodes[0].position, this.nodes[1].position, 12, AnchorPoint.HEAD_TAIL, .725, GeometryDetail.TRI));
+        this.tetraTendrils.push(new VerletStrand(this.nodes[0].position, this.nodes[2].position, 12, AnchorPoint.HEAD_TAIL, .725, GeometryDetail.TRI));
+        this.tetraTendrils.push(new VerletStrand(this.nodes[0].position, this.nodes[3].position, 12, AnchorPoint.HEAD_TAIL, .725, GeometryDetail.TRI));
+        this.tetraTendrils.push(new VerletStrand(this.nodes[4].position, this.nodes[1].position, 12, AnchorPoint.HEAD_TAIL, .725, GeometryDetail.TRI));
+        this.tetraTendrils.push(new VerletStrand(this.nodes[4].position, this.nodes[2].position, 12, AnchorPoint.HEAD_TAIL, .725, GeometryDetail.TRI));
+        this.tetraTendrils.push(new VerletStrand(this.nodes[4].position, this.nodes[3].position, 12, AnchorPoint.HEAD_TAIL, .725, GeometryDetail.TRI));
+        this.tetraTendrils.push(new VerletStrand(this.nodes[1].position, this.nodes[2].position, 12, AnchorPoint.HEAD_TAIL, .725, GeometryDetail.TRI));
+        this.tetraTendrils.push(new VerletStrand(this.nodes[2].position, this.nodes[3].position, 12, AnchorPoint.HEAD_TAIL, .725, GeometryDetail.TRI));
+        this.tetraTendrils.push(new VerletStrand(this.nodes[3].position, this.nodes[1].position, 12, AnchorPoint.HEAD_TAIL, .725, GeometryDetail.TRI));
+        this.tetraTendrils.push(new VerletStrand(this.nodes[0].position, this.nodes[4].position, 12, AnchorPoint.HEAD_TAIL, .725, GeometryDetail.TRI));
+        // add tendrils to group
+        if (!this.isGrowable) { // add at contruction is no growable
+            for (var t of this.tetraTendrils) {
+                this.add(t);
+            }
+        }
         this.sticks.push(new VerletStick(this.nodes[0], this.nodes[1], .01));
         this.sticks.push(new VerletStick(this.nodes[0], this.nodes[2], .01));
         this.sticks.push(new VerletStick(this.nodes[0], this.nodes[3], .01));
@@ -67,6 +87,7 @@ export class VerletTetrahedron extends THREE.Group {
                 this.add(this.nodes[this.inputCounter]);
             }
             if (this.inputCounter > 0 && this.inputCounter < 11) {
+                this.add(this.tetraTendrils[this.inputCounter - 1]);
                 this.add(this.sticks[this.inputCounter - 1]);
             }
             if (this.inputCounter < 11) {
@@ -79,6 +100,18 @@ export class VerletTetrahedron extends THREE.Group {
     verlet() {
         for (var n of this.nodes) {
             n.verlet();
+            n.rotateY(this.theta);
+        }
+        //this.theta += Math.PI / 1440;
+        let heads = [0, 0, 0, 4, 4, 4, 1, 2, 3, 0];
+        let tails = [1, 2, 3, 1, 2, 3, 2, 3, 1, 4];
+        for (var i = 0; i < this.tetraTendrils.length; i++) {
+            this.tetraTendrils[i].setHeadPosition(this.nodes[heads[i]].position);
+            this.tetraTendrils[i].setTailPosition(this.nodes[tails[i]].position);
+            this.tetraTendrils[i].setStrandMaterials(new THREE.Color(0xFF5500), .45);
+        }
+        for (var t of this.tetraTendrils) {
+            t.verlet();
         }
     }
     setNodesGeom(geom) {
@@ -122,12 +155,16 @@ export class VerletTetrahedron extends THREE.Group {
         this.nodes[index].position.y += vec.y;
         this.nodes[index].position.z += vec.z;
     }
-    constrain(bounds) {
+    constrain(bounds, offset = new Vector3()) {
         for (var s of this.sticks) {
             s.constrainLen();
         }
+        let v = new Vector3(bounds.x + offset.x, bounds.y + offset.y, bounds.z + offset.z);
         for (var n of this.nodes) {
-            n.constrainBounds(bounds);
+            n.constrainBounds(v);
+        }
+        for (var t of this.tetraTendrils) {
+            t.constrainBounds(v);
         }
     }
 }

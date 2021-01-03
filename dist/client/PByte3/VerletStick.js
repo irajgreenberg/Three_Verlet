@@ -44,6 +44,14 @@ export class VerletStick extends THREE.Group {
                 node1ConstrainFactor = 1.0;
                 node2ConstrainFactor = 0.0;
             }
+            if (this.anchorTerminal === 3) {
+                node1ConstrainFactor = 0.0;
+                node2ConstrainFactor = 0.0;
+            }
+            if (this.anchorTerminal === 4) {
+                node1ConstrainFactor = .1;
+                node2ConstrainFactor = .1;
+            }
             let difference = ((deltaLength - this.len) / deltaLength);
             this.start.position.x += delta.x * (node1ConstrainFactor * this.stickTension * difference);
             this.start.position.y += delta.y * (node1ConstrainFactor * this.stickTension * difference);

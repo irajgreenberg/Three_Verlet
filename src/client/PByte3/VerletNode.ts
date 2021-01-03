@@ -71,7 +71,8 @@ export class VerletNode extends THREE.Mesh {
         break;
       case GeometryDetail.ICOSA:
         geom = new THREE.IcosahedronBufferGeometry(radius);
-        mat = new THREE.MeshPhongMaterial({ color: color });
+        mat = new THREE.MeshPhongMaterial({ color: color, wireframe: true });
+        // mat = new THREE.MeshPhongMaterial({ color: color });
         break;
       case GeometryDetail.DODECA:
         geom = new THREE.DodecahedronBufferGeometry(radius);
