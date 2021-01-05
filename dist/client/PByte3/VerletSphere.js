@@ -138,6 +138,11 @@ export class VerletSphere extends Group {
             this.add(this.tendrils[i]);
         }
     }
+    setTendrilOpacity(alpha) {
+        for (var i = 0; i < this.tendrils.length; i++) {
+            this.tendrils[i].setStrandOpacity(alpha);
+        }
+    }
     // start verlet offeset
     push(indices, vec) {
         for (var i = 0; i < indices.length; i++) {

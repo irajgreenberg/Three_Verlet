@@ -39,9 +39,13 @@ const controls = new OrbitControls(camera, renderer.domElement);
 document.addEventListener('click', onMouse, false);
 
 //test
+let globalCounter: number = 0;
 let ova: VerletSphere;
-
+let ovaStickColorAlpha: number = 0;
 let ovaPulseIndices: number[] = [];
+let isOvaBirth: boolean = false;
+let isOvaCiliaBirth: boolean = false;
+let ovaCiliaAlpha: number = 0
 let amps: number[] = [];
 let freqs: number[] = [];
 let thetas: number[] = [];
@@ -49,9 +53,11 @@ let thetas: number[] = [];
 
 let egg: THREE.Mesh;
 let eggGeometry: THREE.TorusKnotGeometry;
+let eggMaterial: THREE.MeshPhongMaterial;
 let eggWireframe: THREE.LineSegments;
-let eggCilia: VerletStrand[] = [];
+let eggCilia: VerletStrand[] = []; // do I need this?
 let eggVerts: Vector3[];
+let isEggBirth: boolean = false;
 let tet: VerletTetrahedron;
 let tetCounter: number = 0;
 let eggToTetLines: THREE.Line[] = [];
@@ -60,8 +66,9 @@ let tendrils: VerletStrand[] = new Array(0);
 let tendrilCounter: number = 0;
 let cilia: VerletStrand[] = new Array(0);
 let ciliaCounter: number = 0;
-let epidermalCover: EpidermalHood | undefined;
+let epidermalCover: EpidermalHood;
 let isHoodReady: boolean = false;
+let epidermalCoverAlpha: number = 0;
 nodeType: GeometryDetail;
 
 
@@ -97,8 +104,10 @@ function hatch(): void {
     let vals: number[] = [0];
     //ova = new VerletSphere(new Vector3(), new Vector2(.075, .1), 18, 18);
     ova = new VerletSphere(new Vector3(), new Vector2(.075 * 2.5, .1 * 2.4), 18, 18);
-    ova.setStickColor(new Color(0X7777DD), .25);
+    ova.setStickColor(new Color(0X7777DD), ovaStickColorAlpha);
     ova.addTendrils(12, .2);
+    ova.setTendrilOpacity(ovaCiliaAlpha);
+    ova.setNodeVisibility(true);
     scene.add(ova);
     for (var i = 0, j = 0; i < ova.nodes.length; i++, j++) {
         if (i % 2 == 0) {
@@ -111,10 +120,11 @@ function hatch(): void {
     //ova.push(vals, new Vector3(.02, .003, .004));
 
     eggGeometry = new THREE.TorusKnotGeometry(.09, .05, 24, 8, 1, 2);
-    const material = new THREE.MeshPhongMaterial({ color: 0XBB3300, wireframe: true });
-    material.opacity = 0.25;
-    material.transparent = true;
-    egg = new THREE.Mesh(eggGeometry, material);
+    //eggGeometry.dynamic = true;
+    eggMaterial = new THREE.MeshPhongMaterial({ color: 0XBB3300, wireframe: true });
+    eggMaterial.opacity = 0;
+    eggMaterial.transparent = true;
+    egg = new THREE.Mesh(eggGeometry, eggMaterial);
     scene.add(egg);
     eggVerts = eggGeometry.vertices;
 
@@ -190,8 +200,8 @@ function addCilia(ciliaSegments: number = 0.0, cilialLength: number = 0.0, cilia
 // Hood
 function addHood() {
     //console.group("in addhood func");
-    epidermalCover = new EpidermalHood(new THREE.Vector3(0, .50, 0), .59, .65, 40, 10, .675, [GeometryDetail.ICOSA, GeometryDetail.TETRA, GeometryDetail.TRI]);
-    epidermalCover.addHangingTendrils(9, .9, .13);
+    epidermalCover = new EpidermalHood(new THREE.Vector3(0, .50, 0), .59, .65, 30, 20, .675, [GeometryDetail.ICOSA, GeometryDetail.TETRA, GeometryDetail.TRI]);
+    epidermalCover.addHangingTendrils(9, 1.3, .1);
     epidermalCover.addCilia(2, .05, .85);
     epidermalCover.setDynamics(new Propulsion(new THREE.Vector3(0, 1, 0),
         new THREE.Vector3(0, -.04, 0),
@@ -210,11 +220,13 @@ function addHood() {
         .4));                        /*cilia alpha*/
 
 
-    epidermalCover.setNodesScale(6.2, 18, 3);
+    epidermalCover.setNodesScale(10.2, 5, 3);
     epidermalCover.setNodesVisible(true, true, true);
+    epidermalCover.setOpacity(epidermalCoverAlpha);
     scene.add(epidermalCover);
     isHoodReady = false;
 }
+addHood();
 
 // Enables placement of nodes in world space based on mousepress (screenspace placement)
 function getScreenPos(clientPos2: THREE.Vector2): THREE.Vector3 {
@@ -291,16 +303,37 @@ var animate = function () {
     controls.autoRotate = true;
     camera.lookAt(scene.position); //0,0,0
 
-    ova.verlet();
-    ova.constrain(bounds);
-    ova.pulseIndices(ovaPulseIndices, amps, freqs, thetas);
-
-
-    if (egg !== undefined) {
-        egg.rotateX(Math.PI / 180);
-        egg.rotateY(Math.PI / 45);
-        egg.rotateZ(Math.PI / 30);
+    if (isOvaBirth) {
+        ova.setStickColor(new Color(0X7777DD), ovaStickColorAlpha);
+        ova.verlet();
+        ova.constrain(bounds);
+        ova.pulseIndices(ovaPulseIndices, amps, freqs, thetas);
+        if (ovaStickColorAlpha < .3) {
+            ovaStickColorAlpha += .01;
+        }
     }
+
+    if (isEggBirth) {
+        let m = egg.material as THREE.MeshPhongMaterial;
+        if (m.opacity < .3) {
+            m.opacity += .01;
+        }
+        if (egg !== undefined) {
+            egg.rotateX(Math.PI / 180);
+            egg.rotateY(Math.PI / 45);
+            egg.rotateZ(Math.PI / 30);
+        }
+    }
+
+    if (isOvaCiliaBirth) {
+        if (ovaCiliaAlpha < .35) {
+            ovaCiliaAlpha += .01;
+        }
+        ova.setTendrilOpacity(ovaCiliaAlpha)
+    }
+
+
+
 
     if (tet !== undefined) {
         tet.verlet();
@@ -342,6 +375,13 @@ var animate = function () {
         epidermalCover.constrainBounds(bounds);
     }
 
+    if (isHoodReady && ciliaCounter > 16) {
+        if (epidermalCoverAlpha < .3) {
+            epidermalCoverAlpha += .001;
+        }
+        epidermalCover.setOpacity(epidermalCoverAlpha);
+    }
+
     controls.update()
     updateNodes();
     render();
@@ -358,45 +398,60 @@ function onWindowResize() {
 
 // many bad magic nums down here. shameful.
 function onMouse(event: MouseEvent) {
+    globalCounter++;
+    // 1st mouse press
+    // egg wifreame fades in
+    if (globalCounter === 1) {
+        isOvaBirth = true;
+        // knot core fade in
+    } else if (globalCounter === 2) {
+        isEggBirth = true;
+        // tethers fade in
+    } else if (globalCounter === 3) {
+        isOvaCiliaBirth = true;
+    }
 
-    // after hatching
+    if (globalCounter > 3) {
 
-    // stage 1 - Tetrahedron core
-    if (tetCounter < 11) {
-        tet.setNode();
+        // stage 1 - Tetrahedron core
+        if (tetCounter < 11) {
+            tet.setNode();
 
-        if (tetCounter < 5) {
-            let eggToTetLineMaterial = new THREE.LineBasicMaterial({ color: 0x669966 });
-            eggToTetLineMaterial.transparent = true;
-            eggToTetLineMaterial.opacity = .25;
-            const points = [];
-            points.push(egg.position);
-            points.push(tet.nodes[tetCounter].position);
-            let eggToTetLineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-            eggToTetLines.push(new THREE.Line(eggToTetLineGeometry, eggToTetLineMaterial))
-            scene.add(eggToTetLines[tetCounter]);
+            if (tetCounter < 5) {
+                let eggToTetLineMaterial = new THREE.LineBasicMaterial({ color: 0x669966 });
+                eggToTetLineMaterial.transparent = true;
+                eggToTetLineMaterial.opacity = .25;
+                const points = [];
+                points.push(egg.position);
+                points.push(tet.nodes[tetCounter].position);
+                let eggToTetLineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+                eggToTetLines.push(new THREE.Line(eggToTetLineGeometry, eggToTetLineMaterial))
+                scene.add(eggToTetLines[tetCounter]);
+            }
+            tetCounter++;
         }
-        tetCounter++;
+
+        // stage 2 - tendrils
+        if (tetCounter == 11 && tendrilCounter < 5) {
+            const pos = getScreenPos(new THREE.Vector2(event.clientX, event.clientY))
+            //addTendril(pos);
+            addTendril(new Vector3(tet.position.x + tet.nodes[tendrilCounter].position.x,
+                tet.position.y + tet.nodes[tendrilCounter].position.y,
+                tet.position.z + tet.nodes[tendrilCounter].position.z));
+            tendrilCounter++;
+        }
+
+        // stage 3 - cilia
+        if (ciliaCounter++ == 15) {
+            addCilia(5, .2, .49);
+            isHoodReady = true;
+        }
+
+        if (isHoodReady && ciliaCounter > 16) {
+            //addHood();
+        }
     }
 
-    // stage 2 - tendrils
-    if (tetCounter == 11 && tendrilCounter < 5) {
-        const pos = getScreenPos(new THREE.Vector2(event.clientX, event.clientY))
-        //addTendril(pos);
-        addTendril(new Vector3(tet.position.x + tet.nodes[tendrilCounter].position.x,
-            tet.position.y + tet.nodes[tendrilCounter].position.y,
-            tet.position.z + tet.nodes[tendrilCounter].position.z));
-        tendrilCounter++;
-    }
 
-    // stage 3 - cilia
-    if (ciliaCounter++ == 15) {
-        addCilia(5, .2, .49);
-        isHoodReady = true;
-    }
-
-    if (isHoodReady && ciliaCounter > 16) {
-        addHood();
-    }
 
 }

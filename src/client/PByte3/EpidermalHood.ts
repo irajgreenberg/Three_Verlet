@@ -244,6 +244,23 @@ export class EpidermalHood extends THREE.Group {
         }
     }
 
+    // sets global alpha of hood
+    setOpacity(alpha: number) {
+
+        for (var i = 0; i < this.spines.length; i++) {
+            this.spines[i].setStrandOpacity(alpha);
+        }
+        for (var i = 0; i < this.tendrils.length; i++) {
+            this.tendrils[i].setStrandOpacity(alpha);
+        }
+        if (this.hasCilia) {
+            for (var i = 0; i < this.cilia.length; i++) {
+                this.cilia[i].setStrandOpacity(alpha);
+            }
+        }
+
+    }
+
 
     // Returns base nodes for tendril attachment
     getBaseNodes(): VerletNode[] {
