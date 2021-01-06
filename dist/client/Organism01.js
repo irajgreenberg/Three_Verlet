@@ -22,6 +22,7 @@ import { Color, Vector2, Vector3 } from '/build/three.module.js';
 import { AnchorPoint, GeometryDetail, Propulsion, VerletMaterials } from './PByte3/IJGUtils.js';
 import { EpidermalHood } from './PByte3/EpidermalHood.js';
 import { VerletSphere } from './PByte3/VerletSphere.js';
+import { VerletStick } from './PByte3/VerletStick.js';
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.001, 2000);
 const renderer = new THREE.WebGLRenderer();
@@ -59,6 +60,8 @@ let epidermalCover;
 let isHoodReady = false;
 let epidermalCoverAlpha = 0;
 nodeType: GeometryDetail;
+let finalTethers = [];
+let finalTetherAlphas = [];
 // cube bounds
 const bounds = new THREE.Vector3(5, 5, 5);
 const tetBounds = new THREE.Vector3(.85, 2, .85);
@@ -113,12 +116,19 @@ function addTet() {
     //pos: Vector3, radius: number, tension: number, isGrowable: boolean
     //tet = new VerletTetrahedron(new Vector3(0, -.75, 0), .3, .03, true);
     tet = new VerletTetrahedron(new Vector3(0, 0, 0), .6, .03, true);
-    tet.setNodesScale(2.4);
+    tet.tetraTendrils[0].setStrandMaterials(new THREE.Color(0xaa11dd), .35);
+    tet.tetraTendrils[1].setStrandMaterials(new THREE.Color(0xFdd5522), .35);
+    tet.tetraTendrils[2].setStrandMaterials(new THREE.Color(0xaa22ff), .35);
+    tet.tetraTendrils[3].setStrandMaterials(new THREE.Color(0x8822ff), .35);
+    tet.tetraTendrils[5].setStrandMaterials(new THREE.Color(0x99aa99), .35);
+    tet.tetraTendrils[7].setStrandMaterials(new THREE.Color(0x999922), .35);
+    tet.setNodesScale(3.4);
     tet.setNodesColor(new THREE.Color(0X996611));
     tet.setSticksColor(new THREE.Color(0XFF0000));
     tet.setSticksOpacity(.25);
     scene.add(tet);
-    tet.moveNode(0, new Vector3(.02, -.006, 0));
+    tet.moveNode(0, new Vector3(.02, -.006, .04));
+    tet.moveNode(1, new Vector3(-.02, .006, -.04));
 }
 addTet();
 // Tendrils
@@ -164,11 +174,20 @@ function addHood() {
     epidermalCover.addCilia(2, .05, .85);
     epidermalCover.setDynamics(new Propulsion(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, -.09, 0), new THREE.Vector3(0, Math.PI / 500, 0)));
     epidermalCover.setMaterials(new VerletMaterials(new THREE.Color(.8, .6, 8), /*node color*/ new THREE.Color(.4, .6, .75), /*spine color*/ .45, /*spine alpha*/ new THREE.Color(0, .2, .4), /*slice color*/ .65, /*slice alpha*/ new THREE.Color(1, .6, .7), /*tendril node color*/ new THREE.Color(.3, .1, .55), /*tendril color*/ 1, /*tendril alpha*/ new THREE.Color(.9, 1, 1), /*cilia node color*/ new THREE.Color(1, .6, .1), /*cilia color*/ .4)); /*cilia alpha*/
-    epidermalCover.setNodesScale(10.2, 8, 3, true);
+    epidermalCover.setNodesScale(10.2, 9, 3, true);
     epidermalCover.setNodesVisible(true, true, true);
     epidermalCover.setAllOpacity(epidermalCoverAlpha);
     scene.add(epidermalCover);
     isHoodReady = false;
+    // add yellow tethers from tet nodes to top nodes of hood
+    for (var i = 0; i < tet.nodes.length; i++) {
+        finalTethers.push(new VerletStick(tet.nodes[i], epidermalCover.spines[i].nodes[epidermalCover.spines[i].nodes.length - 1], .2, AnchorPoint.TAIL));
+        finalTethers[i].setColor(new Color(1, .6, 0));
+        finalTetherAlphas[i] = 0;
+        finalTethers[i].setOpacity(finalTetherAlphas[i]);
+        //finalTethers[0].lineGeometry.elementsNeedUpdate = true;
+        scene.add(finalTethers[i]);
+    }
 }
 addHood();
 // Enables placement of nodes in world space based on mousepress (screenspace placement)
@@ -297,6 +316,15 @@ var animate = function () {
             epidermalCoverAlpha += .01;
         }
         epidermalCover.setAllOpacity(epidermalCoverAlpha);
+        for (var i = 0; i < tet.nodes.length; i++) {
+            if (finalTetherAlphas[i] < .2) {
+                finalTetherAlphas[i] += .002;
+            }
+            finalTethers[i].setOpacity(finalTetherAlphas[i]);
+        }
+    }
+    for (var i = 0; i < tet.nodes.length; i++) {
+        finalTethers[i].constrainLen();
     }
     controls.update();
     updateNodes();
@@ -351,7 +379,7 @@ function onMouse(event) {
         }
         // stage 3 - cilia
         if (ciliaCounter++ == 15) {
-            addCilia(5, .2, .49);
+            addCilia(3, .09, THREE.MathUtils.randFloat(.1, .7));
             isHoodReady = true;
         }
         if (isHoodReady && ciliaCounter > 16) {

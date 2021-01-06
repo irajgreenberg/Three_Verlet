@@ -146,7 +146,7 @@ export class VerletTetrahedron extends THREE.Group {
         for (var i = 0; i < this.tetraTendrils.length; i++) {
             this.tetraTendrils[i].setHeadPosition(this.nodes[heads[i]].position);
             this.tetraTendrils[i].setTailPosition(this.nodes[tails[i]].position);
-            this.tetraTendrils[i].setStrandMaterials(new THREE.Color(0xFF5500), .45);
+            //this.tetraTendrils[i].setStrandMaterials(new THREE.Color(0xFF5500), .45);
         }
 
         for (var t of this.tetraTendrils) {
