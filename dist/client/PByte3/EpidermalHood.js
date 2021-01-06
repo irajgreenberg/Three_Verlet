@@ -101,7 +101,7 @@ export class EpidermalHood extends THREE.Group {
         this.tendrilTension = tendrilTension;
         for (var i = 0; i < this.spines.length; i++) {
             // console.log(tendrilNodes[i].position);
-            this.tendrils[i] = new VerletStrand(tendrilNodes[i].position, new Vector3(tendrilNodes[i].position.x, tendrilNodes[i].position.y - tendrilLength, tendrilNodes[i].position.z), this.tendrilSegments, AnchorPoint.HEAD_TAIL, this.tendrilTension, this.nodeTypes[1]);
+            this.tendrils[i] = new VerletStrand(tendrilNodes[i].position, new Vector3(tendrilNodes[i].position.x, tendrilNodes[i].position.y - THREE.MathUtils.randFloat(tendrilLength * .85, tendrilLength), tendrilNodes[i].position.z), this.tendrilSegments, AnchorPoint.HEAD_TAIL, THREE.MathUtils.randFloat(this.tendrilTension * .1, this.tendrilTension), this.nodeTypes[1]);
             this.add(this.tendrils[i]);
         }
     }
@@ -174,17 +174,29 @@ export class EpidermalHood extends THREE.Group {
         }
     }
     // sets global alpha of hood
-    setOpacity(alpha) {
+    setAllOpacity(alpha) {
         for (var i = 0; i < this.spines.length; i++) {
             this.spines[i].setStrandOpacity(alpha);
+            for (var j = 0; j < this.spines[i].nodes.length; j++) {
+                this.spines[i].nodes[j].setNodeAlpha(alpha);
+            }
         }
         for (var i = 0; i < this.tendrils.length; i++) {
             this.tendrils[i].setStrandOpacity(alpha);
+            for (var j = 0; j < this.tendrils[i].nodes.length; j++) {
+                this.tendrils[i].nodes[j].setNodeAlpha(alpha);
+            }
         }
         if (this.hasCilia) {
             for (var i = 0; i < this.cilia.length; i++) {
                 this.cilia[i].setStrandOpacity(alpha);
+                for (var j = 0; j < this.cilia[i].nodes.length; j++) {
+                    this.cilia[i].nodes[j].setNodeAlpha(alpha);
+                }
             }
+        }
+        for (var i = 0; i < this.slices.length; i++) {
+            this.slices[i].setOpacity(alpha);
         }
     }
     // Returns base nodes for tendril attachment

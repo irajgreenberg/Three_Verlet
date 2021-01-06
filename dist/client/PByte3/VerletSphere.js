@@ -134,7 +134,7 @@ export class VerletSphere extends Group {
     addTendrils(tendrilSegments = 5, tendrilLength = .03, tendrilTension = 0.55) {
         for (var i = 0; i < this.nodes.length; i++) {
             // console.log(tendrilNodes[i].position);
-            this.tendrils.push(new VerletStrand(this.nodes[i].position, new Vector3(this.nodes[i].position.x * .2, this.nodes[i].position.y * .2, this.nodes[i].position.z * .2), tendrilSegments, AnchorPoint.HEAD, tendrilTension, GeometryDetail.TRI));
+            this.tendrils.push(new VerletStrand(this.nodes[i].position, new Vector3(this.nodes[i].position.x * .1, this.nodes[i].position.y * .1, this.nodes[i].position.z * .1), tendrilSegments, AnchorPoint.HEAD, tendrilTension, GeometryDetail.TRI));
             this.add(this.tendrils[i]);
         }
     }

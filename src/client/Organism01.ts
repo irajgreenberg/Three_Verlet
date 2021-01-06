@@ -75,7 +75,7 @@ nodeType: GeometryDetail;
 
 // cube bounds
 const bounds: THREE.Vector3 = new THREE.Vector3(5, 5, 5);
-const tetBounds: THREE.Vector3 = new THREE.Vector3(.75, 2, .75);
+const tetBounds: THREE.Vector3 = new THREE.Vector3(.85, 2, .85);
 createCubeConstraints(bounds, false);
 createCubeConstraints(tetBounds, false);
 
@@ -105,14 +105,14 @@ function hatch(): void {
     //ova = new VerletSphere(new Vector3(), new Vector2(.075, .1), 18, 18);
     ova = new VerletSphere(new Vector3(), new Vector2(.075 * 2.5, .1 * 2.4), 18, 18);
     ova.setStickColor(new Color(0X7777DD), ovaStickColorAlpha);
-    ova.addTendrils(12, .2);
+    ova.addTendrils(12, .9);
     ova.setTendrilOpacity(ovaCiliaAlpha);
     ova.setNodeVisibility(true);
     scene.add(ova);
     for (var i = 0, j = 0; i < ova.nodes.length; i++, j++) {
         if (i % 2 == 0) {
             ovaPulseIndices.push(i);
-            amps.push(THREE.MathUtils.randFloat(.007, .01))
+            amps.push(THREE.MathUtils.randFloat(.007, .04))
             freqs.push(THREE.MathUtils.randFloat(Math.PI / 120, Math.PI / 15))
             thetas.push(0);
         }
@@ -153,8 +153,8 @@ function addTendril(pos: THREE.Vector3) {
 
     const n = new VerletNode(new THREE.Vector3(pos.x, pos.y, pos.z), 10,
         new THREE.Color(.7, .5, .7), GeometryDetail.DODECA);
-    let segCount = THREE.MathUtils.randInt(5, 20);
-    segCount = 15;
+    let segCount = THREE.MathUtils.randInt(10, 25);
+    segCount = 20;
     let tempVec = new Vector3(tet.nodes[0].position.x * .01, tet.nodes[0].position.y * .01, tet.nodes[0].position.z * .01);
     // let ns = new VerletStrand(tet.nodes[0].position, n.position, segCount, AnchorPoint.HEAD,
     //     THREE.MathUtils.randFloat(.001, .4), GeometryDetail.OCTA);
@@ -162,7 +162,7 @@ function addTendril(pos: THREE.Vector3) {
     let ns = new VerletStrand(tet.nodes[0].position, tempVec, segCount, AnchorPoint.HEAD,
         THREE.MathUtils.randFloat(.7, .9), GeometryDetail.SPHERE_LOW);
     ns.setNodesScale(THREE.MathUtils.randInt(10, 18));
-    ns.setNodesColor(new THREE.Color(1, .3, .3));
+    ns.setNodesColor(new THREE.Color('#5b5b3e'));
     ns.setStrandMaterials(new THREE.Color(.3, .5, 1), .3);
     tendrils.push(ns);
     ns.setNodeVisible(0, false);
@@ -191,6 +191,7 @@ function addCilia(ciliaSegments: number = 0.0, cilialLength: number = 0.0, cilia
                 AnchorPoint.HEAD,
                 ciliaTension, GeometryDetail.TRI));
             //cilia[k].setNodesScale(3);
+            cilia[k].setStrandMaterials(new Color(0XEEEEEE), .25);
 
             scene.add(cilia[k]);
         }
@@ -201,28 +202,28 @@ function addCilia(ciliaSegments: number = 0.0, cilialLength: number = 0.0, cilia
 function addHood() {
     //console.group("in addhood func");
     epidermalCover = new EpidermalHood(new THREE.Vector3(0, .50, 0), .59, .65, 30, 20, .675, [GeometryDetail.ICOSA, GeometryDetail.TETRA, GeometryDetail.TRI]);
-    epidermalCover.addHangingTendrils(9, 1.3, .1);
+    epidermalCover.addHangingTendrils(12, 1.2, .6);
     epidermalCover.addCilia(2, .05, .85);
     epidermalCover.setDynamics(new Propulsion(new THREE.Vector3(0, 1, 0),
-        new THREE.Vector3(0, -.04, 0),
-        new THREE.Vector3(0, Math.PI / 1500, 0)));
+        new THREE.Vector3(0, -.09, 0),
+        new THREE.Vector3(0, Math.PI / 500, 0)));
     epidermalCover.setMaterials(new VerletMaterials(
         new THREE.Color(.8, .6, 8),  /*node color*/
         new THREE.Color(.4, .6, .75), /*spine color*/
         .45,                          /*spine alpha*/
         new THREE.Color(0, .2, .4),  /*slice color*/
         .65,                          /*slice alpha*/
-        new THREE.Color(1, .5, .6),  /*tendril node color*/
-        new THREE.Color(1, .4, .9),  /*tendril color*/
-        .2,                          /*tendril alpha*/
+        new THREE.Color(1, .6, .7),  /*tendril node color*/
+        new THREE.Color(.3, .1, .55),  /*tendril color*/
+        1,                          /*tendril alpha*/
         new THREE.Color(.9, 1, 1),  /*cilia node color*/
         new THREE.Color(1, .6, .1),  /*cilia color*/
         .4));                        /*cilia alpha*/
 
 
-    epidermalCover.setNodesScale(10.2, 5, 3);
+    epidermalCover.setNodesScale(10.2, 8, 3, true);
     epidermalCover.setNodesVisible(true, true, true);
-    epidermalCover.setOpacity(epidermalCoverAlpha);
+    epidermalCover.setAllOpacity(epidermalCoverAlpha);
     scene.add(epidermalCover);
     isHoodReady = false;
 }
@@ -376,10 +377,10 @@ var animate = function () {
     }
 
     if (isHoodReady && ciliaCounter > 16) {
-        if (epidermalCoverAlpha < .3) {
-            epidermalCoverAlpha += .001;
+        if (epidermalCoverAlpha < .34) {
+            epidermalCoverAlpha += .01;
         }
-        epidermalCover.setOpacity(epidermalCoverAlpha);
+        epidermalCover.setAllOpacity(epidermalCoverAlpha);
     }
 
     controls.update()
