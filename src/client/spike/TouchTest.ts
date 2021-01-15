@@ -1,7 +1,7 @@
 //Boilerplate Typescript/Three/VSCode, by Sean Bradley:
 //git clone https://github.com/Sean-Bradley/Three.js-TypeScript-Boilerplate.git
 
-// For new projects:  1. npm install -g typescript, 
+// For new projects:  1. npm install -g typescript 
 //                    2. npm install
 // To run:            3. npm run dev 
 //                    Server runs locally at port 3000

@@ -9,6 +9,23 @@ export var AnchorPoint;
     AnchorPoint[AnchorPoint["MOD2"] = 4] = "MOD2";
     AnchorPoint[AnchorPoint["RAND"] = 5] = "RAND";
 })(AnchorPoint || (AnchorPoint = {}));
+// Verlet plane edge/corner anchoring
+export var AnchorPlane;
+(function (AnchorPlane) {
+    AnchorPlane[AnchorPlane["NONE"] = 0] = "NONE";
+    AnchorPlane[AnchorPlane["CORNER_ALL"] = 1] = "CORNER_ALL";
+    AnchorPlane[AnchorPlane["CORNER_0"] = 2] = "CORNER_0";
+    AnchorPlane[AnchorPlane["CORNER_1"] = 3] = "CORNER_1";
+    AnchorPlane[AnchorPlane["CORNER_2"] = 4] = "CORNER_2";
+    AnchorPlane[AnchorPlane["CORNER_3"] = 5] = "CORNER_3";
+    AnchorPlane[AnchorPlane["CORNER_02"] = 6] = "CORNER_02";
+    AnchorPlane[AnchorPlane["CORNER_13"] = 7] = "CORNER_13";
+    AnchorPlane[AnchorPlane["EDGE_LEFT"] = 8] = "EDGE_LEFT";
+    AnchorPlane[AnchorPlane["EDGE_RIGHT"] = 9] = "EDGE_RIGHT";
+    AnchorPlane[AnchorPlane["EDGE_TOP"] = 10] = "EDGE_TOP";
+    AnchorPlane[AnchorPlane["EDGE_BOTTOM"] = 11] = "EDGE_BOTTOM";
+    AnchorPlane[AnchorPlane["RAND_VERT"] = 12] = "RAND_VERT";
+})(AnchorPlane || (AnchorPlane = {}));
 // Verlet stick terminal anchoring
 export var GeometryDetail;
 (function (GeometryDetail) {

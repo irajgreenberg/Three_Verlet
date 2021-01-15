@@ -10,6 +10,23 @@ export enum AnchorPoint {
     RAND
 }
 
+// Verlet plane edge/corner anchoring
+export enum AnchorPlane {
+    NONE,
+    CORNER_ALL,
+    CORNER_0,
+    CORNER_1,
+    CORNER_2,
+    CORNER_3,
+    CORNER_02,
+    CORNER_13,
+    EDGE_LEFT,
+    EDGE_RIGHT,
+    EDGE_TOP,
+    EDGE_BOTTOM,
+    RAND_VERT
+}
+
 
 // Verlet stick terminal anchoring
 export enum GeometryDetail {
