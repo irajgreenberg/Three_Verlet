@@ -16,9 +16,9 @@ import { VerletNode } from './VerletNode.js';
 
 export class VerletStick extends THREE.Group {
 
-  private stickTension: number;
+  stickTension: number;
   // // anchor stick detail
-  private anchorTerminal: number;
+  anchorTerminal: number;
   start: VerletNode;
   end: VerletNode;
   len: number;

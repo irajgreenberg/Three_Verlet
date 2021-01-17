@@ -28,10 +28,10 @@ export class VerletSphere extends Group {
     nodesCore: VerletNode[] = []; // for convenience
     nodes2D: VerletNode[][] = [[]];
     nodes2D_orig: VerletNode[][] = [[]];
-    topNode: VerletNode;
-    topNodeOrig: VerletNode;
-    bottomNode: VerletNode;
-    bottomNodeOrig: VerletNode;
+    topNode!: VerletNode;
+    topNodeOrig!: VerletNode;
+    bottomNode!: VerletNode;
+    bottomNodeOrig!: VerletNode;
     sticks: VerletStick[] = [];
     tendrils: VerletStrand[] = [];
 
@@ -200,8 +200,6 @@ export class VerletSphere extends Group {
             this.tendrils[i].setStrandOpacity(alpha);
         }
     }
-
-
 
     // start verlet offeset
     push(indices: number[], vec: Vector3) {

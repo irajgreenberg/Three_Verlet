@@ -26,7 +26,10 @@
 // import * as THREE from "three";
 // import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
+import { AnchorPlane } from './PByte3/IJGUtils.js';
+import { VerletPlane } from './PByte3/VerletPlane.js';
 import * as THREE from '/build/three.module.js';
+import { TextureLoader, Vector3 } from '/build/three.module.js';
 import { OrbitControls } from '/jsm/controls/OrbitControls';
 
 const scene: THREE.Scene = new THREE.Scene();
@@ -37,6 +40,14 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 document.addEventListener('click', onMouse, false);
+
+//custom geometry
+const texture = new TextureLoader().load("resources/orgImg.png");
+let vp: VerletPlane = new VerletPlane(1, 1, 14, 24, texture, AnchorPlane.CORNER_ALL);
+scene.add(vp);
+vp.push([2, 3], new Vector3(.01, .02, 0));
+
+
 
 
 
@@ -89,7 +100,8 @@ var animate = function () {
     requestAnimationFrame(animate);
     controls.autoRotate = true;
     camera.lookAt(scene.position); //0,0,0
-
+    vp.verlet();
+    vp.constrain(bounds);
 
     controls.update()
     render();
