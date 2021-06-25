@@ -6,9 +6,9 @@
     "dev": "concurrently -k \"tsc -p ./src/server -w\" \"tsc -p ./src/client -w\" \"nodemon ./dist/server/server.js\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./dist/server/server.js",
-    "stop": "killall node"
+    "stop": "sudo killall -9 node"
   },
-  "author": "Sean Bradley",
+  "author": "Ira greenberg",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^13.13.15",

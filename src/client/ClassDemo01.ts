@@ -1,5 +1,5 @@
 //Boilerplate Typescript/Three/VSCode, by Sean Bradley:
-//git clone https://github.com/Sean-Bradley/Three.js-TypeScript-Boilerplate.git
+//git clone https://github.com/Sean-Bradley/js-TypeScript-Boilerplate.git
 
 
 
@@ -23,19 +23,17 @@
 //----------------------------------------------
 
 
-// import * as THREE from "three";
-// import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-
+//import { Scene, PerspectiveCamera, WebGLRenderer, BoxGeometry, MeshBasicMaterial, Mesh, AmbientLight, DirectionalLight, TextureLoader, Vector3 } from 'three';
+import { Scene, PerspectiveCamera, WebGLRenderer, BoxGeometry, MeshBasicMaterial, Mesh, AmbientLight, DirectionalLight, TextureLoader, Vector3 } from '/build/three.module.js';
+import { OrbitControls } from '/jsm/controls/OrbitControls';
 import { AnchorPlane } from './PByte3/IJGUtils.js';
 import { VerletPlane } from './PByte3/VerletPlane.js';
-import * as THREE from '/build/three.module.js';
-import { TextureLoader, Vector3 } from '/build/three.module.js';
-import { OrbitControls } from '/jsm/controls/OrbitControls';
 
-const scene: THREE.Scene = new THREE.Scene();
-const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
+
+const scene: Scene = new Scene();
+const camera: PerspectiveCamera = new PerspectiveCamera(
     75, window.innerWidth / window.innerHeight, 0.001, 2000);
-const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer();
+const renderer: WebGLRenderer = new WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -52,26 +50,26 @@ vp.push([2, 3], new Vector3(.01, .02, 0));
 
 
 // cube bounds
-const bounds: THREE.Vector3 = new THREE.Vector3(2, 1.75, 1);
+const bounds: Vector3 = new Vector3(2, 1.75, 1);
 
 
 // Create/add outer box
-const geometry2: THREE.BoxGeometry = new THREE.BoxGeometry(bounds.x, bounds.y, bounds.z);
-const material2: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({ color: 0x22ee00, wireframe: true });
+const geometry2: BoxGeometry = new BoxGeometry(bounds.x, bounds.y, bounds.z);
+const material2: MeshBasicMaterial = new MeshBasicMaterial({ color: 0x22ee00, wireframe: true });
 material2.transparent = true;
 material2.opacity = .08;
-const cube2: THREE.Mesh = new THREE.Mesh(geometry2, material2);
+const cube2: Mesh = new Mesh(geometry2, material2);
 scene.add(cube2);
 
 // Simple lighting calculations
 const color = 0xEEEEFF;
 const intensity = .65;
-const light = new THREE.AmbientLight(color, intensity);
+const light = new AmbientLight(color, intensity);
 scene.add(light);
 
 const color2 = 0xFFFFDD;
 const intensity2 = 1;
-const light2 = new THREE.DirectionalLight(color, intensity);
+const light2 = new DirectionalLight(color, intensity);
 light2.position.set(-2, 6, 1);
 //light2.target.position.set(0, 0, 0);
 scene.add(light2);
