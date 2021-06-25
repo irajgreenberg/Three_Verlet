@@ -475,7 +475,7 @@ window.addEventListener('touchmove', (event) => {
 
         // stage 2 - tendrils
         if (tetCounter == 11 && tendrilCounter < 5) {
-            const pos = getScreenPos(new THREE.Vector2(event.clientX, event.clientY))
+            //const pos = getScreenPos(new THREE.Vector2(event.clientX, event.clientY))
             //addTendril(pos);
             addTendril(new Vector3(tet.position.x + tet.nodes[tendrilCounter].position.x,
                 tet.position.y + tet.nodes[tendrilCounter].position.y,
