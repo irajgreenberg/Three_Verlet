@@ -8,16 +8,17 @@
 // Center of Creative Computation, SMU
 //----------------------------------------------
 
-import * as THREE from '/build/three.module.js';
+//import { Mesh, Vector3, SphereBufferGeometry, MeshBasicMaterial, MathUtils } from 'three';
+import { Mesh, Vector3, SphereBufferGeometry, MeshBasicMaterial, MathUtils } from '/build/three.module.js';
 
-export class EulerNode extends THREE.Mesh {
+export class EulerNode extends Mesh {
 
-    speed: THREE.Vector3;
+    speed: Vector3;
     radius: number; //for convenience
     theta: number = 0;
 
-    constructor(pos: THREE.Vector3, radius: number = 0.005, speed: THREE.Vector3 = new THREE.Vector3()) {
-        super(new THREE.SphereBufferGeometry(radius), new THREE.MeshBasicMaterial({ color: 0xCC4444 }));
+    constructor(pos: Vector3, radius: number = 0.005, speed: Vector3 = new Vector3()) {
+        super(new SphereBufferGeometry(radius), new MeshBasicMaterial({ color: 0xCC4444 }));
         this.radius = radius;
         this.speed = speed;
         this.position.set(pos.x, pos.y, pos.z);
@@ -25,12 +26,12 @@ export class EulerNode extends THREE.Mesh {
 
     // Motion determined by position comparison between current and previus frames
     move(): void {
-        let temp = new THREE.Vector3(this.speed.x+Math.sin(this.theta)*THREE.MathUtils.randFloat(.001, .005), this.speed.y+Math.sin(this.theta)*THREE.MathUtils.randFloat(.001, .005), this.speed.z+Math.sin(this.theta)*THREE.MathUtils.randFloat(.0001, .001));
+        let temp = new Vector3(this.speed.x+Math.sin(this.theta)*MathUtils.randFloat(.001, .005), this.speed.y+Math.sin(this.theta)*MathUtils.randFloat(.001, .005), this.speed.z+Math.sin(this.theta)*MathUtils.randFloat(.0001, .001));
         this.position.add(temp);
-        this.theta += Math.PI/THREE.MathUtils.randFloat(2, 10);
+        this.theta += Math.PI/MathUtils.randFloat(2, 10);
     }
 
-    constrainBounds(bounds: THREE.Vector3): void {
+    constrainBounds(bounds: Vector3): void {
         if (this.position.x > bounds.x / 2 - this.radius) {
             this.position.x = bounds.x / 2 - this.radius;
             this.speed.x *= -1;

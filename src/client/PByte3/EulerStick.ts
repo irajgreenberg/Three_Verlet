@@ -10,15 +10,16 @@
 // Center of Creative Computation, SMU
 //----------------------------------------------
 
+//import { Vector3 } from 'three';
+import { Vector3 } from '/build/three.module.js';
 import { EulerNode } from './EulerNode.js';
-import * as THREE from '/build/three.module.js';
 
 export class EulerStick {
 
     // Note: for now keep non-dependent properties public
     start: EulerNode;
     end: EulerNode;
-    endSpeed: THREE.Vector3;
+    endSpeed: Vector3;
     springFactor: number;
     springDamping: number;
 
@@ -27,7 +28,7 @@ export class EulerStick {
         this.end = end;
         this.springFactor = springFactor;
         this.springDamping = springDamping;
-        this.endSpeed = new THREE.Vector3();
+        this.endSpeed = new Vector3();
     }
 
      constrainLen(): void {

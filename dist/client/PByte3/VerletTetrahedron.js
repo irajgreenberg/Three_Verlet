@@ -1,10 +1,10 @@
-import { AnchorPoint, GeometryDetail } from './IJGUtils.js';
+//import { Group, Color, Vector3 } from 'three';
+import { Group, Color, Vector3 } from '/build/three.module.js';
 import { VerletNode } from './VerletNode.js';
 import { VerletStrand } from './VerletStrand.js';
 import { VerletStick } from './VerletStick.js';
-import * as THREE from '/build/three.module.js';
-import { Vector3 } from '/build/three.module.js';
-export class VerletTetrahedron extends THREE.Group {
+import { AnchorPoint, GeometryDetail } from './IJGUtils.js';
+export class VerletTetrahedron extends Group {
     constructor(pos, radius, tension, isGrowable = false) {
         super();
         this.radius = 0;
@@ -27,20 +27,20 @@ export class VerletTetrahedron extends THREE.Group {
         //this.position.set(pos.x, pos.y, pos.z);
         //top node
         this.nodesVecs.push(new Vector3(pos.x, pos.y + radius, pos.z));
-        this.nodes.push(new VerletNode(new Vector3(pos.x, pos.y + radius, pos.z), .01, new THREE.Color(0), GeometryDetail.ICOSA));
-        this.nodesOrig.push(new VerletNode(new Vector3(pos.x, pos.y + radius, pos.z), .01, new THREE.Color(0), GeometryDetail.ICOSA));
+        this.nodes.push(new VerletNode(new Vector3(pos.x, pos.y + radius, pos.z), .01, new Color(0), GeometryDetail.ICOSA));
+        this.nodesOrig.push(new VerletNode(new Vector3(pos.x, pos.y + radius, pos.z), .01, new Color(0), GeometryDetail.ICOSA));
         // traingle ring
         let theta = 0;
         for (var i = 0; i < 3; i++) {
             this.nodesVecs.push(new Vector3(pos.x + Math.sin(theta) * radius, pos.y, pos.z + Math.cos(theta) * radius));
-            this.nodes.push(new VerletNode(new Vector3(pos.x + Math.sin(theta) * radius, pos.y, pos.z + Math.cos(theta) * radius), .01, new THREE.Color(0), GeometryDetail.ICOSA));
-            this.nodesOrig.push(new VerletNode(new Vector3(pos.x + Math.sin(theta) * radius, pos.y, pos.z + Math.cos(theta) * radius), .01, new THREE.Color(0), GeometryDetail.ICOSA));
+            this.nodes.push(new VerletNode(new Vector3(pos.x + Math.sin(theta) * radius, pos.y, pos.z + Math.cos(theta) * radius), .01, new Color(0), GeometryDetail.ICOSA));
+            this.nodesOrig.push(new VerletNode(new Vector3(pos.x + Math.sin(theta) * radius, pos.y, pos.z + Math.cos(theta) * radius), .01, new Color(0), GeometryDetail.ICOSA));
             theta += 120 * Math.PI / 180;
         }
         // bottom node
         this.nodesVecs.push(new Vector3(pos.x, pos.y - radius, pos.z));
-        this.nodes.push(new VerletNode(new Vector3(pos.x, pos.y - radius, pos.z), .01, new THREE.Color(0), GeometryDetail.ICOSA));
-        this.nodesOrig.push(new VerletNode(new Vector3(pos.x, pos.y - radius, pos.z), .01, new THREE.Color(0), GeometryDetail.ICOSA));
+        this.nodes.push(new VerletNode(new Vector3(pos.x, pos.y - radius, pos.z), .01, new Color(0), GeometryDetail.ICOSA));
+        this.nodesOrig.push(new VerletNode(new Vector3(pos.x, pos.y - radius, pos.z), .01, new Color(0), GeometryDetail.ICOSA));
         // add nodes and sticks to group
         if (!this.isGrowable) { // add at contruction is no growable
             for (var n of this.nodes) {
@@ -108,7 +108,7 @@ export class VerletTetrahedron extends THREE.Group {
         for (var i = 0; i < this.tetraTendrils.length; i++) {
             this.tetraTendrils[i].setHeadPosition(this.nodes[heads[i]].position);
             this.tetraTendrils[i].setTailPosition(this.nodes[tails[i]].position);
-            //this.tetraTendrils[i].setStrandMaterials(new THREE.Color(0xFF5500), .45);
+            //this.tetraTendrils[i].setStrandMaterials(new Color(0xFF5500), .45);
         }
         for (var t of this.tetraTendrils) {
             t.verlet();
@@ -150,7 +150,7 @@ export class VerletTetrahedron extends THREE.Group {
         this.freqDrama *= this.pulseDamping;
         this.ampDrama *= this.pulseDamping;
     }
-    // pulseNodes(ampRange: THREE.Vector2, freqsRange: THREE.Vector2): void {
+    // pulseNodes(ampRange: Vector2, freqsRange: Vector2): void {
     //     for (var i = 0; i < this.nodes.length; i++) {
     //         this.nodesOrig[index].position.addScalar(Math.sin(this.pulseTheta) * (amp + this.ampDrama));
     //         this.nodes[index].position.set(this.nodesOrig[index].position.x, this.nodesOrig[index].position.y, this.nodesOrig[index].position.z);

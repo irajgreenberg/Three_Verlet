@@ -5,15 +5,16 @@
 
 // Creates Euler Tendrils - motion/springin based on speed
 
-import * as THREE from '/build/three.module.js';
+//import {Group, Geometry, MeshBasicMaterial, Line, MathUtils, LineBasicMaterial, Material, Vector3} from 'three';
+import {Group, Geometry, MeshBasicMaterial, Line, MathUtils, LineBasicMaterial, Material, Vector3} from '/build/three.module.js';
 import { EulerNode } from './EulerNode.js';
 import { EulerStick } from './EulerStick.js';
 
 
 //const tendrilCount: number = 20;
-export class EulerStrand extends THREE.Group {
-    public head: THREE.Vector3
-    public tail: THREE.Vector3
+export class EulerStrand extends Group {
+    public head: Vector3
+    public tail: Vector3
     segmentCount: number;
     segments: EulerStick[];
     nodes: EulerNode[];
@@ -22,12 +23,12 @@ export class EulerStrand extends THREE.Group {
     // controls spring tension between adjacent nodes
     elasticity: number;
     damping: number
-    geometry = new THREE.Geometry();
-    material = new THREE.MeshBasicMaterial({ color: 0xffffff, });
-    public tendril: THREE.Line;
+    geometry = new Geometry();
+    material = new MeshBasicMaterial({ color: 0xffffff, });
+    public tendril: Line;
 
 
-    constructor(head: THREE.Vector3, tail: THREE.Vector3, segmentCount: number, elasticity: number = .5, damping: number = .725) {
+    constructor(head: Vector3, tail: Vector3, segmentCount: number, elasticity: number = .5, damping: number = .725) {
         super();
         this.head = head;
         this.tail = tail;
@@ -38,11 +39,11 @@ export class EulerStrand extends THREE.Group {
         this.elasticity = elasticity;
         this.damping = damping;
         // encapsulaes stick data
-        this.tendril = new THREE.Line();
+        this.tendril = new Line();
 
 
         // local vars for segment calcuations
-        let deltaVec = new THREE.Vector3();
+        let deltaVec = new Vector3();
         // get chain vector
         deltaVec.subVectors(this.tail, this.head);
         let chainLen = deltaVec.length();
@@ -52,7 +53,7 @@ export class EulerStrand extends THREE.Group {
 
         // Strand nodes
         for (var i = 0; i < this.nodes.length; i++) {
-            this.nodes[i] = new EulerNode(new THREE.Vector3(this.head.x + deltaVec.x * segLen * i, this.head.y + deltaVec.y * segLen * i, this.head.z + deltaVec.z * segLen * i), THREE.MathUtils.randFloat(.002, .007), new THREE.Vector3(THREE.MathUtils.randFloatSpread(.01), THREE.MathUtils.randFloatSpread(.006), THREE.MathUtils.randFloatSpread(.008)));
+            this.nodes[i] = new EulerNode(new Vector3(this.head.x + deltaVec.x * segLen * i, this.head.y + deltaVec.y * segLen * i, this.head.z + deltaVec.z * segLen * i), MathUtils.randFloat(.002, .007), new Vector3(MathUtils.randFloatSpread(.01), MathUtils.randFloatSpread(.006), MathUtils.randFloatSpread(.008)));
             // show nodes
             this.add(this.nodes[i]);
         }
@@ -63,10 +64,10 @@ export class EulerStrand extends THREE.Group {
             if (i === this.segments.length - 1) { this.geometry.vertices.push(this.segments[i].end.position) }
         }
 
-        let lineMaterial = new THREE.LineBasicMaterial({ color: 0x22ff22, linewidth: 5 });
-        this.tendril = new THREE.Line(this.geometry, lineMaterial);
+        let lineMaterial = new LineBasicMaterial({ color: 0x22ff22, linewidth: 5 });
+        this.tendril = new Line(this.geometry, lineMaterial);
         //this.tendril.material.transparent = true; //annoying ide can't accurately track this
-        let tenMat = this.tendril.material as THREE.Material // need assertion  
+        let tenMat = this.tendril.material as Material // need assertion  
         tenMat.opacity = .25; //annoying ide can't accurately track this
         //this.tendril.
         this.add(this.tendril);
@@ -89,7 +90,7 @@ export class EulerStrand extends THREE.Group {
         this.geometry.verticesNeedUpdate = true;
     }
 
-    public constrainBounds(bounds: THREE.Vector3): void {
+    public constrainBounds(bounds: Vector3): void {
         for (var i = 0; i < this.nodes.length; i++) {
             this.nodes[i].constrainBounds(bounds);
         }

@@ -1,4 +1,5 @@
-import * as THREE from '/build/three.module.js';
+//import { Vector3, Color} from 'three';
+import { Vector3, Color} from '/build/three.module.js';
 
 // Verlet stick terminal anchoring
 export enum AnchorPoint {
@@ -53,13 +54,13 @@ export enum GeometryDetail {
 
 // Organism propulsion
 export class Propulsion {
-    direction: THREE.Vector3;
-    force: THREE.Vector3;
-    frequency: THREE.Vector3;
+    direction: Vector3;
+    force: Vector3;
+    frequency: Vector3;
 
-    constructor(direction: THREE.Vector3 = new THREE.Vector3(0, 1, 0),
-        force: THREE.Vector3 = new THREE.Vector3(0, 0, 0),
-        frequency: THREE.Vector3 = new THREE.Vector3(0, 0, 0)) {
+    constructor(direction: Vector3 = new Vector3(0, 1, 0),
+        force: Vector3 = new Vector3(0, 0, 0),
+        frequency: Vector3 = new Vector3(0, 0, 0)) {
         this.direction = direction;
         this.force = force;
         this.frequency = frequency;
@@ -68,29 +69,29 @@ export class Propulsion {
 
 // Organism Materials
 export class VerletMaterials {
-    spineNodeColor: THREE.Color = new THREE.Color(.5, .5, .5);
-    spineColor: THREE.Color = new THREE.Color(.5, .5, .5);
+    spineNodeColor: Color = new Color(.5, .5, .5);
+    spineColor: Color = new Color(.5, .5, .5);
     spineAlpha: number = 1.0;
-    sliceColor: THREE.Color = new THREE.Color(.5, .5, .5);
+    sliceColor: Color = new Color(.5, .5, .5);
     sliceAlpha: number = 1.0;
-    tendrilNodeColor: THREE.Color = new THREE.Color(.5, .5, .5);
-    tendrilColor: THREE.Color = new THREE.Color(.5, .5, .5);
+    tendrilNodeColor: Color = new Color(.5, .5, .5);
+    tendrilColor: Color = new Color(.5, .5, .5);
     tendrilAlpha: number = 1.0;
-    ciliaNodeColor: THREE.Color = new THREE.Color(.5, .5, .5);
-    ciliaColor: THREE.Color = new THREE.Color(.5, .5, .5);
+    ciliaNodeColor: Color = new Color(.5, .5, .5);
+    ciliaColor: Color = new Color(.5, .5, .5);
     ciliaAlpha: number = 1.0;
 
     constructor(
-        spineNodeColor: THREE.Color = new THREE.Color(.5, .5, .5),
-        spineColor: THREE.Color = new THREE.Color(.5, .5, .5),
+        spineNodeColor: Color = new Color(.5, .5, .5),
+        spineColor: Color = new Color(.5, .5, .5),
         spineAlpha: number = .5,
-        sliceColor: THREE.Color = new THREE.Color(.5, .5, .5),
+        sliceColor: Color = new Color(.5, .5, .5),
         sliceAlpha: number = .5,
-        tendrilNodeColor: THREE.Color = new THREE.Color(.5, .5, .5),
-        tendrilColor: THREE.Color = new THREE.Color(.5, .5, .5),
+        tendrilNodeColor: Color = new Color(.5, .5, .5),
+        tendrilColor: Color = new Color(.5, .5, .5),
         tendrilAlpha: number = .5,
-        ciliaNodeColor: THREE.Color = new THREE.Color(.5, .5, .5),
-        ciliaColor: THREE.Color = new THREE.Color(.5, .5, .5),
+        ciliaNodeColor: Color = new Color(.5, .5, .5),
+        ciliaColor: Color = new Color(.5, .5, .5),
         ciliaAlpha: number = .5) {
 
         this.spineNodeColor = spineNodeColor;

@@ -1,4 +1,5 @@
-import * as THREE from '/build/three.module.js';
+//import { Vector3, Color} from 'three';
+import { Vector3, Color } from '/build/three.module.js';
 // Verlet stick terminal anchoring
 export var AnchorPoint;
 (function (AnchorPoint) {
@@ -50,7 +51,7 @@ export var GeometryDetail;
 })(GeometryDetail || (GeometryDetail = {}));
 // Organism propulsion
 export class Propulsion {
-    constructor(direction = new THREE.Vector3(0, 1, 0), force = new THREE.Vector3(0, 0, 0), frequency = new THREE.Vector3(0, 0, 0)) {
+    constructor(direction = new Vector3(0, 1, 0), force = new Vector3(0, 0, 0), frequency = new Vector3(0, 0, 0)) {
         this.direction = direction;
         this.force = force;
         this.frequency = frequency;
@@ -58,17 +59,17 @@ export class Propulsion {
 }
 // Organism Materials
 export class VerletMaterials {
-    constructor(spineNodeColor = new THREE.Color(.5, .5, .5), spineColor = new THREE.Color(.5, .5, .5), spineAlpha = .5, sliceColor = new THREE.Color(.5, .5, .5), sliceAlpha = .5, tendrilNodeColor = new THREE.Color(.5, .5, .5), tendrilColor = new THREE.Color(.5, .5, .5), tendrilAlpha = .5, ciliaNodeColor = new THREE.Color(.5, .5, .5), ciliaColor = new THREE.Color(.5, .5, .5), ciliaAlpha = .5) {
-        this.spineNodeColor = new THREE.Color(.5, .5, .5);
-        this.spineColor = new THREE.Color(.5, .5, .5);
+    constructor(spineNodeColor = new Color(.5, .5, .5), spineColor = new Color(.5, .5, .5), spineAlpha = .5, sliceColor = new Color(.5, .5, .5), sliceAlpha = .5, tendrilNodeColor = new Color(.5, .5, .5), tendrilColor = new Color(.5, .5, .5), tendrilAlpha = .5, ciliaNodeColor = new Color(.5, .5, .5), ciliaColor = new Color(.5, .5, .5), ciliaAlpha = .5) {
+        this.spineNodeColor = new Color(.5, .5, .5);
+        this.spineColor = new Color(.5, .5, .5);
         this.spineAlpha = 1.0;
-        this.sliceColor = new THREE.Color(.5, .5, .5);
+        this.sliceColor = new Color(.5, .5, .5);
         this.sliceAlpha = 1.0;
-        this.tendrilNodeColor = new THREE.Color(.5, .5, .5);
-        this.tendrilColor = new THREE.Color(.5, .5, .5);
+        this.tendrilNodeColor = new Color(.5, .5, .5);
+        this.tendrilColor = new Color(.5, .5, .5);
         this.tendrilAlpha = 1.0;
-        this.ciliaNodeColor = new THREE.Color(.5, .5, .5);
-        this.ciliaColor = new THREE.Color(.5, .5, .5);
+        this.ciliaNodeColor = new Color(.5, .5, .5);
+        this.ciliaColor = new Color(.5, .5, .5);
         this.ciliaAlpha = 1.0;
         this.spineNodeColor = spineNodeColor;
         this.spineColor = spineColor;

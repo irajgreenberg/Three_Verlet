@@ -6,10 +6,11 @@
 // Original Author: Ira Greenberg, 11/2020
 // Center of Creative Computation, SMU
 //----------------------------------------------
-import * as THREE from '/build/three.module.js';
-export class EulerNode extends THREE.Mesh {
-    constructor(pos, radius = 0.005, speed = new THREE.Vector3()) {
-        super(new THREE.SphereBufferGeometry(radius), new THREE.MeshBasicMaterial({ color: 0xCC4444 }));
+//import { Mesh, Vector3, SphereBufferGeometry, MeshBasicMaterial, MathUtils } from 'three';
+import { Mesh, Vector3, SphereBufferGeometry, MeshBasicMaterial, MathUtils } from '/build/three.module.js';
+export class EulerNode extends Mesh {
+    constructor(pos, radius = 0.005, speed = new Vector3()) {
+        super(new SphereBufferGeometry(radius), new MeshBasicMaterial({ color: 0xCC4444 }));
         this.theta = 0;
         this.radius = radius;
         this.speed = speed;
@@ -17,9 +18,9 @@ export class EulerNode extends THREE.Mesh {
     }
     // Motion determined by position comparison between current and previus frames
     move() {
-        let temp = new THREE.Vector3(this.speed.x + Math.sin(this.theta) * THREE.MathUtils.randFloat(.001, .005), this.speed.y + Math.sin(this.theta) * THREE.MathUtils.randFloat(.001, .005), this.speed.z + Math.sin(this.theta) * THREE.MathUtils.randFloat(.0001, .001));
+        let temp = new Vector3(this.speed.x + Math.sin(this.theta) * MathUtils.randFloat(.001, .005), this.speed.y + Math.sin(this.theta) * MathUtils.randFloat(.001, .005), this.speed.z + Math.sin(this.theta) * MathUtils.randFloat(.0001, .001));
         this.position.add(temp);
-        this.theta += Math.PI / THREE.MathUtils.randFloat(2, 10);
+        this.theta += Math.PI / MathUtils.randFloat(2, 10);
     }
     constrainBounds(bounds) {
         if (this.position.x > bounds.x / 2 - this.radius) {

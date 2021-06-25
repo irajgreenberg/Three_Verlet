@@ -3,19 +3,20 @@
 // Project is being produced in collaboration with
 // Courtney Brown, Melanie Clemmons & Brent Brimhall
 // Creates Verlet Tendrils - motion/springing based on displacement
-import * as THREE from '/build/three.module.js';
+//import {Group, Vector3, Geometry, Material, MeshBasicMaterial, LineBasicMaterial, Line, MathUtils, Color} from 'three';
+import { Group, Vector3, Geometry, MeshBasicMaterial, LineBasicMaterial, Line, MathUtils, Color } from '/build/three.module.js';
 import { VerletNode } from './VerletNode.js';
 import { VerletStick } from './VerletStick.js';
 import { AnchorPoint, GeometryDetail } from './IJGUtils.js';
 // helper customcurvepath
-// class TendrilCurve extends THREE.Curve {
+// class TendrilCurve extends Curve {
 // }
-export class VerletStrand extends THREE.Group {
-    constructor(head, tail, segmentCount, anchorPointDetail = AnchorPoint.NONE, elasticity = .5, nodeType = GeometryDetail.SPHERE_LOW, nodeRadius = THREE.MathUtils.randFloat(.0002, .0007)) {
+export class VerletStrand extends Group {
+    constructor(head, tail, segmentCount, anchorPointDetail = AnchorPoint.NONE, elasticity = .5, nodeType = GeometryDetail.SPHERE_LOW, nodeRadius = MathUtils.randFloat(.0002, .0007)) {
         super();
         this.areNodesVisible = true;
-        this.geometry = new THREE.Geometry();
-        this.material = new THREE.MeshBasicMaterial({ color: 0xffffff, });
+        this.geometry = new Geometry();
+        this.material = new MeshBasicMaterial({ color: 0xffffff, });
         // used to cheaply rotate nodes around their local axis
         // should eventually be set as a per node property
         this.testRot = 0;
@@ -28,9 +29,9 @@ export class VerletStrand extends THREE.Group {
         this.elasticity = elasticity;
         this.nodeType = nodeType;
         // encapsulaes stick data
-        this.tendril = new THREE.Line();
+        this.tendril = new Line();
         // local vars for segment calcuations
-        let deltaVec = new THREE.Vector3();
+        let deltaVec = new Vector3();
         // get chain vector
         deltaVec.subVectors(this.tail, this.head);
         let chainLen = deltaVec.length();
@@ -39,13 +40,13 @@ export class VerletStrand extends THREE.Group {
         deltaVec.normalize();
         for (var i = 0; i < this.nodes.length; i++) {
             // working, but copies values - so lose reference to node object pesition in memory
-            this.nodes[i] = new VerletNode(new THREE.Vector3(this.head.x + deltaVec.x * segLen * i, this.head.y + deltaVec.y * segLen * i, this.head.z + deltaVec.z * segLen * i), THREE.MathUtils.randFloat(.0002, .0007), new THREE.Color(.5, .5, .5), this.nodeType);
+            this.nodes[i] = new VerletNode(new Vector3(this.head.x + deltaVec.x * segLen * i, this.head.y + deltaVec.y * segLen * i, this.head.z + deltaVec.z * segLen * i), MathUtils.randFloat(.0002, .0007), new Color(.5, .5, .5), this.nodeType);
             // NOT working
             // deltaVec.multiplyScalar(segLen * i);
             // this.head.add(deltaVec);
             // console.log(this.head);
-            // this.nodes[i] = new VerletNode(this.head, THREE.MathUtils.randFloat(.0002, .0007),
-            //     new THREE.Color(.5, .5, .5), this.nodeType);
+            // this.nodes[i] = new VerletNode(this.head, MathUtils.randFloat(.0002, .0007),
+            //     new Color(.5, .5, .5), this.nodeType);
             // show nodes
             this.add(this.nodes[i]);
         }
@@ -121,7 +122,7 @@ export class VerletStrand extends THREE.Group {
                 break;
             case AnchorPoint.RAND:
                 for (var i = 0; i < this.segments.length; i++) {
-                    if (THREE.MathUtils.randInt(0, 1) === 0) {
+                    if (MathUtils.randInt(0, 1) === 0) {
                         this.segments[i] = new VerletStick(this.nodes[i], this.nodes[i + 1], this.elasticity, AnchorPoint.RAND);
                     }
                     else {
@@ -142,8 +143,8 @@ export class VerletStrand extends THREE.Group {
                     }
                 }
         }
-        let lineMaterial = new THREE.LineBasicMaterial({ color: 0xcc55cc });
-        this.tendril = new THREE.Line(this.geometry, lineMaterial);
+        let lineMaterial = new LineBasicMaterial({ color: 0xcc55cc });
+        this.tendril = new Line(this.geometry, lineMaterial);
         let tenMat = this.tendril.material; // assertion to keep TS Intellisence happy
         tenMat.transparent = true; //annoying ide can't accurately track this w/o insertion
         tenMat.opacity = .25; //annoying ide can't accurately track this w/o insertion
@@ -173,9 +174,9 @@ export class VerletStrand extends THREE.Group {
         }
         this.geometry.verticesNeedUpdate = true;
     }
-    constrainBounds(bounds, offset = new THREE.Vector3()) {
+    constrainBounds(bounds, offset = new Vector3()) {
         for (var i = 0; i < this.nodes.length; i++) {
-            let v = new THREE.Vector3(bounds.x + offset.x, bounds.y + offset.y, bounds.z + offset.z);
+            let v = new Vector3(bounds.x + offset.x, bounds.y + offset.y, bounds.z + offset.z);
             this.nodes[i].constrainBounds(v);
         }
     }

@@ -6,97 +6,98 @@
 // Original Author: Ira Greenberg, 11/2020
 // Center of Creative Computation, SMU
 //----------------------------------------------
-import * as THREE from '/build/three.module.js';
-//import * as THREE from 'three';
+//import { Mesh, Vector3, Color, CircleBufferGeometry, MeshBasicMaterial, TetrahedronBufferGeometry, MeshPhongMaterial, BoxBufferGeometry,
+// OctahedronBufferGeometry, IcosahedronBufferGeometry, DodecahedronBufferGeometry, SphereBufferGeometry, DoubleSide } from 'three';
+import { Mesh, Vector3, Color, CircleBufferGeometry, MeshBasicMaterial, TetrahedronBufferGeometry, MeshPhongMaterial, BoxBufferGeometry, OctahedronBufferGeometry, IcosahedronBufferGeometry, DodecahedronBufferGeometry, SphereBufferGeometry, DoubleSide } from '/build/three.module.js';
 import { GeometryDetail } from './IJGUtils.js';
-export class VerletNode extends THREE.Mesh {
-    constructor(pos, radius = 0.005, color = new THREE.Color(.5, .5, .5), geomDetail = GeometryDetail.SPHERE_LOW, isNodeVisible = true) {
+export class VerletNode extends Mesh {
+    constructor(pos, radius = 0.005, color = new Color(.5, .5, .5), geomDetail = GeometryDetail.SPHERE_LOW, isNodeVisible = true) {
         // determine node geometry
         let geom;
         let mat;
         switch (geomDetail) {
             case GeometryDetail.TRI:
-                geom = new THREE.CircleBufferGeometry(radius, GeometryDetail.TRI);
-                mat = new THREE.MeshBasicMaterial({ color: color });
+                geom = new CircleBufferGeometry(radius, GeometryDetail.TRI);
+                mat = new MeshBasicMaterial({ color: color });
                 break;
             case GeometryDetail.QUAD:
-                geom = new THREE.CircleBufferGeometry(radius, GeometryDetail.QUAD);
-                mat = new THREE.MeshBasicMaterial({ color: color });
+                geom = new CircleBufferGeometry(radius, GeometryDetail.QUAD);
+                mat = new MeshBasicMaterial({ color: color });
                 break;
             case GeometryDetail.PENT:
-                geom = new THREE.CircleBufferGeometry(radius, GeometryDetail.PENT);
-                mat = new THREE.MeshBasicMaterial({ color: color });
+                geom = new CircleBufferGeometry(radius, GeometryDetail.PENT);
+                mat = new MeshBasicMaterial({ color: color });
                 break;
             case GeometryDetail.HEX:
-                geom = new THREE.CircleBufferGeometry(radius, GeometryDetail.HEX);
-                mat = new THREE.MeshBasicMaterial({ color: color });
+                geom = new CircleBufferGeometry(radius, GeometryDetail.HEX);
+                mat = new MeshBasicMaterial({ color: color });
                 break;
             case GeometryDetail.HEP:
-                geom = new THREE.CircleBufferGeometry(radius, GeometryDetail.HEP);
-                mat = new THREE.MeshBasicMaterial({ color: color });
+                geom = new CircleBufferGeometry(radius, GeometryDetail.HEP);
+                mat = new MeshBasicMaterial({ color: color });
                 break;
             case GeometryDetail.OCT:
-                geom = new THREE.CircleBufferGeometry(radius, GeometryDetail.OCT);
-                mat = new THREE.MeshBasicMaterial({ color: color });
+                geom = new CircleBufferGeometry(radius, GeometryDetail.OCT);
+                mat = new MeshBasicMaterial({ color: color });
                 break;
             case GeometryDetail.DEC:
-                geom = new THREE.CircleBufferGeometry(radius, GeometryDetail.DEC);
-                mat = new THREE.MeshBasicMaterial({ color: color });
+                geom = new CircleBufferGeometry(radius, GeometryDetail.DEC);
+                mat = new MeshBasicMaterial({ color: color });
                 break;
             case GeometryDetail.DODEC:
-                geom = new THREE.CircleBufferGeometry(radius, GeometryDetail.DODEC);
-                mat = new THREE.MeshBasicMaterial({ color: color });
+                geom = new CircleBufferGeometry(radius, GeometryDetail.DODEC);
+                mat = new MeshBasicMaterial({ color: color });
                 break;
             case GeometryDetail.TETRA:
-                geom = new THREE.TetrahedronBufferGeometry(radius);
-                mat = new THREE.MeshPhongMaterial({ color: color });
+                geom = new TetrahedronBufferGeometry(radius);
+                mat = new MeshPhongMaterial({ color: color });
                 break;
             case GeometryDetail.CUBE:
-                geom = new THREE.BoxBufferGeometry(radius, radius, radius);
-                mat = new THREE.MeshPhongMaterial({ color: color });
+                geom = new BoxBufferGeometry(radius, radius, radius);
+                mat = new MeshPhongMaterial({ color: color });
                 break;
             case GeometryDetail.OCTA:
-                geom = new THREE.OctahedronBufferGeometry(radius);
-                mat = new THREE.MeshPhongMaterial({ color: color });
+                geom = new OctahedronBufferGeometry(radius);
+                mat = new MeshPhongMaterial({ color: color });
                 break;
             case GeometryDetail.ICOSA:
-                geom = new THREE.IcosahedronBufferGeometry(radius);
-                mat = new THREE.MeshPhongMaterial({ color: color, wireframe: true });
-                // mat = new THREE.MeshPhongMaterial({ color: color });
+                geom = new IcosahedronBufferGeometry(radius);
+                mat = new MeshPhongMaterial({ color: color, wireframe: true });
+                // mat = new MeshPhongMaterial({ color: color });
                 break;
             case GeometryDetail.DODECA:
-                geom = new THREE.DodecahedronBufferGeometry(radius);
+                geom = new DodecahedronBufferGeometry(radius);
                 break;
             case GeometryDetail.SPHERE_LOW:
-                geom = new THREE.SphereBufferGeometry(radius, 8, 8);
-                mat = new THREE.MeshPhongMaterial({ color: color });
+                geom = new SphereBufferGeometry(radius, 8, 8);
+                mat = new MeshPhongMaterial({ color: color });
                 break;
             case GeometryDetail.SPHERE_MED:
-                geom = new THREE.SphereBufferGeometry(radius, 12, 12);
-                mat = new THREE.MeshPhongMaterial({ color: color });
+                geom = new SphereBufferGeometry(radius, 12, 12);
+                mat = new MeshPhongMaterial({ color: color });
                 break;
             case GeometryDetail.SPHERE_HIGH:
-                geom = new THREE.SphereBufferGeometry(radius, 18, 18);
-                mat = new THREE.MeshPhongMaterial({ color: color });
+                geom = new SphereBufferGeometry(radius, 18, 18);
+                mat = new MeshPhongMaterial({ color: color });
                 break;
             case GeometryDetail.SPHERE_SUPERHIGH:
-                geom = new THREE.SphereBufferGeometry(radius, 24, 24);
-                mat = new THREE.MeshPhongMaterial({ color: color });
+                geom = new SphereBufferGeometry(radius, 24, 24);
+                mat = new MeshPhongMaterial({ color: color });
                 break;
             case GeometryDetail.SPHERE_SUPERDUPERHIGH:
-                geom = new THREE.SphereBufferGeometry(radius, 32, 32);
-                mat = new THREE.MeshPhongMaterial({ color: color });
+                geom = new SphereBufferGeometry(radius, 32, 32);
+                mat = new MeshPhongMaterial({ color: color });
                 break;
             default:
-                geom = new THREE.CircleBufferGeometry(radius, GeometryDetail.TRI);
-                mat = new THREE.MeshBasicMaterial({ color: color });
+                geom = new CircleBufferGeometry(radius, GeometryDetail.TRI);
+                mat = new MeshBasicMaterial({ color: color });
         }
-        //super(geom, new THREE.MeshBasicMaterial({ color: color }));
+        //super(geom, new MeshBasicMaterial({ color: color }));
         super(geom, mat);
         // console.log(geomDetail);
         if (geomDetail < 13) { // show backs of poly nodes
             let mat = this.material;
-            mat.side = THREE.DoubleSide;
+            mat.side = DoubleSide;
         }
         this.radius = radius;
         this.color = color;
@@ -110,7 +111,7 @@ export class VerletNode extends THREE.Mesh {
     }
     // Motion determined by position comparison between current and previus frames
     verlet() {
-        let posTemp1 = new THREE.Vector3(this.position.x, this.position.y, this.position.z);
+        let posTemp1 = new Vector3(this.position.x, this.position.y, this.position.z);
         this.position.x += (this.position.x - this.posOld.x);
         this.position.y += (this.position.y - this.posOld.y);
         this.position.z += (this.position.z - this.posOld.z);

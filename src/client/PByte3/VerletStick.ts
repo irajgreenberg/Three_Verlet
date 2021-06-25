@@ -10,11 +10,12 @@
 // Center of Creative Computation, SMU
 //----------------------------------------------
 
-import * as THREE from '/build/three.module.js';
+//import {Group, Line, Geometry, LineBasicMaterial, Vector3, Color} from 'three';
+import {Group, Line, Geometry, LineBasicMaterial, Vector3, Color} from '/build/three.module.js';
 import { VerletNode } from './VerletNode.js';
 
 
-export class VerletStick extends THREE.Group {
+export class VerletStick extends Group {
 
   stickTension: number;
   // // anchor stick detail
@@ -22,9 +23,9 @@ export class VerletStick extends THREE.Group {
   start: VerletNode;
   end: VerletNode;
   len: number;
-  line: THREE.Line
-  lineGeometry = new THREE.Geometry();
-  lineMaterial: THREE.LineBasicMaterial;
+  line: Line
+  lineGeometry = new Geometry();
+  lineMaterial: LineBasicMaterial;
   isVisible: boolean
 
 
@@ -36,11 +37,11 @@ export class VerletStick extends THREE.Group {
     this.stickTension = stickTension;
     this.anchorTerminal = anchorTerminal;
     this.isVisible = isVisible;
-    this.lineMaterial = new THREE.LineBasicMaterial({ color: 0xcc55cc });
+    this.lineMaterial = new LineBasicMaterial({ color: 0xcc55cc });
     this.lineGeometry.vertices.push(this.start.position);
     this.lineGeometry.vertices.push(this.end.position);
-    this.lineMaterial = new THREE.LineBasicMaterial({ color: 0xcc55cc });
-    this.line = new THREE.Line(this.lineGeometry, this.lineMaterial);
+    this.lineMaterial = new LineBasicMaterial({ color: 0xcc55cc });
+    this.line = new Line(this.lineGeometry, this.lineMaterial);
     this.lineMaterial.transparent = true;
     this.lineMaterial.opacity = .25;
     this.add(this.line);
@@ -50,7 +51,7 @@ export class VerletStick extends THREE.Group {
     // accuracy factor
     let accuracyCount: number = 1; //TO DO: make externally controllable eventually
     for (var i = 0; i < accuracyCount; i++) {
-      let delta: THREE.Vector3 = new THREE.Vector3(
+      let delta: Vector3 = new Vector3(
         this.end.position.x - this.start.position.x,
         this.end.position.y - this.start.position.y,
         this.end.position.z - this.start.position.z);
@@ -92,7 +93,7 @@ export class VerletStick extends THREE.Group {
     }
   }
 
-  setColor(color: THREE.Color): void {
+  setColor(color: Color): void {
     this.lineMaterial.color = color;
   }
 

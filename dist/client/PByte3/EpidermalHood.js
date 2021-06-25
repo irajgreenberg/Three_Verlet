@@ -3,14 +3,14 @@
 // Project is being produced in collaboration with
 // Courtney Brown, Melanie Clemmons & Brent Brimhall
 // Creates Jellyfish like epidermal hood, powered by verlet strands
-import * as THREE from '/build/three.module.js';
+//import { Color, Group, Vector3, Line, Geometry, MeshBasicMaterial, MathUtils } from 'three';
+import { Group, Vector3, MathUtils } from '/build/three.module.js';
 import { VerletStick } from './VerletStick.js';
 import { VerletStrand } from './VerletStrand.js';
 import { AnchorPoint, Propulsion, VerletMaterials, GeometryDetail } from './IJGUtils.js';
-import { Vector3 } from '/build/three.module.js';
-//import { Vector3 } from '/build/three.module.js';
-export class EpidermalHood extends THREE.Group {
-    // leader: THREE.Vector3;
+//import { Vector3 } from '/build/module.js';
+export class EpidermalHood extends Group {
+    // leader: Vector3;
     constructor(position, radius, height, spineCount, sliceCount, constraintFactor, nodeTypes = [GeometryDetail.SPHERE_LOW, GeometryDetail.TETRA, GeometryDetail.TRI]) {
         super();
         this.radius = 0.0;
@@ -23,7 +23,7 @@ export class EpidermalHood extends THREE.Group {
         this.ciliaSegments = 0.0;
         this.cilialLength = 0.0;
         this.ciliaTension = 0.0;
-        this.dynamicsThetas = new THREE.Vector3(0.0, 0.0, 0.0);
+        this.dynamicsThetas = new Vector3(0.0, 0.0, 0.0);
         this.hasTendrils = false;
         this.pos = position;
         this.radius = radius;
@@ -53,7 +53,7 @@ export class EpidermalHood extends THREE.Group {
         let phi = 0.0; // rotation around Y-axis
         let k = 0; // poorly named slice counter
         for (var i = 0; i < this.spines.length; i++) {
-            this.spines[i] = new VerletStrand(new THREE.Vector3(), new THREE.Vector3(), this.sliceCount, AnchorPoint.HEAD_TAIL, this.constraintFactor, this.nodeTypes[0]);
+            this.spines[i] = new VerletStrand(new Vector3(), new Vector3(), this.sliceCount, AnchorPoint.HEAD_TAIL, this.constraintFactor, this.nodeTypes[0]);
             let theta = 0.0; // rotation around Z-axis
             for (var j = 0; j < this.sliceCount + 1; j++) {
                 // plot around z-axis
@@ -101,7 +101,7 @@ export class EpidermalHood extends THREE.Group {
         this.tendrilTension = tendrilTension;
         for (var i = 0; i < this.spines.length; i++) {
             // console.log(tendrilNodes[i].position);
-            this.tendrils[i] = new VerletStrand(tendrilNodes[i].position, new Vector3(tendrilNodes[i].position.x, tendrilNodes[i].position.y - THREE.MathUtils.randFloat(tendrilLength * .85, tendrilLength), tendrilNodes[i].position.z), this.tendrilSegments, AnchorPoint.HEAD_TAIL, THREE.MathUtils.randFloat(this.tendrilTension * .1, this.tendrilTension), this.nodeTypes[1]);
+            this.tendrils[i] = new VerletStrand(tendrilNodes[i].position, new Vector3(tendrilNodes[i].position.x, tendrilNodes[i].position.y - MathUtils.randFloat(tendrilLength * .85, tendrilLength), tendrilNodes[i].position.z), this.tendrilSegments, AnchorPoint.HEAD_TAIL, MathUtils.randFloat(this.tendrilTension * .1, this.tendrilTension), this.nodeTypes[1]);
             this.add(this.tendrils[i]);
         }
     }
@@ -118,7 +118,7 @@ export class EpidermalHood extends THREE.Group {
                 let vec = ciliaNodes[k].position.clone();
                 vec.normalize();
                 vec.multiplyScalar(this.cilialLength);
-                this.cilia[k] = new VerletStrand(ciliaNodes[k].position, new THREE.Vector3(ciliaNodes[k].position.x - vec.x, ciliaNodes[k].position.y - vec.y, ciliaNodes[k].position.z - vec.z), ciliaSegments, AnchorPoint.HEAD, this.ciliaTension, this.nodeTypes[2]);
+                this.cilia[k] = new VerletStrand(ciliaNodes[k].position, new Vector3(ciliaNodes[k].position.x - vec.x, ciliaNodes[k].position.y - vec.y, ciliaNodes[k].position.z - vec.z), ciliaSegments, AnchorPoint.HEAD, this.ciliaTension, this.nodeTypes[2]);
                 this.add(this.cilia[k]);
             }
         }

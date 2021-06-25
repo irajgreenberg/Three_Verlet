@@ -2,11 +2,12 @@
 // of an 'independent' softbody organism.
 // Project is being produced in collaboration with
 // Courtney Brown, Melanie Clemmons & Brent Brimhall
+//import { Color, Group, Vector2, Vector3 } from 'three';
 import { Color, Group, Vector3 } from '/build/three.module.js';
 import { VerletNode } from './VerletNode.js';
 import { VerletStick } from './VerletStick.js';
-import { AnchorPoint, GeometryDetail } from './IJGUtils.js';
 import { VerletStrand } from './VerletStrand.js';
+import { AnchorPoint, GeometryDetail } from './IJGUtils.js';
 // Verlet Sphere, constructed of 
 // VerletNodes and VereltSticks
 // Original Author: Ira Greenberg, 11/2020
@@ -146,7 +147,7 @@ export class VerletSphere extends Group {
     // start verlet offeset
     push(indices, vec) {
         for (var i = 0; i < indices.length; i++) {
-            this.nodes[indices[i]].position.x += vec.x; //THREE.MathUtils.randFloatSpread(vec.x);
+            this.nodes[indices[i]].position.x += vec.x; //MathUtils.randFloatSpread(vec.x);
             this.nodes[indices[i]].position.y += vec.y;
             this.nodes[indices[i]].position.z += vec.z;
         }

@@ -7,22 +7,23 @@
 // Original Author: Ira Greenberg, 11/2020
 // Center of Creative Computation, SMU
 //----------------------------------------------
-import * as THREE from '/build/three.module.js';
-export class VerletStick extends THREE.Group {
+//import {Group, Line, Geometry, LineBasicMaterial, Vector3, Color} from 'three';
+import { Group, Line, Geometry, LineBasicMaterial, Vector3 } from '/build/three.module.js';
+export class VerletStick extends Group {
     constructor(start, end, stickTension = .4, anchorTerminal = 0, isVisible = true) {
         super();
-        this.lineGeometry = new THREE.Geometry();
+        this.lineGeometry = new Geometry();
         this.start = start;
         this.end = end;
         this.len = this.start.position.distanceTo(this.end.position);
         this.stickTension = stickTension;
         this.anchorTerminal = anchorTerminal;
         this.isVisible = isVisible;
-        this.lineMaterial = new THREE.LineBasicMaterial({ color: 0xcc55cc });
+        this.lineMaterial = new LineBasicMaterial({ color: 0xcc55cc });
         this.lineGeometry.vertices.push(this.start.position);
         this.lineGeometry.vertices.push(this.end.position);
-        this.lineMaterial = new THREE.LineBasicMaterial({ color: 0xcc55cc });
-        this.line = new THREE.Line(this.lineGeometry, this.lineMaterial);
+        this.lineMaterial = new LineBasicMaterial({ color: 0xcc55cc });
+        this.line = new Line(this.lineGeometry, this.lineMaterial);
         this.lineMaterial.transparent = true;
         this.lineMaterial.opacity = .25;
         this.add(this.line);
@@ -31,7 +32,7 @@ export class VerletStick extends THREE.Group {
         // accuracy factor
         let accuracyCount = 1; //TO DO: make externally controllable eventually
         for (var i = 0; i < accuracyCount; i++) {
-            let delta = new THREE.Vector3(this.end.position.x - this.start.position.x, this.end.position.y - this.start.position.y, this.end.position.z - this.start.position.z);
+            let delta = new Vector3(this.end.position.x - this.start.position.x, this.end.position.y - this.start.position.y, this.end.position.z - this.start.position.z);
             let deltaLength = delta.length();
             // nodeConstrainFactors optionally anchor stick on one side
             let node1ConstrainFactor = 0.5;

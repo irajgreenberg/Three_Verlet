@@ -2,14 +2,20 @@
 // of an 'independent' softbody organism.
 // Project is being produced in collaboration with
 // Courtney Brown, Melanie Clemmons & Brent Brimhall
-import * as THREE from '/build/three.module.js';
+// Springing based on Euler motion and simple interia
+// manages constraint of start and end vecs
+// Original Author: Ira Greenberg, 11/2020
+// Center of Creative Computation, SMU
+//----------------------------------------------
+//import { Vector3 } from 'three';
+import { Vector3 } from '/build/three.module.js';
 export class EulerStick {
     constructor(start, end, springFactor = .4, springDamping = .775) {
         this.start = start;
         this.end = end;
         this.springFactor = springFactor;
         this.springDamping = springDamping;
-        this.endSpeed = new THREE.Vector3();
+        this.endSpeed = new Vector3();
     }
     constrainLen() {
         //move center point

@@ -5,9 +5,9 @@
 // Center of Creative Computation, SMU
 //----------------------------------------------
 
-import * as THREE from '/build/three.module.js';
-import { VerletNode } from './VerletNode.js';
+//import { BufferGeometry, Group, Mesh, NoColors, Texture, Triangle, Vector3 } from 'three';
 import { BufferGeometry, Group, Mesh, NoColors, Texture, Triangle, Vector3 } from '/build/three.module.js';
+import { VerletNode } from './VerletNode.js';
 import { VerletStick } from './VerletStick.js';
 import { AnchorPlane, AnchorPoint } from './IJGUtils.js';
 import { isInterfaceDeclaration } from 'typescript';
@@ -115,13 +115,13 @@ export class VerletPlane extends Group {
 
         // create buffered geometry
         // this.vertices = new Float32Array(vertVals);
-        // this.setAttribute('position', new THREE.BufferAttribute(this.vertices, 3));
+        // this.setAttribute('position', new BufferAttribute(this.vertices, 3));
     }
 
     // start verlet offeset
     push(indices: number[], vec: Vector3) {
         for (var i = 0; i < indices.length; i++) {
-            this.nodes1D[indices[i]].position.x += vec.x;//THREE.MathUtils.randFloatSpread(vec.x);
+            this.nodes1D[indices[i]].position.x += vec.x;//MathUtils.randFloatSpread(vec.x);
             this.nodes1D[indices[i]].position.y += vec.y;
             this.nodes1D[indices[i]].position.z += vec.z;
         }

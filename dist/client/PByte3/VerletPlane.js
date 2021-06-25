@@ -1,7 +1,11 @@
 // Verlet Plane
 // Composed of Verlet Sticks and Nodes
-import { VerletNode } from './VerletNode.js';
+// Original Author: Ira Greenberg, 11/2020
+// Center of Creative Computation, SMU
+//----------------------------------------------
+//import { BufferGeometry, Group, Mesh, NoColors, Texture, Triangle, Vector3 } from 'three';
 import { Group, Vector3 } from '/build/three.module.js';
+import { VerletNode } from './VerletNode.js';
 import { VerletStick } from './VerletStick.js';
 import { AnchorPlane } from './IJGUtils.js';
 export class VerletPlane extends Group {
@@ -84,12 +88,12 @@ export class VerletPlane extends Group {
         //}
         // create buffered geometry
         // this.vertices = new Float32Array(vertVals);
-        // this.setAttribute('position', new THREE.BufferAttribute(this.vertices, 3));
+        // this.setAttribute('position', new BufferAttribute(this.vertices, 3));
     }
     // start verlet offeset
     push(indices, vec) {
         for (var i = 0; i < indices.length; i++) {
-            this.nodes1D[indices[i]].position.x += vec.x; //THREE.MathUtils.randFloatSpread(vec.x);
+            this.nodes1D[indices[i]].position.x += vec.x; //MathUtils.randFloatSpread(vec.x);
             this.nodes1D[indices[i]].position.y += vec.y;
             this.nodes1D[indices[i]].position.z += vec.z;
         }
