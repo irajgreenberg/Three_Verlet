@@ -41,7 +41,7 @@ export class VerletPlane extends Group {
     // for conveninece: pushing plane middle node
     middleNodeIndex: number = 0;
 
-    constructor(width: number, height: number, widthSegs: number, heightSegs: number, diffuseImage: Texture, anchor: AnchorPlane = AnchorPlane.NONE, elasticity: number = .5, axisPlane: AxesPlane = AxesPlane.XY_AXIS) {
+    constructor(width: number, height: number, widthSegs: number, heightSegs: number, diffuseImage: Texture, anchor: AnchorPlane = AnchorPlane.NONE, elasticity: number = .5, axisPlane: AxesPlane = AxesPlane.ZX_AXIS) {
         super();
         this.width = width;
         this.height = height;
@@ -239,19 +239,41 @@ export class VerletPlane extends Group {
                     //  this.rowSticks[i].lineMaterial.opacity = 0;
                     this.rowSticks[i].anchorTerminal = 2;
                 }
-                for (let i = 0; i < this.colSticks.length; i += this.widthSegs) {
-                    //   this.colSticks[i].lineMaterial.opacity = 0;
+                for (let i = 0; i < this.colSticks.length; i += this.heightSegs) {
+                    // this.colSticks[i].lineMaterial.opacity = 0;
                     this.colSticks[i].anchorTerminal = 1;
                 }
 
                 //right edge
-                for (let i = (this.heightSegs + 1) * 5; i < this.rowSticks.length; i++) {
-                    //this.rowSticks[i].lineMaterial.opacity = 0;
+                for (let i = (this.heightSegs + 1) * (this.widthSegs - 1); i < this.rowSticks.length; i++) {
+                    // this.rowSticks[i].lineMaterial.opacity = 0;
                     this.rowSticks[i].anchorTerminal = 2;
                 }
-                for (let i = this.widthSegs * 6; i < this.colSticks.length; i++) {
+                //console.log(this.heightSegs);
+                for (let i = this.widthSegs * this.heightSegs; i < this.colSticks.length; i++) {
                     // this.colSticks[i].lineMaterial.opacity = 0;
                     this.colSticks[i].anchorTerminal = 1;
+                }
+
+                //bottom edge
+                for (let i = this.heightSegs; i < this.rowSticks.length; i += this.heightSegs + 1) {
+                    //this.rowSticks[i].lineMaterial.opacity = 0;
+                    this.rowSticks[i].anchorTerminal = 1;
+                }
+                for (let i = this.heightSegs - 1; i < this.colSticks.length; i += this.heightSegs) {
+                    //this.colSticks[i].lineMaterial.opacity = 0;
+                    this.colSticks[i].anchorTerminal = 2;
+                }
+
+
+                //left edge
+                for (let i = 0; i < this.heightSegs + 1; i++) {
+                    // this.rowSticks[i].lineMaterial.opacity = 0;
+                    this.rowSticks[i].anchorTerminal = 1;
+                }
+                for (let i = 0; i < this.heightSegs; i++) {
+                    //  this.colSticks[i].lineMaterial.opacity = 0;
+                    this.colSticks[i].anchorTerminal = 2;
                 }
                 break;
 

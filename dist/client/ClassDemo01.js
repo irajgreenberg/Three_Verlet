@@ -1,20 +1,5 @@
 //Boilerplate Typescript/Three/VSCode, by Sean Bradley:
 //git clone https://github.com/Sean-Bradley/Three.js-TypeScript-Boilerplate.git
-// For new projects:  1. npm install -g typescript, 
-//                    2. npm install
-// To run:            3. npm run dev 
-//                    Server runs locally at port 3000
-// These experiments support development
-// of an 'independent' softbody organism.
-// Work is being produced in collaboration with
-// Courtney Brown, Melanie Clemmons & Brent Brimhall
-// Draw a Verlet controlled solid
-// contained within a cube
-// Original Author: Ira Greenberg, 11/2020
-// Center of Creative Computation, SMU
-//----------------------------------------------
-// import * as THREE from "three";
-// import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { AnchorPlane } from './PByte3/IJGUtils.js';
 import { VerletPlane } from './PByte3/VerletPlane.js';
 import * as THREE from '/build/three.module.js';
@@ -29,12 +14,14 @@ const controls = new OrbitControls(camera, renderer.domElement);
 document.addEventListener('click', onMouse, false);
 //custom geometry
 const texture = new TextureLoader().load("resources/orgImg.png");
-let vp = new VerletPlane(2, 2, 26, 26, texture, AnchorPlane.EDGES_ALL);
+let vp = new VerletPlane(3, 3, 50, 50, texture, AnchorPlane.EDGES_ALL);
 scene.add(vp);
 // push middle node to start verlet
 vp.push([vp.middleNodeIndex], new Vector3(.23, -.3, -.9));
 //vp.setNodesOff(AnchorPlane.CORNER_ALL);
 vp.setNodesOff(AnchorPlane.EDGES_ALL);
+// for teting interaction with mesh
+let theta = 0;
 // cube bounds
 const bounds = new THREE.Vector3(8, 8, 8);
 // Create/add outer box
@@ -56,8 +43,8 @@ light2.position.set(-2, 6, 1);
 //light2.target.position.set(0, 0, 0);
 scene.add(light2);
 //scene.add(light2.target);
-camera.position.y = .3;
-camera.position.z = 4;
+camera.position.y = .8;
+camera.position.z = 2;
 window.addEventListener('resize', onWindowResize, false);
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -67,10 +54,14 @@ function onWindowResize() {
 }
 var animate = function () {
     requestAnimationFrame(animate);
-    // controls.autoRotate = true;
+    controls.autoRotate = true;
     camera.lookAt(scene.position); //0,0,0
     vp.verlet();
     vp.constrain(bounds);
+    // don't push edge nodes or plane becomes unstable
+    // vp.push([Math.round(Math.random() * vp.nodes1D.length - 1)], new Vector3(Math.random() * .065, Math.random() * -.03, -Math.random() * .02));
+    vp.push([vp.middleNodeIndex], new Vector3(0, -Math.sin(theta * Math.PI / 5) * Math.random() * .5, 0));
+    theta += 1;
     controls.update();
     render();
 };

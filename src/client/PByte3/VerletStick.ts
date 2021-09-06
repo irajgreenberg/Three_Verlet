@@ -28,7 +28,7 @@ export class VerletStick extends THREE.Group {
   isVisible: boolean
 
 
-  constructor(start: VerletNode, end: VerletNode, stickTension: number = .4, anchorTerminal: number = 0, isVisible: boolean = true) {
+  constructor(start: VerletNode, end: VerletNode, stickTension: number = .05, anchorTerminal: number = 0, isVisible: boolean = true) {
     super();
     this.start = start;
     this.end = end;

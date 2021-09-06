@@ -9,7 +9,7 @@
 //----------------------------------------------
 import * as THREE from '/build/three.module.js';
 export class VerletStick extends THREE.Group {
-    constructor(start, end, stickTension = .4, anchorTerminal = 0, isVisible = true) {
+    constructor(start, end, stickTension = .05, anchorTerminal = 0, isVisible = true) {
         super();
         this.lineGeometry = new THREE.Geometry();
         this.start = start;
