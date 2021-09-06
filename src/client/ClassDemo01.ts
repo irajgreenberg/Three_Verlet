@@ -43,7 +43,7 @@ document.addEventListener('click', onMouse, false);
 
 //custom geometry
 const texture = new TextureLoader().load("resources/orgImg.png");
-let vp: VerletPlane = new VerletPlane(4, 4, 26, 26, texture, AnchorPlane.EDGES_ALL);
+let vp: VerletPlane = new VerletPlane(2, 2, 26, 26, texture, AnchorPlane.EDGES_ALL);
 scene.add(vp);
 
 // push middle node to start verlet
@@ -80,8 +80,8 @@ light2.position.set(-2, 6, 1);
 scene.add(light2);
 //scene.add(light2.target);
 
-camera.position.y = .05;
-camera.position.z = 3;
+camera.position.y = .3;
+camera.position.z = 4;
 
 
 window.addEventListener('resize', onWindowResize, false);
@@ -101,7 +101,7 @@ function onWindowResize() {
 
 var animate = function () {
     requestAnimationFrame(animate);
-    controls.autoRotate = true;
+    // controls.autoRotate = true;
     camera.lookAt(scene.position); //0,0,0
     vp.verlet();
     vp.constrain(bounds);

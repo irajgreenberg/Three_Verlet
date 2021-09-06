@@ -5,7 +5,7 @@ import { Group, Vector3 } from '/build/three.module.js';
 import { VerletStick } from './VerletStick.js';
 import { AnchorPlane, AxesPlane } from './IJGUtils.js';
 export class VerletPlane extends Group {
-    constructor(width, height, widthSegs, heightSegs, diffuseImage, anchor = AnchorPlane.NONE, elasticity = .5, axisPlane = AxesPlane.ZX_AXIS) {
+    constructor(width, height, widthSegs, heightSegs, diffuseImage, anchor = AnchorPlane.NONE, elasticity = .5, axisPlane = AxesPlane.XY_AXIS) {
         super();
         this.nodes2D = [[]];
         this.nodes1D = []; // for convenience
@@ -192,6 +192,15 @@ export class VerletPlane extends Group {
                 }
                 for (let i = 0; i < this.colSticks.length; i += this.widthSegs) {
                     //   this.colSticks[i].lineMaterial.opacity = 0;
+                    this.colSticks[i].anchorTerminal = 1;
+                }
+                //right edge
+                for (let i = (this.heightSegs + 1) * 5; i < this.rowSticks.length; i++) {
+                    //this.rowSticks[i].lineMaterial.opacity = 0;
+                    this.rowSticks[i].anchorTerminal = 2;
+                }
+                for (let i = this.widthSegs * 6; i < this.colSticks.length; i++) {
+                    // this.colSticks[i].lineMaterial.opacity = 0;
                     this.colSticks[i].anchorTerminal = 1;
                 }
                 break;
