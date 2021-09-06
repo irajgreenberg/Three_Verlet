@@ -29,11 +29,14 @@ const controls = new OrbitControls(camera, renderer.domElement);
 document.addEventListener('click', onMouse, false);
 //custom geometry
 const texture = new TextureLoader().load("resources/orgImg.png");
-let vp = new VerletPlane(1, 1, 14, 24, texture, AnchorPlane.CORNER_ALL);
+let vp = new VerletPlane(4, 4, 26, 26, texture, AnchorPlane.EDGES_ALL);
 scene.add(vp);
-vp.push([2, 3], new Vector3(.01, .02, 0));
+// push middle node to start verlet
+vp.push([vp.middleNodeIndex], new Vector3(.23, -.3, -.9));
+//vp.setNodesOff(AnchorPlane.CORNER_ALL);
+vp.setNodesOff(AnchorPlane.EDGES_ALL);
 // cube bounds
-const bounds = new THREE.Vector3(2, 1.75, 1);
+const bounds = new THREE.Vector3(8, 8, 8);
 // Create/add outer box
 const geometry2 = new THREE.BoxGeometry(bounds.x, bounds.y, bounds.z);
 const material2 = new THREE.MeshBasicMaterial({ color: 0x22ee00, wireframe: true });

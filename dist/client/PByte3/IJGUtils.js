@@ -9,6 +9,13 @@ export var AnchorPoint;
     AnchorPoint[AnchorPoint["MOD2"] = 4] = "MOD2";
     AnchorPoint[AnchorPoint["RAND"] = 5] = "RAND";
 })(AnchorPoint || (AnchorPoint = {}));
+// Axes for drawing plane
+export var AxesPlane;
+(function (AxesPlane) {
+    AxesPlane[AxesPlane["XY_AXIS"] = 0] = "XY_AXIS";
+    AxesPlane[AxesPlane["YZ_AXIS"] = 1] = "YZ_AXIS";
+    AxesPlane[AxesPlane["ZX_AXIS"] = 2] = "ZX_AXIS";
+})(AxesPlane || (AxesPlane = {}));
 // Verlet plane edge/corner anchoring
 export var AnchorPlane;
 (function (AnchorPlane) {
@@ -20,11 +27,12 @@ export var AnchorPlane;
     AnchorPlane[AnchorPlane["CORNER_3"] = 5] = "CORNER_3";
     AnchorPlane[AnchorPlane["CORNER_02"] = 6] = "CORNER_02";
     AnchorPlane[AnchorPlane["CORNER_13"] = 7] = "CORNER_13";
-    AnchorPlane[AnchorPlane["EDGE_LEFT"] = 8] = "EDGE_LEFT";
-    AnchorPlane[AnchorPlane["EDGE_RIGHT"] = 9] = "EDGE_RIGHT";
-    AnchorPlane[AnchorPlane["EDGE_TOP"] = 10] = "EDGE_TOP";
-    AnchorPlane[AnchorPlane["EDGE_BOTTOM"] = 11] = "EDGE_BOTTOM";
-    AnchorPlane[AnchorPlane["RAND_VERT"] = 12] = "RAND_VERT";
+    AnchorPlane[AnchorPlane["EDGES_ALL"] = 8] = "EDGES_ALL";
+    AnchorPlane[AnchorPlane["EDGE_LEFT"] = 9] = "EDGE_LEFT";
+    AnchorPlane[AnchorPlane["EDGE_RIGHT"] = 10] = "EDGE_RIGHT";
+    AnchorPlane[AnchorPlane["EDGE_TOP"] = 11] = "EDGE_TOP";
+    AnchorPlane[AnchorPlane["EDGE_BOTTOM"] = 12] = "EDGE_BOTTOM";
+    AnchorPlane[AnchorPlane["RAND_VERT"] = 13] = "RAND_VERT";
 })(AnchorPlane || (AnchorPlane = {}));
 // Verlet stick terminal anchoring
 export var GeometryDetail;

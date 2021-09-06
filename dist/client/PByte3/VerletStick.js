@@ -29,7 +29,7 @@ export class VerletStick extends THREE.Group {
     }
     constrainLen() {
         // accuracy factor
-        let accuracyCount = 1; //TO DO: make externally controllable eventually
+        let accuracyCount = 5; //TO DO: make externally controllable eventually
         for (var i = 0; i < accuracyCount; i++) {
             let delta = new THREE.Vector3(this.end.position.x - this.start.position.x, this.end.position.y - this.start.position.y, this.end.position.z - this.start.position.z);
             let deltaLength = delta.length();
@@ -52,7 +52,7 @@ export class VerletStick extends THREE.Group {
                 node1ConstrainFactor = .1;
                 node2ConstrainFactor = .1;
             }
-            let difference = ((deltaLength - this.len) / deltaLength);
+            let difference = (deltaLength - this.len) / deltaLength;
             this.start.position.x += delta.x * (node1ConstrainFactor * this.stickTension * difference);
             this.start.position.y += delta.y * (node1ConstrainFactor * this.stickTension * difference);
             this.start.position.z += delta.z * (node1ConstrainFactor * this.stickTension * difference);

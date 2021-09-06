@@ -103,6 +103,7 @@ export class VerletNode extends THREE.Mesh {
         this.isNodeVisible = isNodeVisible;
         this.position.set(pos.x, pos.y, pos.z);
         this.posOld = this.position.clone();
+        this.isVerletable = true;
     }
     // Start motion with node offset
     moveNode(vec) {
@@ -110,11 +111,13 @@ export class VerletNode extends THREE.Mesh {
     }
     // Motion determined by position comparison between current and previus frames
     verlet() {
-        let posTemp1 = new THREE.Vector3(this.position.x, this.position.y, this.position.z);
-        this.position.x += (this.position.x - this.posOld.x);
-        this.position.y += (this.position.y - this.posOld.y);
-        this.position.z += (this.position.z - this.posOld.z);
-        this.posOld.copy(posTemp1);
+        if (this.isVerletable) { // enables nodes to be inactive
+            let posTemp1 = new THREE.Vector3(this.position.x, this.position.y, this.position.z);
+            this.position.x += (this.position.x - this.posOld.x);
+            this.position.y += (this.position.y - this.posOld.y);
+            this.position.z += (this.position.z - this.posOld.z);
+            this.posOld.copy(posTemp1);
+        }
     }
     resetVerlet() {
         this.posOld = this.position.clone();

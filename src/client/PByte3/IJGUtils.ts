@@ -10,6 +10,14 @@ export enum AnchorPoint {
     RAND
 }
 
+// Axes for drawing plane
+export enum AxesPlane {
+    XY_AXIS,
+    YZ_AXIS,
+    ZX_AXIS
+}
+
+
 // Verlet plane edge/corner anchoring
 export enum AnchorPlane {
     NONE,
@@ -20,6 +28,7 @@ export enum AnchorPlane {
     CORNER_3,
     CORNER_02,
     CORNER_13,
+    EDGES_ALL,
     EDGE_LEFT,
     EDGE_RIGHT,
     EDGE_TOP,

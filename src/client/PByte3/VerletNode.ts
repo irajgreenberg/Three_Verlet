@@ -18,6 +18,7 @@ export class VerletNode extends THREE.Mesh {
   private radius: number; //for conveneince
   color: THREE.Color;
   isNodeVisible: boolean;
+  isVerletable: boolean;
 
   constructor(pos: THREE.Vector3, radius: number = 0.005, color: THREE.Color = new THREE.Color(.5, .5, .5), geomDetail: GeometryDetail = GeometryDetail.SPHERE_LOW, isNodeVisible: boolean = true) {
 
@@ -115,6 +116,7 @@ export class VerletNode extends THREE.Mesh {
     this.isNodeVisible = isNodeVisible;
     this.position.set(pos.x, pos.y, pos.z);
     this.posOld = this.position.clone();
+    this.isVerletable = true;
   }
 
   // Start motion with node offset
@@ -124,11 +126,13 @@ export class VerletNode extends THREE.Mesh {
 
   // Motion determined by position comparison between current and previus frames
   verlet(): void {
-    let posTemp1: THREE.Vector3 = new THREE.Vector3(this.position.x, this.position.y, this.position.z);
-    this.position.x += (this.position.x - this.posOld.x);
-    this.position.y += (this.position.y - this.posOld.y);
-    this.position.z += (this.position.z - this.posOld.z);
-    this.posOld.copy(posTemp1);
+    if (this.isVerletable) { // enables nodes to be inactive
+      let posTemp1: THREE.Vector3 = new THREE.Vector3(this.position.x, this.position.y, this.position.z);
+      this.position.x += (this.position.x - this.posOld.x);
+      this.position.y += (this.position.y - this.posOld.y);
+      this.position.z += (this.position.z - this.posOld.z);
+      this.posOld.copy(posTemp1);
+    }
   }
 
   resetVerlet(): void {
