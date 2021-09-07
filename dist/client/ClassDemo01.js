@@ -3,7 +3,9 @@
 import { AnchorPlane } from './PByte3/IJGUtils.js';
 import { VerletPlane } from './PByte3/VerletPlane.js';
 import * as THREE from '/build/three.module.js';
+//import * as THREE from 'three';
 import { TextureLoader, Vector3 } from '/build/three.module.js';
+//import { TextureLoader, Vector3 } from 'three';
 import { OrbitControls } from '/jsm/controls/OrbitControls';
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.001, 2000);
@@ -14,10 +16,10 @@ const controls = new OrbitControls(camera, renderer.domElement);
 document.addEventListener('click', onMouse, false);
 //custom geometry
 const texture = new TextureLoader().load("resources/orgImg.png");
-let vp = new VerletPlane(3, 3, 50, 50, texture, AnchorPlane.EDGES_ALL);
+let vp = new VerletPlane(3, 3, 60, 60, texture, AnchorPlane.EDGES_ALL);
 scene.add(vp);
 // push middle node to start verlet
-vp.push([vp.middleNodeIndex], new Vector3(.23, -.3, -.9));
+//vp.push([vp.middleNodeIndex], new Vector3(.23, -.3, -.9));
 //vp.setNodesOff(AnchorPlane.CORNER_ALL);
 vp.setNodesOff(AnchorPlane.EDGES_ALL);
 // for teting interaction with mesh
@@ -59,8 +61,10 @@ var animate = function () {
     vp.verlet();
     vp.constrain(bounds);
     // don't push edge nodes or plane becomes unstable
-    // vp.push([Math.round(Math.random() * vp.nodes1D.length - 1)], new Vector3(Math.random() * .065, Math.random() * -.03, -Math.random() * .02));
-    vp.push([vp.middleNodeIndex], new Vector3(0, -Math.sin(theta * Math.PI / 5) * Math.random() * .5, 0));
+    let index = Math.floor(Math.random() * vp.bodyNodes.length);
+    let node = vp.bodyNodes[index];
+    let amp = Math.random() * .4;
+    vp.moveNode(node, new Vector3(0, Math.sin(theta * Math.PI / 5) * amp, 0));
     theta += 1;
     controls.update();
     render();

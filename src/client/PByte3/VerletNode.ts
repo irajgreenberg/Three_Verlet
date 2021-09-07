@@ -161,19 +161,19 @@ export class VerletNode extends THREE.Mesh {
   }
 
   setNodeColor(color: THREE.Color): void {
-    let mat = this.material as THREE.MeshBasicMaterial;
+    let mat = this.material as THREE.MeshPhongMaterial;
     mat.color = color;
   }
 
   setNodeAlpha(alpha: number): void {
-    let mat = this.material as THREE.MeshBasicMaterial;
+    let mat = this.material as THREE.MeshPhongMaterial;
     mat.transparent = true;
     mat.opacity = alpha;
   }
 
   // redundant and should probably be changed not adding/removing nodes to/from scene
   setNodeVisible(isNodeVisible: boolean): void {
-    let mat = this.material as THREE.MeshBasicMaterial;
+    let mat = this.material as THREE.MeshPhongMaterial;
     if (isNodeVisible) {
       mat.transparent = false;
       mat.opacity = 1.0;

@@ -1,5 +1,9 @@
 // Verlet Plane
 // Composed of Verlet Sticks and Nodes
+// Original Author: Ira Greenberg, 11/2020
+// Center of Creative Computation, SMU
+//----------------------------------------------
+import * as THREE from '/build/three.module.js';
 import { VerletNode } from './VerletNode.js';
 import { Group, Vector3 } from '/build/three.module.js';
 import { VerletStick } from './VerletStick.js';
@@ -7,6 +11,7 @@ import { AnchorPlane, AxesPlane } from './IJGUtils.js';
 export class VerletPlane extends Group {
     constructor(width, height, widthSegs, heightSegs, diffuseImage, anchor = AnchorPlane.NONE, elasticity = .5, axisPlane = AxesPlane.ZX_AXIS) {
         super();
+        this.bodyNodes = []; // no edge nodes
         this.nodes2D = [[]];
         this.nodes1D = []; // for convenience
         this.sticks = [];
@@ -60,9 +65,17 @@ export class VerletPlane extends Group {
                 vertVals.push(y);
                 vertVals.push(z);
                 let v = new VerletNode(new Vector3(x, y, z));
+                v.setNodeColor(new THREE.Color(.2, .05, .4));
                 //populate nodes array
                 this.nodes2D[i].push(v);
                 this.nodes1D.push(v);
+                // fill bodyNodes array.
+                // used for perturbing surface
+                // while avoiding edges
+                if (i > 0 && i < this.widthSegs - 1 &&
+                    j > 0 && j < this.heightSegs - 1) {
+                    this.bodyNodes.push(v);
+                }
                 // add to scenegraph for drawing
                 this.add(v);
             }
@@ -72,8 +85,6 @@ export class VerletPlane extends Group {
         // calc VerletSticks
         let vs;
         for (var i = 0; i < this.nodes2D.length; i++) {
-            // let colSticks1D: VerletStick[] = [];
-            // let rowSticks1D: VerletStick[] = [];
             for (var j = 0; j < this.nodes2D[i].length; j++) {
                 // connects down along columns
                 if (j < this.nodes2D[i].length - 1) {
@@ -99,43 +110,26 @@ export class VerletPlane extends Group {
                     }
                 }
             }
-            // this.colSticks.push(colSticks1D);
-            // this.rowSticks.push(rowSticks1D);
         }
-        for (var i = 0; i < this.sticks.length; i++) {
-            //    this.sticks[i].anchorTerminal = 3
-        }
-        // this.sticks[0].anchorTerminal = 3
-        //  this.sticks[20].anchorTerminal = 3
-        // this.sticks[6].visible = false;
-        // calc constraints (eventually maybe do in loops above)
-        //for (var i = 0; i < this.sticks.length; i++) {
-        switch (this.anchor) {
-            case AnchorPlane.CORNER_ALL:
-                // TL corner
-                // this.sticks[0].anchorTerminal = 1;
-                //  this.sticks[this.widthSegs * this.heightSegs].anchorTerminal = 1;
-                // this.sticks[this.sticks.length - 1].anchorTerminal = 3;
-                break;
-            default:
-            //  this.anchor = AnchorPlane.NONE;
-        }
-        //}
-        // create buffered geometry
-        // this.vertices = new Float32Array(vertVals);
-        // this.setAttribute('position', new THREE.BufferAttribute(this.vertices, 3));
     }
-    // start verlet offeset
-    push(indices, vec) {
+    // move indivisual node
+    moveNode(node, vec) {
+        node.position.x += vec.x;
+        node.position.y += vec.y;
+        node.position.z += vec.z;
+    }
+    // move array of nodes
+    moveNodes(indices, vecs) {
         for (var i = 0; i < indices.length; i++) {
-            this.nodes1D[indices[i]].position.x += vec.x; //THREE.MathUtils.randFloatSpread(vec.x);
-            this.nodes1D[indices[i]].position.y += vec.y;
-            this.nodes1D[indices[i]].position.z += vec.z;
+            this.nodes1D[indices[i]].position.x += vecs[i].x;
+            this.nodes1D[indices[i]].position.y += vecs[i].y;
+            this.nodes1D[indices[i]].position.z += vecs[i].z;
         }
     }
     verlet() {
         for (var i = 0; i < this.nodes1D.length; i++) {
             this.nodes1D[i].verlet();
+            this.nodes1D[i].setNodeColor(new THREE.Color(this.nodes1D[i].position.y * 2, .1 + this.nodes1D[i].position.y, .3 + this.nodes1D[i].position.y * 4));
         }
     }
     constrain(bounds, offset = new Vector3()) {
@@ -182,6 +176,47 @@ export class VerletPlane extends Group {
                     this.colSticks[this.colSticks.length - 1].anchorTerminal = 2;
                     this.rowSticks[this.rowSticks.length - 1].anchorTerminal = 2;
                     // this.rowSticks[19].lineMaterial.opacity = 0;
+                }
+                break;
+            case AnchorPlane.EDGE_TOP:
+                for (let i = 0; i < this.rowSticks.length; i += this.heightSegs + 1) {
+                    //  this.rowSticks[i].lineMaterial.opacity = 0;
+                    this.rowSticks[i].anchorTerminal = 2;
+                }
+                for (let i = 0; i < this.colSticks.length; i += this.heightSegs) {
+                    // this.colSticks[i].lineMaterial.opacity = 0;
+                    this.colSticks[i].anchorTerminal = 1;
+                }
+                break;
+            case AnchorPlane.EDGE_RIGHT:
+                for (let i = (this.heightSegs + 1) * (this.widthSegs - 1); i < this.rowSticks.length; i++) {
+                    // this.rowSticks[i].lineMaterial.opacity = 0;
+                    this.rowSticks[i].anchorTerminal = 2;
+                }
+                //console.log(this.heightSegs);
+                for (let i = this.widthSegs * this.heightSegs; i < this.colSticks.length; i++) {
+                    // this.colSticks[i].lineMaterial.opacity = 0;
+                    this.colSticks[i].anchorTerminal = 1;
+                }
+                break;
+            case AnchorPlane.EDGE_BOTTOM:
+                for (let i = this.heightSegs; i < this.rowSticks.length; i += this.heightSegs + 1) {
+                    //this.rowSticks[i].lineMaterial.opacity = 0;
+                    this.rowSticks[i].anchorTerminal = 1;
+                }
+                for (let i = this.heightSegs - 1; i < this.colSticks.length; i += this.heightSegs) {
+                    //this.colSticks[i].lineMaterial.opacity = 0;
+                    this.colSticks[i].anchorTerminal = 2;
+                }
+                break;
+            case AnchorPlane.EDGE_LEFT:
+                for (let i = 0; i < this.heightSegs + 1; i++) {
+                    // this.rowSticks[i].lineMaterial.opacity = 0;
+                    this.rowSticks[i].anchorTerminal = 1;
+                }
+                for (let i = 0; i < this.heightSegs; i++) {
+                    //  this.colSticks[i].lineMaterial.opacity = 0;
+                    this.colSticks[i].anchorTerminal = 2;
                 }
                 break;
             case AnchorPlane.EDGES_ALL:
