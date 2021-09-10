@@ -47,17 +47,27 @@ document.addEventListener('click', onMouse, false);
 
 //custom geometry
 const texture = new TextureLoader().load("resources/orgImg.png");
-let vp: VerletPlane = new VerletPlane(3, 3, 60, 60, texture, AnchorPlane.EDGES_ALL);
+let vp: VerletPlane = new VerletPlane(3, 3, 25, 25, texture, AnchorPlane.EDGES_ALL);
 scene.add(vp);
 
 // push middle node to start verlet
 //vp.push([vp.middleNodeIndex], new Vector3(.23, -.3, -.9));
 //vp.setNodesOff(AnchorPlane.CORNER_ALL);
 vp.setNodesOff(AnchorPlane.EDGES_ALL);
-
 // for teting interaction with mesh
 let theta = 0;
 
+
+//draw normal
+// let lm = new THREE.LineBasicMaterial({ color: 0xFF9900 });
+// let lg = new THREE.Geometry()
+// lg.vertices.push(vp.quads[30].getCentroid());
+// lg.vertices.push(vp.quads[30].getNormal().multiplyScalar(-.25));
+// let ln = new THREE.Line(lg, lm);
+// lm.transparent = true;
+// lm.opacity = .95;
+// scene.add(ln);
+//end draw normal
 
 // cube bounds
 const bounds: THREE.Vector3 = new THREE.Vector3(8, 8, 8);
@@ -99,7 +109,6 @@ function onWindowResize() {
 }
 
 
-
 var animate = function () {
     requestAnimationFrame(animate);
     controls.autoRotate = true;
@@ -112,8 +121,9 @@ var animate = function () {
     let node: VerletNode = vp.bodyNodes[index];
     let amp = Math.random() * .4;
     vp.moveNode(node, new Vector3(0, Math.sin(theta * Math.PI / 5) * amp, 0));
+    // console.log("centroid = ", vp.quads[20].getCentroid());
+    // console.log("normal = ", vp.quads[20].getNormal());
     theta += 1;
-
 
     controls.update()
     render();

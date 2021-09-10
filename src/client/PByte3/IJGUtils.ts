@@ -1,4 +1,9 @@
+import { sortAndDeduplicateDiagnostics } from 'typescript';
 import * as THREE from '/build/three.module.js';
+import { Vector3 } from '/build/three.module.js';
+
+
+
 
 // Verlet stick terminal anchoring
 export enum AnchorPoint {

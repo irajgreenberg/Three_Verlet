@@ -8,6 +8,52 @@ import { VerletNode } from './VerletNode.js';
 import { Group, Vector3 } from '/build/three.module.js';
 import { VerletStick } from './VerletStick.js';
 import { AnchorPlane, AxesPlane } from './IJGUtils.js';
+// Convenience class to group 4 vectors
+// includes quad centroid and normal
+// question: should it handle its own drawing
+// or just return stuff
+export class Quad {
+    constructor(v0, v1, v2, v3) {
+        // used internally for normal calucations
+        this.side0 = new Vector3();
+        this.side1 = new Vector3();
+        this.norm = new Vector3();
+        // for centroid
+        this.cntr = new Vector3();
+        this.v0 = v0;
+        this.v1 = v1;
+        this.v2 = v2;
+        this.v3 = v3;
+    }
+    // returns normalized vector
+    // centered to quad
+    getNormal() {
+        //reset normals
+        this.side0.setScalar(0);
+        this.side1.setScalar(0);
+        this.norm.setScalar(1); // may not need
+        // calc 2 quad side sides
+        this.side0.subVectors(this.v1, this.v0);
+        this.side1.subVectors(this.v3, this.v0);
+        // calc normal
+        this.norm.crossVectors(this.side0, this.side1);
+        this.norm.normalize();
+        this.norm.add(this.getCentroid());
+        // return quad normalized normal
+        return this.norm;
+    }
+    // returns center point
+    getCentroid() {
+        this.cntr.setScalar(0);
+        this.cntr.add(this.v0);
+        this.cntr.add(this.v1);
+        this.cntr.add(this.v2);
+        this.cntr.add(this.v3);
+        this.cntr.divideScalar(4);
+        return this.cntr;
+    }
+}
+// end quad class
 export class VerletPlane extends Group {
     constructor(width, height, widthSegs, heightSegs, diffuseImage, anchor = AnchorPlane.NONE, elasticity = .5, axisPlane = AxesPlane.ZX_AXIS) {
         super();
@@ -18,7 +64,10 @@ export class VerletPlane extends Group {
         // for convenience
         this.rowSticks = [];
         this.colSticks = [];
-        this.tris = [];
+        // used to attach structures to surface 
+        // and dynamically determine plane angle
+        // using normal calculation
+        this.quads = [];
         // for conveninece: pushing plane middle node
         this.middleNodeIndex = 0;
         this.width = width;
@@ -75,6 +124,11 @@ export class VerletPlane extends Group {
                 if (i > 0 && i < this.widthSegs - 1 &&
                     j > 0 && j < this.heightSegs - 1) {
                     this.bodyNodes.push(v);
+                }
+                //fill quads to align objects to surface
+                // filled CCW
+                if (i > 0 && j > 0) {
+                    this.quads.push(new Quad(this.nodes2D[i][j].position, this.nodes2D[i][j - 1].position, this.nodes2D[i - 1][j - 1].position, this.nodes2D[i - 1][j].position));
                 }
                 // add to scenegraph for drawing
                 this.add(v);
