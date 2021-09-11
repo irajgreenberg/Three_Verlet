@@ -7,70 +7,9 @@
 
 import * as THREE from '/build/three.module.js';
 import { VerletNode } from './VerletNode.js';
-import { BufferGeometry, Group, Mesh, NoColors, Texture, Triangle, Vector3 } from '/build/three.module.js';
+import { BufferGeometry, Group, Texture, Vector3 } from '/build/three.module.js';
 import { VerletStick } from './VerletStick.js';
-import { AnchorPlane, AnchorPoint, AxesPlane } from './IJGUtils.js';
-import { isInterfaceDeclaration } from 'typescript';
-import { CLIENT_RENEG_LIMIT } from 'tls';
-
-// Convenience class to group 4 vectors
-// includes quad centroid and normal
-// question: should it handle its own drawing
-// or just return stuff
-export class Quad {
-    v0: Vector3;
-    v1: Vector3;
-    v2: Vector3;
-    v3: Vector3;
-
-    // used internally for normal calucations
-    private side0: Vector3 = new Vector3();
-    private side1: Vector3 = new Vector3();
-    private norm: Vector3 = new Vector3();
-
-    // for centroid
-    private cntr: Vector3 = new Vector3();
-
-    constructor(v0: Vector3, v1: Vector3, v2: Vector3, v3: Vector3) {
-        this.v0 = v0;
-        this.v1 = v1;
-        this.v2 = v2;
-        this.v3 = v3;
-    }
-
-    // returns normalized vector
-    // centered to quad
-    getNormal(): Vector3 {
-        //reset normals
-        this.side0.setScalar(0);
-        this.side1.setScalar(0);
-        this.norm.setScalar(1); // may not need
-
-        // calc 2 quad side sides
-        this.side0.subVectors(this.v1, this.v0);
-        this.side1.subVectors(this.v3, this.v0);
-
-        // calc normal
-        this.norm.crossVectors(this.side0, this.side1)
-        this.norm.normalize();
-        this.norm.add(this.getCentroid());
-        // return quad normalized normal
-        return this.norm;
-    }
-
-    // returns center point
-    getCentroid(): Vector3 {
-        this.cntr.setScalar(0);
-        this.cntr.add(this.v0);
-        this.cntr.add(this.v1);
-        this.cntr.add(this.v2);
-        this.cntr.add(this.v3);
-        this.cntr.divideScalar(4);
-        return this.cntr;
-    }
-}
-// end quad class
-
+import { AnchorPlane, AxesPlane, Quad } from './IJGUtils.js';
 
 
 export class VerletPlane extends Group {
@@ -185,6 +124,11 @@ export class VerletPlane extends Group {
             }
         }
 
+        //add quads
+        for (let q of this.quads) {
+            this.add(q);
+        }
+
         // intialize now we know length of arrays
         this.middleNodeIndex = Math.round(((this.nodes2D.length - 1) * (this.nodes2D[0].length - 1)) / 2 + (this.nodes2D.length - 1) / 2);
 
@@ -240,6 +184,12 @@ export class VerletPlane extends Group {
         }
     }
 
+    showPatchNormals() {
+        for (var i = 0; i < this.quads.length; i++) {
+            this.quads[i].updateNormal();
+        }
+    }
+
     verlet(): void {
         for (var i = 0; i < this.nodes1D.length; i++) {
             this.nodes1D[i].verlet();
@@ -260,6 +210,12 @@ export class VerletPlane extends Group {
             this.nodes1D[i].constrainBounds(v);
         }
 
+    }
+
+    setNormalsVisible(isNormalVisible: boolean, normalAlpha: number = .25): void {
+        for (let q of this.quads) {
+            q.setIsNormalVisible(isNormalVisible, normalAlpha);
+        }
     }
 
     // Lock select nodes

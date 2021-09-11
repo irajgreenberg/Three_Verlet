@@ -1,4 +1,4 @@
-import * as THREE from '/build/three.module.js';
+import { Color, Geometry, Group, Line, LineBasicMaterial, Vector3 } from '/build/three.module.js';
 // Verlet stick terminal anchoring
 export var AnchorPoint;
 (function (AnchorPoint) {
@@ -58,7 +58,7 @@ export var GeometryDetail;
 })(GeometryDetail || (GeometryDetail = {}));
 // Organism propulsion
 export class Propulsion {
-    constructor(direction = new THREE.Vector3(0, 1, 0), force = new THREE.Vector3(0, 0, 0), frequency = new THREE.Vector3(0, 0, 0)) {
+    constructor(direction = new Vector3(0, 1, 0), force = new Vector3(0, 0, 0), frequency = new Vector3(0, 0, 0)) {
         this.direction = direction;
         this.force = force;
         this.frequency = frequency;
@@ -66,17 +66,17 @@ export class Propulsion {
 }
 // Organism Materials
 export class VerletMaterials {
-    constructor(spineNodeColor = new THREE.Color(.5, .5, .5), spineColor = new THREE.Color(.5, .5, .5), spineAlpha = .5, sliceColor = new THREE.Color(.5, .5, .5), sliceAlpha = .5, tendrilNodeColor = new THREE.Color(.5, .5, .5), tendrilColor = new THREE.Color(.5, .5, .5), tendrilAlpha = .5, ciliaNodeColor = new THREE.Color(.5, .5, .5), ciliaColor = new THREE.Color(.5, .5, .5), ciliaAlpha = .5) {
-        this.spineNodeColor = new THREE.Color(.5, .5, .5);
-        this.spineColor = new THREE.Color(.5, .5, .5);
+    constructor(spineNodeColor = new Color(.5, .5, .5), spineColor = new Color(.5, .5, .5), spineAlpha = .5, sliceColor = new Color(.5, .5, .5), sliceAlpha = .5, tendrilNodeColor = new Color(.5, .5, .5), tendrilColor = new Color(.5, .5, .5), tendrilAlpha = .5, ciliaNodeColor = new Color(.5, .5, .5), ciliaColor = new Color(.5, .5, .5), ciliaAlpha = .5) {
+        this.spineNodeColor = new Color(.5, .5, .5);
+        this.spineColor = new Color(.5, .5, .5);
         this.spineAlpha = 1.0;
-        this.sliceColor = new THREE.Color(.5, .5, .5);
+        this.sliceColor = new Color(.5, .5, .5);
         this.sliceAlpha = 1.0;
-        this.tendrilNodeColor = new THREE.Color(.5, .5, .5);
-        this.tendrilColor = new THREE.Color(.5, .5, .5);
+        this.tendrilNodeColor = new Color(.5, .5, .5);
+        this.tendrilColor = new Color(.5, .5, .5);
         this.tendrilAlpha = 1.0;
-        this.ciliaNodeColor = new THREE.Color(.5, .5, .5);
-        this.ciliaColor = new THREE.Color(.5, .5, .5);
+        this.ciliaNodeColor = new Color(.5, .5, .5);
+        this.ciliaColor = new Color(.5, .5, .5);
         this.ciliaAlpha = 1.0;
         this.spineNodeColor = spineNodeColor;
         this.spineColor = spineColor;
@@ -91,3 +91,78 @@ export class VerletMaterials {
         this.ciliaAlpha = ciliaAlpha;
     }
 }
+// Convenience class to group 4 vectors
+// includes quad centroid and normal
+export class Quad extends Group {
+    constructor(v0, v1, v2, v3) {
+        super();
+        // used internally for normal calucations
+        this.side0 = new Vector3();
+        this.side1 = new Vector3();
+        this.norm = new Vector3();
+        this.isNormalVisible = false;
+        this.normalAlpha = 0;
+        // for centroid
+        this.cntr = new Vector3();
+        this.lineGeometry = new Geometry();
+        this.lineMaterial = new LineBasicMaterial({ color: 0xFF9900 });
+        this.v0 = v0;
+        this.v1 = v1;
+        this.v2 = v2;
+        this.v3 = v3;
+        // for drawing normal
+        this.lineGeometry.vertices = [];
+        this.lineGeometry.vertices.push(this.getCentroid());
+        this.lineGeometry.vertices.push(this.getNormal());
+        this.line = new Line(this.lineGeometry, this.lineMaterial);
+        this.lineMaterial.transparent = true;
+        this.lineMaterial.opacity = 0;
+        this.add(this.line);
+    }
+    // returns normalized vector
+    // centered to quad
+    getNormal() {
+        //reset normals
+        this.side0.setScalar(0);
+        this.side1.setScalar(0);
+        this.norm.setScalar(1); // may not need
+        // calc 2 quad side sides
+        this.side0.subVectors(this.v1, this.v0);
+        this.side1.subVectors(this.v3, this.v0);
+        // calc normal
+        this.norm.crossVectors(this.side0, this.side1);
+        this.norm.normalize().multiplyScalar(-.07);
+        this.norm.add(this.getCentroid());
+        //return quad normalized normal
+        return this.norm;
+    }
+    setIsNormalVisible(isNormalVisible, normalAlpha = .25) {
+        this.isNormalVisible = isNormalVisible;
+        this.normalAlpha = normalAlpha;
+    }
+    // dynamically recalculates normal
+    updateNormal() {
+        if (this.isNormalVisible) {
+            this.lineMaterial.opacity = this.normalAlpha;
+        }
+        else {
+            this.lineMaterial.opacity = 0;
+        }
+        this.lineMaterial.needsUpdate = true;
+        this.lineGeometry.vertices = [];
+        this.lineGeometry.vertices.push(this.getCentroid());
+        this.lineGeometry.vertices.push(this.getNormal());
+        this.lineGeometry.verticesNeedUpdate = true;
+    }
+    // returns center point
+    getCentroid() {
+        this.cntr.setScalar(0);
+        this.cntr.add(this.v0);
+        this.cntr.add(this.v1);
+        this.cntr.add(this.v2);
+        this.cntr.add(this.v3);
+        this.cntr.divideScalar(4);
+        return this.cntr;
+    }
+}
+// end quad class

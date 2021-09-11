@@ -26,17 +26,14 @@
 // import * as THREE from "three";
 // import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-import { sign } from 'crypto';
-import { VerletNode } from 'PByte3/VerletNode.js';
+import { VerletNode } from './PByte3/VerletNode.js';
 import { AnchorPlane } from './PByte3/IJGUtils.js';
 import { VerletPlane } from './PByte3/VerletPlane.js';
-import * as THREE from '/build/three.module.js';
-//import * as THREE from 'three';
-import { TextureLoader, Vector3 } from '/build/three.module.js';
-//import { TextureLoader, Vector3 } from 'three';
+import { Scene, TextureLoader, Vector3 } from '/build/three.module.js';
 import { OrbitControls } from '/jsm/controls/OrbitControls';
+import * as THREE from '/build/three.module.js';
 
-const scene: THREE.Scene = new THREE.Scene();
+const scene: Scene = new Scene();
 const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
     75, window.innerWidth / window.innerHeight, 0.001, 2000);
 const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer();
@@ -47,27 +44,17 @@ document.addEventListener('click', onMouse, false);
 
 //custom geometry
 const texture = new TextureLoader().load("resources/orgImg.png");
-let vp: VerletPlane = new VerletPlane(3, 3, 25, 25, texture, AnchorPlane.EDGES_ALL);
+let vp: VerletPlane = new VerletPlane(3, 3, 35, 35, texture, AnchorPlane.EDGES_ALL);
 scene.add(vp);
 
 // push middle node to start verlet
 //vp.push([vp.middleNodeIndex], new Vector3(.23, -.3, -.9));
 //vp.setNodesOff(AnchorPlane.CORNER_ALL);
 vp.setNodesOff(AnchorPlane.EDGES_ALL);
-// for teting interaction with mesh
+vp.setNormalsVisible(true);
+// for testing interaction with mesh
 let theta = 0;
 
-
-//draw normal
-// let lm = new THREE.LineBasicMaterial({ color: 0xFF9900 });
-// let lg = new THREE.Geometry()
-// lg.vertices.push(vp.quads[30].getCentroid());
-// lg.vertices.push(vp.quads[30].getNormal().multiplyScalar(-.25));
-// let ln = new THREE.Line(lg, lm);
-// lm.transparent = true;
-// lm.opacity = .95;
-// scene.add(ln);
-//end draw normal
 
 // cube bounds
 const bounds: THREE.Vector3 = new THREE.Vector3(8, 8, 8);
@@ -81,9 +68,26 @@ material2.opacity = .08;
 const cube2: THREE.Mesh = new THREE.Mesh(geometry2, material2);
 scene.add(cube2);
 
+
+//+++++Begin some collision testing
+let ballPos: Vector3 = new Vector3(0, 1, 0);
+let ballSpd: Vector3 = new Vector3(.01, -.001, .02);
+let grav: number = -.003;
+let ballRad: number = .02;
+
+const geometry = new THREE.SphereGeometry(ballRad, 32, 16);
+const material = new THREE.MeshPhongMaterial({ color: 0x443322 });
+const sphere = new THREE.Mesh(geometry, material);
+sphere.position.x = ballPos.x;
+sphere.position.y = ballPos.y;
+sphere.position.z = ballPos.z;
+scene.add(sphere);
+//+++++End Collision testing++++++//
+
+
 // Simple lighting calculations
 const color = 0xEEEEFF;
-const intensity = .65;
+const intensity = .85;
 const light = new THREE.AmbientLight(color, intensity);
 scene.add(light);
 
@@ -121,9 +125,22 @@ var animate = function () {
     let node: VerletNode = vp.bodyNodes[index];
     let amp = Math.random() * .4;
     vp.moveNode(node, new Vector3(0, Math.sin(theta * Math.PI / 5) * amp, 0));
+    vp.showPatchNormals();
     // console.log("centroid = ", vp.quads[20].getCentroid());
     // console.log("normal = ", vp.quads[20].getNormal());
     theta += 1;
+
+
+    //move sphere
+    sphere.position.x += ballSpd.x;
+    ballSpd.y += grav;
+    sphere.position.y += ballSpd.y;
+    sphere.position.z += ballSpd.z;
+
+    //check sphere-plane collision
+    // if
+
+
 
     controls.update()
     render();

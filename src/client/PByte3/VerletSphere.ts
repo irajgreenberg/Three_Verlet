@@ -3,7 +3,6 @@
 // Project is being produced in collaboration with
 // Courtney Brown, Melanie Clemmons & Brent Brimhall
 
-import * as THREE from '/build/three.module.js';
 import { Color, Group, Vector2, Vector3 } from '/build/three.module.js';
 import { VerletNode } from './VerletNode.js';
 import { VerletStick } from './VerletStick.js';

@@ -3,7 +3,7 @@ import { VerletNode } from './VerletNode.js';
 import { VerletStrand } from './VerletStrand.js';
 import { VerletStick } from './VerletStick.js';
 import * as THREE from '/build/three.module.js';
-import { Color, Vector3 } from '/build/three.module.js';
+import { Vector3 } from '/build/three.module.js';
 
 export class VerletTetrahedron extends THREE.Group {
     pos: Vector3;

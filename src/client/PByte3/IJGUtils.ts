@@ -1,9 +1,5 @@
-import { sortAndDeduplicateDiagnostics } from 'typescript';
-import * as THREE from '/build/three.module.js';
-import { Vector3 } from '/build/three.module.js';
 
-
-
+import { Color, Geometry, Group, Line, LineBasicMaterial, Vector3 } from '/build/three.module.js';
 
 // Verlet stick terminal anchoring
 export enum AnchorPoint {
@@ -67,13 +63,13 @@ export enum GeometryDetail {
 
 // Organism propulsion
 export class Propulsion {
-    direction: THREE.Vector3;
-    force: THREE.Vector3;
-    frequency: THREE.Vector3;
+    direction: Vector3;
+    force: Vector3;
+    frequency: Vector3;
 
-    constructor(direction: THREE.Vector3 = new THREE.Vector3(0, 1, 0),
-        force: THREE.Vector3 = new THREE.Vector3(0, 0, 0),
-        frequency: THREE.Vector3 = new THREE.Vector3(0, 0, 0)) {
+    constructor(direction: Vector3 = new Vector3(0, 1, 0),
+        force: Vector3 = new Vector3(0, 0, 0),
+        frequency: Vector3 = new Vector3(0, 0, 0)) {
         this.direction = direction;
         this.force = force;
         this.frequency = frequency;
@@ -82,29 +78,29 @@ export class Propulsion {
 
 // Organism Materials
 export class VerletMaterials {
-    spineNodeColor: THREE.Color = new THREE.Color(.5, .5, .5);
-    spineColor: THREE.Color = new THREE.Color(.5, .5, .5);
+    spineNodeColor: Color = new Color(.5, .5, .5);
+    spineColor: Color = new Color(.5, .5, .5);
     spineAlpha: number = 1.0;
-    sliceColor: THREE.Color = new THREE.Color(.5, .5, .5);
+    sliceColor: Color = new Color(.5, .5, .5);
     sliceAlpha: number = 1.0;
-    tendrilNodeColor: THREE.Color = new THREE.Color(.5, .5, .5);
-    tendrilColor: THREE.Color = new THREE.Color(.5, .5, .5);
+    tendrilNodeColor: Color = new Color(.5, .5, .5);
+    tendrilColor: Color = new Color(.5, .5, .5);
     tendrilAlpha: number = 1.0;
-    ciliaNodeColor: THREE.Color = new THREE.Color(.5, .5, .5);
-    ciliaColor: THREE.Color = new THREE.Color(.5, .5, .5);
+    ciliaNodeColor: Color = new Color(.5, .5, .5);
+    ciliaColor: Color = new Color(.5, .5, .5);
     ciliaAlpha: number = 1.0;
 
     constructor(
-        spineNodeColor: THREE.Color = new THREE.Color(.5, .5, .5),
-        spineColor: THREE.Color = new THREE.Color(.5, .5, .5),
+        spineNodeColor: Color = new Color(.5, .5, .5),
+        spineColor: Color = new Color(.5, .5, .5),
         spineAlpha: number = .5,
-        sliceColor: THREE.Color = new THREE.Color(.5, .5, .5),
+        sliceColor: Color = new Color(.5, .5, .5),
         sliceAlpha: number = .5,
-        tendrilNodeColor: THREE.Color = new THREE.Color(.5, .5, .5),
-        tendrilColor: THREE.Color = new THREE.Color(.5, .5, .5),
+        tendrilNodeColor: Color = new Color(.5, .5, .5),
+        tendrilColor: Color = new Color(.5, .5, .5),
         tendrilAlpha: number = .5,
-        ciliaNodeColor: THREE.Color = new THREE.Color(.5, .5, .5),
-        ciliaColor: THREE.Color = new THREE.Color(.5, .5, .5),
+        ciliaNodeColor: Color = new Color(.5, .5, .5),
+        ciliaColor: Color = new Color(.5, .5, .5),
         ciliaAlpha: number = .5) {
 
         this.spineNodeColor = spineNodeColor;
@@ -120,3 +116,100 @@ export class VerletMaterials {
         this.ciliaAlpha = ciliaAlpha;
     }
 }
+
+// Convenience class to group 4 vectors
+// includes quad centroid and normal
+export class Quad extends Group {
+    v0: Vector3;
+    v1: Vector3;
+    v2: Vector3;
+    v3: Vector3;
+
+    // used internally for normal calucations
+    private side0: Vector3 = new Vector3();
+    private side1: Vector3 = new Vector3();
+    private norm: Vector3 = new Vector3();
+
+    private isNormalVisible: boolean = false;
+    private normalAlpha: number = 0;
+
+    // for centroid
+    private cntr: Vector3 = new Vector3();
+
+    lineGeometry = new Geometry();
+    lineMaterial = new LineBasicMaterial({ color: 0xFF9900 });
+    line: Line;
+
+    constructor(v0: Vector3, v1: Vector3, v2: Vector3, v3: Vector3) {
+        super();
+        this.v0 = v0;
+        this.v1 = v1;
+        this.v2 = v2;
+        this.v3 = v3;
+
+        // for drawing normal
+        this.lineGeometry.vertices = [];
+        this.lineGeometry.vertices.push(this.getCentroid());
+        this.lineGeometry.vertices.push(this.getNormal());
+
+        this.line = new Line(this.lineGeometry, this.lineMaterial);
+        this.lineMaterial.transparent = true;
+        this.lineMaterial.opacity = 0;
+        this.add(this.line);
+    }
+
+    // returns normalized vector
+    // centered to quad
+    getNormal(): Vector3 {
+        //reset normals
+        this.side0.setScalar(0);
+        this.side1.setScalar(0);
+        this.norm.setScalar(1); // may not need
+
+        // calc 2 quad side sides
+        this.side0.subVectors(this.v1, this.v0);
+        this.side1.subVectors(this.v3, this.v0);
+
+        // calc normal
+        this.norm.crossVectors(this.side0, this.side1)
+        this.norm.normalize().multiplyScalar(-.07);
+        this.norm.add(this.getCentroid());
+
+        //return quad normalized normal
+        return this.norm;
+    }
+
+    setIsNormalVisible(isNormalVisible: boolean, normalAlpha: number = .25): void {
+        this.isNormalVisible = isNormalVisible;
+        this.normalAlpha = normalAlpha;
+    }
+
+    // dynamically recalculates normal
+    updateNormal(): void {
+        if (this.isNormalVisible) {
+            this.lineMaterial.opacity = this.normalAlpha;
+        } else {
+            this.lineMaterial.opacity = 0;
+        }
+        this.lineMaterial.needsUpdate = true;
+
+        this.lineGeometry.vertices = [];
+        this.lineGeometry.vertices.push(this.getCentroid());
+        this.lineGeometry.vertices.push(this.getNormal());
+
+        this.lineGeometry.verticesNeedUpdate = true;
+
+    }
+
+    // returns center point
+    getCentroid(): Vector3 {
+        this.cntr.setScalar(0);
+        this.cntr.add(this.v0);
+        this.cntr.add(this.v1);
+        this.cntr.add(this.v2);
+        this.cntr.add(this.v3);
+        this.cntr.divideScalar(4);
+        return this.cntr;
+    }
+}
+// end quad class
