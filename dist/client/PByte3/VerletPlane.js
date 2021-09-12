@@ -138,7 +138,17 @@ export class VerletPlane extends Group {
             this.nodes1D[indices[i]].position.z += vecs[i].z;
         }
     }
-    showPatchNormals() {
+    checkCollisions(orb) {
+        // console.log(orb.position.y);
+        for (let q of this.quads) {
+            if (orb.pos.y < q.getCentroid().y) {
+                orb.pos.y = q.getCentroid().y;
+                console.log("centroid.y = ", q.getCentroid().y);
+                orb.speed.y *= -1;
+            }
+        }
+    }
+    showNormals() {
         for (var i = 0; i < this.quads.length; i++) {
             this.quads[i].updateNormal();
         }

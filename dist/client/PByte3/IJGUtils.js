@@ -1,4 +1,4 @@
-import { Color, Geometry, Group, Line, LineBasicMaterial, Vector3 } from '/build/three.module.js';
+import { Color, Geometry, Group, Line, LineBasicMaterial, Mesh, MeshPhongMaterial, SphereGeometry, Vector3 } from '/build/three.module.js';
 // Verlet stick terminal anchoring
 export var AnchorPoint;
 (function (AnchorPoint) {
@@ -166,3 +166,36 @@ export class Quad extends Group {
     }
 }
 // end quad class
+// BEGIN Orb class
+export class Orb extends Group {
+    constructor(radius, pos, speed, color) {
+        super();
+        this.radius = radius;
+        this.pos = pos;
+        this.speed = speed;
+        this.color = color;
+        const geometry = new SphereGeometry(this.radius, 6, 6);
+        const material = new MeshPhongMaterial({ color: this.color });
+        this.sphere = new Mesh(geometry, material);
+        this.sphere.position.x = pos.x;
+        this.sphere.position.y = pos.y;
+        this.sphere.position.z = pos.z;
+        this.add(this.sphere);
+    }
+    move() {
+        this.speed.y += PByteGLobals.gravity;
+        this.pos.add(this.speed);
+        this.sphere.position.x = this.pos.x;
+        this.sphere.position.y = this.pos.y;
+        this.sphere.position.z = this.pos.z;
+    }
+    collide(responseVector) {
+    }
+}
+// END Orb class
+//global variables
+//global variable - eventually implement 'more better'.
+export class PByteGLobals {
+}
+PByteGLobals.gravity = 0;
+;

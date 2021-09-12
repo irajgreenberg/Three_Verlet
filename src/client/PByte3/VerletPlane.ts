@@ -9,7 +9,7 @@ import * as THREE from '/build/three.module.js';
 import { VerletNode } from './VerletNode.js';
 import { BufferGeometry, Group, Texture, Vector3 } from '/build/three.module.js';
 import { VerletStick } from './VerletStick.js';
-import { AnchorPlane, AxesPlane, Quad } from './IJGUtils.js';
+import { AnchorPlane, AxesPlane, Orb, Quad } from './IJGUtils.js';
 
 
 export class VerletPlane extends Group {
@@ -184,7 +184,21 @@ export class VerletPlane extends Group {
         }
     }
 
-    showPatchNormals() {
+    checkCollisions(orb: Orb) {
+       // console.log(orb.position.y);
+        for(let q of this.quads){
+            if (orb.pos.y<q.getCentroid().y){
+                orb.pos.y = q.getCentroid().y
+                console.log("centroid.y = ", q.getCentroid().y);
+                orb.speed.y *=-1;
+            }
+        }
+        
+    }
+
+
+
+    showNormals() {
         for (var i = 0; i < this.quads.length; i++) {
             this.quads[i].updateNormal();
         }

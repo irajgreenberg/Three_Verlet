@@ -1,35 +1,16 @@
-//Boilerplate Typescript/Three/VSCode, by Sean Bradley:
-//git clone https://github.com/Sean-Bradley/Three.js-TypeScript-Boilerplate.git
-
-
-
-
-
-// For new projects:  1. npm install -g typescript, 
-//                    2. npm install
-// To run:            3. npm run dev 
-//                    Server runs locally at port 3000
-
-// These experiments support development
-// of an 'independent' softbody organism.
-// Work is being produced in collaboration with
-// Courtney Brown, Melanie Clemmons & Brent Brimhall
-
-// Draw a Verlet controlled solid
-// contained within a cube
-
-// Original Author: Ira Greenberg, 11/2020
+// RestroyoCity
+// Author: Ira Greenberg, 11/2020
 // Center of Creative Computation, SMU
-//----------------------------------------------
+// Dependencies: PByte.js, Three.js, 
 
+//Original template, thanks to by Sean Bradley:
+//https://github.com/Sean-Bradley/Three.js-TypeScript-Boilerplate.git
 
-// import * as THREE from "three";
-// import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 import { VerletNode } from './PByte3/VerletNode.js';
-import { AnchorPlane } from './PByte3/IJGUtils.js';
+import { AnchorPlane, Orb, PByteGLobals } from './PByte3/IJGUtils.js';
 import { VerletPlane } from './PByte3/VerletPlane.js';
-import { Scene, TextureLoader, Vector3 } from '/build/three.module.js';
+import { Color, Scene, TextureLoader, Vector3 } from '/build/three.module.js';
 import { OrbitControls } from '/jsm/controls/OrbitControls';
 import * as THREE from '/build/three.module.js';
 
@@ -47,18 +28,16 @@ const texture = new TextureLoader().load("resources/orgImg.png");
 let vp: VerletPlane = new VerletPlane(3, 3, 35, 35, texture, AnchorPlane.EDGES_ALL);
 scene.add(vp);
 
-// push middle node to start verlet
-//vp.push([vp.middleNodeIndex], new Vector3(.23, -.3, -.9));
-//vp.setNodesOff(AnchorPlane.CORNER_ALL);
+//Global
+PByteGLobals.gravity = -.003;
+
 vp.setNodesOff(AnchorPlane.EDGES_ALL);
 vp.setNormalsVisible(true);
 // for testing interaction with mesh
 let theta = 0;
 
-
 // cube bounds
 const bounds: THREE.Vector3 = new THREE.Vector3(8, 8, 8);
-
 
 // Create/add outer box
 const geometry2: THREE.BoxGeometry = new THREE.BoxGeometry(bounds.x, bounds.y, bounds.z);
@@ -70,20 +49,11 @@ scene.add(cube2);
 
 
 //+++++Begin some collision testing
-let ballPos: Vector3 = new Vector3(0, 1, 0);
-let ballSpd: Vector3 = new Vector3(.01, -.001, .02);
-let grav: number = -.003;
-let ballRad: number = .02;
+let orb: Orb = new Orb(.03, new Vector3(0, 1, 0), new Vector3(0, -.001, 0), new Color(0x112233));
 
-const geometry = new THREE.SphereGeometry(ballRad, 32, 16);
-const material = new THREE.MeshPhongMaterial({ color: 0x443322 });
-const sphere = new THREE.Mesh(geometry, material);
-sphere.position.x = ballPos.x;
-sphere.position.y = ballPos.y;
-sphere.position.z = ballPos.z;
-scene.add(sphere);
+
+scene.add(orb);
 //+++++End Collision testing++++++//
-
 
 // Simple lighting calculations
 const color = 0xEEEEFF;
@@ -102,7 +72,6 @@ scene.add(light2);
 camera.position.y = .8;
 camera.position.z = 2;
 
-
 window.addEventListener('resize', onWindowResize, false);
 
 function onWindowResize() {
@@ -111,7 +80,6 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     render();
 }
-
 
 var animate = function () {
     requestAnimationFrame(animate);
@@ -124,23 +92,16 @@ var animate = function () {
     let index = Math.floor(Math.random() * vp.bodyNodes.length);
     let node: VerletNode = vp.bodyNodes[index];
     let amp = Math.random() * .4;
+
+    // for verlet testing
     vp.moveNode(node, new Vector3(0, Math.sin(theta * Math.PI / 5) * amp, 0));
-    vp.showPatchNormals();
-    // console.log("centroid = ", vp.quads[20].getCentroid());
-    // console.log("normal = ", vp.quads[20].getNormal());
+    vp.showNormals();
     theta += 1;
 
-
-    //move sphere
-    sphere.position.x += ballSpd.x;
-    ballSpd.y += grav;
-    sphere.position.y += ballSpd.y;
-    sphere.position.z += ballSpd.z;
+    orb.move();
 
     //check sphere-plane collision
-    // if
-
-
+    vp.checkCollisions(orb);
 
     controls.update()
     render();
@@ -150,7 +111,6 @@ var animate = function () {
 function onMouse(event: MouseEvent) {
 
 }
-
 
 function render() {
     renderer.render(scene, camera);
