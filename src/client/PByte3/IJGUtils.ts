@@ -211,19 +211,37 @@ export class Quad extends Group {
         this.cntr.divideScalar(4);
         return this.cntr;
     }
+
+    getEdges(): Vector3[] {
+        let edges = [new Vector3(), new Vector3(),
+        new Vector3(), new Vector3()];
+        edges[0].subVectors(this.v1, this.v0);
+        edges[1].subVectors(this.v2, this.v1);
+        edges[2].subVectors(this.v3, this.v2);
+        edges[3].subVectors(this.v0, this.v3);
+        return edges;
+    }
+
+    getArea(): number {
+        // returns magnitude of cross product
+        let c = new Vector3();
+        c.copy(this.getEdges()[0]);
+        c.cross(this.getEdges()[1]);
+        return c.length();
+    }
 }
 // end quad class
 
 
 // BEGIN Orb class
-export class Orb extends Group{
+export class Orb extends Group {
     radius: number;
     pos: Vector3;
     speed: Vector3;
     color: Color;
     sphere: Mesh;
-    
-    constructor(radius: number, pos: Vector3, speed: Vector3, color: Color){
+
+    constructor(radius: number, pos: Vector3, speed: Vector3, color: Color) {
         super();
         this.radius = radius;
         this.pos = pos;
@@ -231,7 +249,7 @@ export class Orb extends Group{
         this.color = color;
 
         const geometry = new SphereGeometry(this.radius, 6, 6);
-        const material = new MeshPhongMaterial({ color:this.color });
+        const material = new MeshPhongMaterial({ color: this.color });
         this.sphere = new Mesh(geometry, material);
         this.sphere.position.x = pos.x;
         this.sphere.position.y = pos.y;
@@ -239,7 +257,7 @@ export class Orb extends Group{
         this.add(this.sphere);
     }
 
-    move(){
+    move() {
         this.speed.y += PByteGLobals.gravity;
         this.pos.add(this.speed);
         this.sphere.position.x = this.pos.x;
@@ -247,7 +265,7 @@ export class Orb extends Group{
         this.sphere.position.z = this.pos.z;
     }
 
-    collide(responseVector:number){
+    collide(responseVector: number) {
 
     }
 }
@@ -256,7 +274,7 @@ export class Orb extends Group{
 //global variables
 //global variable - eventually implement 'more better'.
 export class PByteGLobals {
-    static gravity:number = 0;
-}; 
+    static gravity: number = 0;
+};
 
 

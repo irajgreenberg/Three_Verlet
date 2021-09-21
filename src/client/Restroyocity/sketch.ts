@@ -7,9 +7,9 @@
 //https://github.com/Sean-Bradley/Three.js-TypeScript-Boilerplate.git
 
 
-import { VerletNode } from './PByte3/VerletNode.js';
-import { AnchorPlane, Orb, PByteGLobals } from './PByte3/IJGUtils.js';
-import { VerletPlane } from './PByte3/VerletPlane.js';
+import { VerletNode } from '../PByte3/VerletNode.js';
+import { AnchorPlane, Orb, PByteGLobals } from '../PByte3/IJGUtils.js';
+import { VerletPlane } from '../PByte3/VerletPlane.js';
 import { Color, Scene, TextureLoader, Vector3 } from '/build/three.module.js';
 import { OrbitControls } from '/jsm/controls/OrbitControls';
 import * as THREE from '/build/three.module.js';
@@ -25,7 +25,7 @@ document.addEventListener('click', onMouse, false);
 
 //custom geometry
 const texture = new TextureLoader().load("resources/orgImg.png");
-let vp: VerletPlane = new VerletPlane(3, 3, 35, 35, texture, AnchorPlane.EDGES_ALL);
+let vp: VerletPlane = new VerletPlane(1.5, 1.5, 15, 15, texture, AnchorPlane.EDGES_ALL);
 scene.add(vp);
 
 //Global
@@ -49,7 +49,7 @@ scene.add(cube2);
 
 
 //+++++Begin some collision testing
-let orb: Orb = new Orb(.03, new Vector3(0, 1, 0), new Vector3(0, -.001, 0), new Color(0x112233));
+let orb: Orb = new Orb(.03, new Vector3(0, 1, 0), new Vector3(-.02 + Math.random() * .02, -.001, -.02 + Math.random() * .02), new Color(0x112233));
 
 
 scene.add(orb);
@@ -94,7 +94,7 @@ var animate = function () {
     let amp = Math.random() * .4;
 
     // for verlet testing
-    vp.moveNode(node, new Vector3(0, Math.sin(theta * Math.PI / 5) * amp, 0));
+    // vp.moveNode(node, new Vector3(0, Math.sin(theta * Math.PI / 5) * amp, 0));
     vp.showNormals();
     theta += 1;
 

@@ -184,16 +184,53 @@ export class VerletPlane extends Group {
         }
     }
 
+    // Checks each quad against each orb
+    // determining surface deformation response 
+    // and orb rebounding.
+    // 1. detect collision w quad
+    // 2. calculate 'accurate' response of orb and
+    // 3. surface w conservation of momentum
     checkCollisions(orb: Orb) {
-       // console.log(orb.position.y);
-        for(let q of this.quads){
-            if (orb.pos.y<q.getCentroid().y){
-                orb.pos.y = q.getCentroid().y
-                console.log("centroid.y = ", q.getCentroid().y);
-                orb.speed.y *=-1;
+        /*if (p.norm().dot(r) < 0) {
+        pt.spd.mult(0);
+        }*/
+
+        for (let q of this.quads) {
+            // simple orthogonal collision test
+            // if (orb.pos.y < q.getCentroid().y) {
+            //     orb.pos.y = q.getCentroid().y
+            //     console.log("centroid.y = ", q.getCentroid().y);
+            //     orb.speed.y *= -1;
+            // }
+
+            // Initial collision check for orb against planes
+            //if (q.getNormal().dot(orb.pos) < 0) {
+            let plane_orb_area = 0;
+            // Calculate combined area 
+            // of 4 triangles using
+            // A: quad edge
+            // B: orb.pos
+            // Area of each triangle: 
+            // 1/2 mag A X B 
+            for (let i = 0; i < 4; i++) {
+                let quadEdge = new Vector3();
+                quadEdge.copy(q.getEdges()[i]);
+                quadEdge.cross(orb.pos);
+                plane_orb_area += quadEdge.length() / 2;
             }
+            //console.log((plane_orb_area - q.getArea());
+            if (Math.abs(plane_orb_area - q.getArea()) < .04) {
+                console.log("plane_orb_area = ", plane_orb_area);
+                console.log("q.getArea() = ", q.getArea());
+                orb.speed.y *= -1;
+            }
+            // Check against indivisual quads
+
+            //  q.
+            // orb.speed.y *= -1;
+            //}
         }
-        
+
     }
 
 

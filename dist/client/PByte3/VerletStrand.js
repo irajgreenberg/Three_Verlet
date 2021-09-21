@@ -32,14 +32,16 @@ export class VerletStrand extends THREE.Group {
         // local vars for segment calcuations
         let deltaVec = new THREE.Vector3();
         // get chain vector
-        deltaVec.subVectors(this.tail, this.head);
+        deltaVec.subVectors(this.head, this.tail);
         let chainLen = deltaVec.length();
         // get chain segment length
         let segLen = chainLen / this.segments.length;
         deltaVec.normalize();
+        deltaVec.multiplyScalar(segLen);
+        console.log(deltaVec);
         for (var i = 0; i < this.nodes.length; i++) {
             // working, but copies values - so lose reference to node object pesition in memory
-            this.nodes[i] = new VerletNode(new THREE.Vector3(this.head.x + deltaVec.x * segLen * i, this.head.y + deltaVec.y * segLen * i, this.head.z + deltaVec.z * segLen * i), THREE.MathUtils.randFloat(.0002, .0007), new THREE.Color(.5, .5, .5), this.nodeType);
+            this.nodes[i] = new VerletNode(new THREE.Vector3(this.head.x + deltaVec.x * i, this.head.y + deltaVec.y * i, this.head.z + deltaVec.z * i), THREE.MathUtils.randFloat(.0002, .0007), new THREE.Color(.5, .5, .5), this.nodeType);
             // NOT working
             // deltaVec.multiplyScalar(segLen * i);
             // this.head.add(deltaVec);

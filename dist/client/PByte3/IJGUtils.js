@@ -164,6 +164,22 @@ export class Quad extends Group {
         this.cntr.divideScalar(4);
         return this.cntr;
     }
+    getEdges() {
+        let edges = [new Vector3(), new Vector3(),
+            new Vector3(), new Vector3()];
+        edges[0].subVectors(this.v1, this.v0);
+        edges[1].subVectors(this.v2, this.v1);
+        edges[2].subVectors(this.v3, this.v2);
+        edges[3].subVectors(this.v0, this.v3);
+        return edges;
+    }
+    getArea() {
+        // returns magnitude of cross product
+        let c = new Vector3();
+        c.copy(this.getEdges()[0]);
+        c.cross(this.getEdges()[1]);
+        return c.length();
+    }
 }
 // end quad class
 // BEGIN Orb class

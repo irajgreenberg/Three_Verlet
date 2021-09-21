@@ -2,8 +2,8 @@
 // Author: Ira Greenberg, 11/2020
 // Center of Creative Computation, SMU
 // Dependencies: PByte.js, Three.js, 
-import { AnchorPlane, Orb, PByteGLobals } from './PByte3/IJGUtils.js';
-import { VerletPlane } from './PByte3/VerletPlane.js';
+import { AnchorPlane, Orb, PByteGLobals } from '../PByte3/IJGUtils.js';
+import { VerletPlane } from '../PByte3/VerletPlane.js';
 import { Color, Scene, TextureLoader, Vector3 } from '/build/three.module.js';
 import { OrbitControls } from '/jsm/controls/OrbitControls';
 import * as THREE from '/build/three.module.js';
