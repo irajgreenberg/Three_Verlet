@@ -1,9 +1,9 @@
-import { AnchorPoint, GeometryDetail } from './IJGUtils.js';
-import { VerletNode } from './VerletNode.js';
-import { VerletStrand } from './VerletStrand.js';
-import { VerletStick } from './VerletStick.js';
-import * as THREE from '/build/three.module.js';
-import { Color, Vector3 } from '/build/three.module.js';
+import { AnchorPoint, GeometryDetail } from './IJGUtils';
+import { VerletNode } from './VerletNode';
+import { VerletStrand } from './VerletStrand';
+import { VerletStick } from './VerletStick';
+import * as THREE from 'three';
+import { Color, Vector3 } from 'three';
 
 export class VerletTetrahedron extends THREE.Group {
     pos: Vector3;

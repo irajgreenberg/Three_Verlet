@@ -5,11 +5,11 @@
 // Center of Creative Computation, SMU
 //----------------------------------------------
 
-import * as THREE from '/build/three.module.js';
-import { VerletNode } from './VerletNode.js';
-import { BufferGeometry, Group, Texture, Vector3 } from '/build/three.module.js';
-import { VerletStick } from './VerletStick.js';
-import { AnchorPlane, AxesPlane, Orb, Quad } from './IJGUtils.js';
+import * as THREE from 'three';
+import { VerletNode } from './VerletNode';
+import { BufferGeometry, Group, Texture, Vector3 } from 'three';
+import { VerletStick } from './VerletStick';
+import { AnchorPlane, AxesPlane, Orb, Quad } from './IJGUtils';
 
 
 export class VerletPlane extends Group {

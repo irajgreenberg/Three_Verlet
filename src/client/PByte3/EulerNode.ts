@@ -8,7 +8,7 @@
 // Center of Creative Computation, SMU
 //----------------------------------------------
 
-import * as THREE from '/build/three.module.js';
+import * as THREE from 'three';
 
 export class EulerNode extends THREE.Mesh {
 

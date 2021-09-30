@@ -1,5 +1,6 @@
 
-import { Color, Geometry, Group, Line, LineBasicMaterial, Mesh, MeshPhongMaterial, SphereGeometry, Vector3 } from '/build/three.module.js';
+import { Color, BufferGeometry, Group, Line, LineBasicMaterial, 
+    Mesh, MeshPhongMaterial, SphereGeometry, Vector3 } from 'three';
 
 // Verlet stick terminal anchoring
 export enum AnchorPoint {
@@ -136,7 +137,7 @@ export class Quad extends Group {
     // for centroid
     private cntr: Vector3 = new Vector3();
 
-    lineGeometry = new Geometry();
+    lineGeometry: BufferGeometry;
     lineMaterial = new LineBasicMaterial({ color: 0xFF9900 });
     line: Line;
 
@@ -148,9 +149,14 @@ export class Quad extends Group {
         this.v3 = v3;
 
         // for drawing normal
-        this.lineGeometry.vertices = [];
-        this.lineGeometry.vertices.push(this.getCentroid());
-        this.lineGeometry.vertices.push(this.getNormal());
+        // this.lineGeometry.vertices = [];
+        // this.lineGeometry.vertices.push(this.getCentroid());
+        // this.lineGeometry.vertices.push(this.getNormal());
+
+        let points = [];
+        points.push(this.getCentroid());
+        points.push(this.getNormal());
+        this.lineGeometry = new BufferGeometry().setFromPoints(points);
 
         this.line = new Line(this.lineGeometry, this.lineMaterial);
         this.lineMaterial.transparent = true;
@@ -193,11 +199,12 @@ export class Quad extends Group {
         }
         this.lineMaterial.needsUpdate = true;
 
-        this.lineGeometry.vertices = [];
-        this.lineGeometry.vertices.push(this.getCentroid());
-        this.lineGeometry.vertices.push(this.getNormal());
+        // this.lineGeometry.vertices = [];
+        // this.lineGeometry.vertices.push(this.getCentroid());
+        // this.lineGeometry.vertices.push(this.getNormal());
 
-        this.lineGeometry.verticesNeedUpdate = true;
+       // this.lineGeometry.verticesNeedUpdate = true;
+        (this.lineGeometry as THREE.BufferGeometry).attributes.position.needsUpdate = true
 
     }
 

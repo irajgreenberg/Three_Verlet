@@ -8,8 +8,8 @@
 // Center of Creative Computation, SMU
 //----------------------------------------------
 
-import * as THREE from '/build/three.module.js';
-import { GeometryDetail } from './IJGUtils.js';
+import * as THREE from 'three';
+import { GeometryDetail } from './IJGUtils';
 
 export class VerletNode extends THREE.Mesh {
 

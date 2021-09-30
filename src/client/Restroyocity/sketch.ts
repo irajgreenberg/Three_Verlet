@@ -7,12 +7,12 @@
 //https://github.com/Sean-Bradley/Three.js-TypeScript-Boilerplate.git
 
 
-import { VerletNode } from '../PByte3/VerletNode.js';
-import { AnchorPlane, Orb, PByteGLobals } from '../PByte3/IJGUtils.js';
-import { VerletPlane } from '../PByte3/VerletPlane.js';
-import { Color, Scene, TextureLoader, Vector3 } from '/build/three.module.js';
-import { OrbitControls } from '/jsm/controls/OrbitControls';
-import * as THREE from '/build/three.module.js';
+import { VerletNode } from '../PByte3/VerletNode';
+import { AnchorPlane, Orb, PByteGLobals } from '../PByte3/IJGUtils';
+import { VerletPlane } from '../PByte3/VerletPlane';
+import { Color, Scene, TextureLoader, Vector3 } from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import * as THREE from 'three';
 
 const scene: Scene = new Scene();
 const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
@@ -25,7 +25,7 @@ document.addEventListener('click', onMouse, false);
 
 //custom geometry
 const texture = new TextureLoader().load("resources/orgImg.png");
-let vp: VerletPlane = new VerletPlane(1.5, 1.5, 15, 15, texture, AnchorPlane.EDGES_ALL);
+let vp: VerletPlane = new VerletPlane(1.5, 1.5, 45, 45, texture, AnchorPlane.EDGES_ALL);
 scene.add(vp);
 
 //Global
@@ -94,7 +94,7 @@ var animate = function () {
     let amp = Math.random() * .4;
 
     // for verlet testing
-    // vp.moveNode(node, new Vector3(0, Math.sin(theta * Math.PI / 5) * amp, 0));
+     vp.moveNode(node, new Vector3(0, Math.sin(theta * Math.PI / 5) * amp, 0));
     vp.showNormals();
     theta += 1;
 

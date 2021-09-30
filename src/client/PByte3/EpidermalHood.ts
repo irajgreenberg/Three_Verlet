@@ -5,12 +5,12 @@
 
 // Creates Jellyfish like epidermal hood, powered by verlet strands
 
-import * as THREE from '/build/three.module.js';
-import { VerletNode } from './VerletNode.js';
-import { VerletStick } from './VerletStick.js';
-import { VerletStrand } from './VerletStrand.js';
-import { AnchorPoint, Propulsion, VerletMaterials, GeometryDetail } from './IJGUtils.js';
-import { Color, Vector3 } from '/build/three.module.js';
+import * as THREE from 'three';
+import { VerletNode } from './VerletNode';
+import { VerletStick } from './VerletStick';
+import { VerletStrand } from './VerletStrand';
+import { AnchorPoint, Propulsion, VerletMaterials, GeometryDetail } from './IJGUtils';
+import { BufferGeometry, Color, Vector3 } from 'three';
 //import { Vector3 } from '/build/three.module.js';
 
 export class EpidermalHood extends THREE.Group {
@@ -29,7 +29,7 @@ export class EpidermalHood extends THREE.Group {
     // cross slices
     slices: VerletStick[];
     sliceLines: THREE.Line[];
-    sliceGeoms: THREE.Geometry[];
+    //sliceGeoms: BufferGeometry = [];
     sliceMats: THREE.MeshBasicMaterial[];
 
     // hanging tendrils
@@ -71,7 +71,7 @@ export class EpidermalHood extends THREE.Group {
         // slices
         this.slices = new Array(sliceCount * spineCount);
         this.sliceLines = new Array(sliceCount * spineCount);
-        this.sliceGeoms = new Array(sliceCount * spineCount);
+       // this.sliceGeoms = new Array(sliceCount * spineCount);
         this.sliceMats = new Array(sliceCount * spineCount);
 
 

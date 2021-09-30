@@ -10,8 +10,8 @@
 // Center of Creative Computation, SMU
 //----------------------------------------------
 
-import { EulerNode } from './EulerNode.js';
-import * as THREE from '/build/three.module.js';
+import { EulerNode } from './EulerNode';
+import * as THREE from 'three';
 
 export class EulerStick {
 

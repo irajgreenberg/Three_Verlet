@@ -2,6 +2,7 @@
 // of an 'independent' softbody organism.
 // Project is being produced in collaboration with
 // Courtney Brown, Melanie Clemmons & Brent Brimhall
+// help from: https://sbcode.net/threejs/geometry-to-buffergeometry/
 
 // Simple verlet Stick
 // manages constraint of verlet nodes
@@ -10,23 +11,23 @@
 // Center of Creative Computation, SMU
 //----------------------------------------------
 
-import * as THREE from '/build/three.module.js';
-import { VerletNode } from './VerletNode.js';
-
+import * as THREE from 'three';
+import { BufferGeometry, Vector3 } from 'three';
+import { VerletNode } from './VerletNode';
 
 export class VerletStick extends THREE.Group {
 
   stickTension: number;
-  // // anchor stick detail
+  // anchor stick detail
   anchorTerminal: number;
   start: VerletNode;
   end: VerletNode;
   len: number;
   line: THREE.Line
-  lineGeometry = new THREE.Geometry();
+  lineGeometry: BufferGeometry;
   lineMaterial: THREE.LineBasicMaterial;
   isVisible: boolean
-
+  points: Vector3[] = [];
 
   constructor(start: VerletNode, end: VerletNode, stickTension: number = .05, anchorTerminal: number = 0, isVisible: boolean = true) {
     super();
@@ -37,23 +38,29 @@ export class VerletStick extends THREE.Group {
     this.anchorTerminal = anchorTerminal;
     this.isVisible = isVisible;
     this.lineMaterial = new THREE.LineBasicMaterial({ color: 0xcc55cc });
-    this.lineGeometry.vertices.push(this.start.position);
-    this.lineGeometry.vertices.push(this.end.position);
-    this.lineMaterial = new THREE.LineBasicMaterial({ color: 0xcc55cc });
+    this.points.push(this.start.position);
+    this.points.push(this.end.position);
+    this.lineGeometry = new BufferGeometry().setFromPoints(this.points);
+    this.lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
     this.line = new THREE.Line(this.lineGeometry, this.lineMaterial);
     this.lineMaterial.transparent = true;
-    this.lineMaterial.opacity = .25;
+    this.lineMaterial.opacity = 1;
+    this.lineMaterial.linewidth = 5;
     this.add(this.line);
   }
 
   constrainLen(): void {
     // accuracy factor
     let accuracyCount: number = 5; //TO DO: make externally controllable eventually
+    let x1 = 0; let y1 = 0; let z1 = 0;
+    let x2 = 0; let y2 = 0; let z2 = 0;
     for (var i = 0; i < accuracyCount; i++) {
+
       let delta: THREE.Vector3 = new THREE.Vector3(
         this.end.position.x - this.start.position.x,
         this.end.position.y - this.start.position.y,
         this.end.position.z - this.start.position.z);
+
       let deltaLength: number = delta.length();
 
       // nodeConstrainFactors optionally anchor stick on one side
@@ -76,6 +83,7 @@ export class VerletStick extends THREE.Group {
         node1ConstrainFactor = .1;
         node2ConstrainFactor = .1;
       }
+
       let difference: number = (deltaLength - this.len) / deltaLength;
       this.start.position.x += delta.x * (node1ConstrainFactor * this.stickTension * difference);
       this.start.position.y += delta.y * (node1ConstrainFactor * this.stickTension * difference);
@@ -84,8 +92,11 @@ export class VerletStick extends THREE.Group {
       this.end.position.y -= delta.y * (node2ConstrainFactor * this.stickTension * difference);
       this.end.position.z -= delta.z * (node2ConstrainFactor * this.stickTension * difference);
     }
-    this.lineGeometry.verticesNeedUpdate = true;
-    this.lineMaterial.needsUpdate = true;
+
+    // need to use these 3 lines to update vertixes
+    (this.line.geometry as BufferGeometry).attributes.position.needsUpdate = true;
+    this.line.geometry.attributes.position.setXYZ(0, this.start.position.x, this.start.position.y, this.start.position.z);
+    this.line.geometry.attributes.position.setXYZ(1, this.end.position.x, this.end.position.y, this.end.position.z);
 
     if (!this.isVisible) {
       this.line.visible = false;

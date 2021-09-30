@@ -5,9 +5,10 @@
 
 // Creates Euler Tendrils - motion/springin based on speed
 
-import * as THREE from '/build/three.module.js';
-import { EulerNode } from './EulerNode.js';
-import { EulerStick } from './EulerStick.js';
+import * as THREE from 'three';
+import { BufferGeometry } from 'three';
+import { EulerNode } from './EulerNode';
+import { EulerStick } from './EulerStick';
 
 
 //const tendrilCount: number = 20;
@@ -22,7 +23,7 @@ export class EulerStrand extends THREE.Group {
     // controls spring tension between adjacent nodes
     elasticity: number;
     damping: number
-    geometry = new THREE.Geometry();
+    geometry: BufferGeometry;
     material = new THREE.MeshBasicMaterial({ color: 0xffffff, });
     public tendril: THREE.Line;
 
@@ -56,13 +57,13 @@ export class EulerStrand extends THREE.Group {
             // show nodes
             this.add(this.nodes[i]);
         }
-
+let points = [];
         for (var i = 0; i < this.segments.length; i++) {
             this.segments[i] = new EulerStick(this.nodes[i], this.nodes[i + 1], this.elasticity, this.damping);
-            this.geometry.vertices.push(this.segments[i].start.position);
-            if (i === this.segments.length - 1) { this.geometry.vertices.push(this.segments[i].end.position) }
+            points.push(this.segments[i].start.position);
+            if (i === this.segments.length - 1) { points.push(this.segments[i].end.position) }
         }
-
+        this.geometry = new THREE.BufferGeometry().setFromPoints(points);
         let lineMaterial = new THREE.LineBasicMaterial({ color: 0x22ff22, linewidth: 5 });
         this.tendril = new THREE.Line(this.geometry, lineMaterial);
         //this.tendril.material.transparent = true; //annoying ide can't accurately track this
@@ -86,7 +87,8 @@ export class EulerStrand extends THREE.Group {
         for (var i = 0; i < this.segmentCount; i++) {
             this.segments[i].constrainLen();
         }
-        this.geometry.verticesNeedUpdate = true;
+       // this.geometry.verticesNeedUpdate = true;
+        (this.geometry as THREE.BufferGeometry).attributes.position.needsUpdate = true
     }
 
     public constrainBounds(bounds: THREE.Vector3): void {
