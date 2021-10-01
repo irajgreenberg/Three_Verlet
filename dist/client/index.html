@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>PByte Development: Hairy Limb Demo</title>
+        <title>PByte Development</title>
         <style>
             body {
                 overflow: hidden;
@@ -13,6 +13,9 @@
     </head>
 
     <body>
-        <script type="module" src="bundle.js"></script>
+        <!-- https://stackoverflow.com/questions/11467873/how-to-append-timestamp-to-the-javascript-file-in-script-tag-url-to-avoid-cach
+        Method 2  - avoids browser caching,especially during development-->
+        <script>document.write("<script type='module' src='bundle.js?v=" + Date.now() + "'><\/script>");</script>
+        <!-- <script type="module" src="bundle.js"></script> -->
     </body>
 </html>
