@@ -7,9 +7,9 @@
 //https://github.com/Sean-Bradley/Three.js-TypeScript-Boilerplate.git
 
 
-import { VerletNode } from '../PByte3/VerletNode';
-import { AnchorPlane, Orb, PByteGLobals } from '../PByte3/IJGUtils';
-import { VerletPlane } from '../PByte3/VerletPlane';
+import { VerletNode } from '../../PByte3/VerletNode';
+import { AnchorPlane, Orb, PByteGLobals } from '../../PByte3/IJGUtils';
+import { VerletPlane } from '../../PByte3/VerletPlane';
 import { Color, Scene, TextureLoader, Vector3 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import * as THREE from 'three';

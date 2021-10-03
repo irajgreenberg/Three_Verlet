@@ -11,8 +11,8 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { BufferGeometry, Color, Line3, Scene, Vector3 } from 'three';
-import { VerletStrand } from '../PByte3/VerletStrand';
-import { AnchorPoint } from '../PByte3/IJGUtils';
+import { VerletStrand } from '../../PByte3/VerletStrand';
+import { AnchorPoint } from '../../PByte3/IJGUtils';
 
 const scene: Scene = new Scene();
 const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
