@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
     /**************** Project Entries ******************/
     // entry: './src/client/Projects/Restroyocity/sketch.ts', 
-    entry: './src/client/Projects/HairyLimb/sketch.ts',
+    entry: './src/client/Projects/HairyGeom/sketch.ts',
     /************************************************ */
     module: {
         rules: [
