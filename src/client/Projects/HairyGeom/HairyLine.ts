@@ -5,11 +5,13 @@ import { VerletStrand } from "../../PByte3/VerletStrand";
 export class HairyLine extends Group {
 
     tendrils: VerletStrand[] = [];
-    // terminals: Vector3[] = [];
+
+
+    // number of hairs along line
     lineSegs: number;
 
-    //anchorPoint:AnchorPoint;
-    strandSegs: number;
+    // number of nodes on each hair
+    hairSegs;
 
 
     // for growing:
@@ -22,7 +24,7 @@ export class HairyLine extends Group {
     strandAlpha = 0;
     isStrandAlphable = true;
 
-    constructor(term0: Vector3, term1: Vector3, lineSegs: number) {
+    constructor(term0: Vector3, term1: Vector3, lineSegs: number, hairSegs: number) {
         super();
 
         // line
@@ -38,7 +40,7 @@ export class HairyLine extends Group {
         // tendrils
         this.lineSegs = lineSegs;
         //temporary
-        this.strandSegs = lineSegs;
+        this.hairSegs = hairSegs;
         const lineGap = new Vector3(pts[1].x, pts[1].y, pts[1].z);
         lineGap.sub(pts[0]);
         lineGap.divideScalar(lineSegs);
@@ -47,7 +49,7 @@ export class HairyLine extends Group {
         for (let i = 0; i < lineSegs; i++) {
             this.tendrils[i] = new VerletStrand(new Vector3(pts[0].x + lineGap.x * i, pts[0].y, pts[0].z),
                 new Vector3(pts[0].x + lineGap.x * i, pts[0].y + Math.random() * .3, pts[0].z + Math.random() * .3),
-                10, AnchorPoint.HEAD);
+                this.hairSegs, AnchorPoint.HEAD);
             this.add(this.tendrils[i]);
 
             // defaults

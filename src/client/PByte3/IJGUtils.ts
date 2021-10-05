@@ -1,6 +1,19 @@
 
-import { Color, BufferGeometry, Group, Line, LineBasicMaterial, 
-    Mesh, MeshPhongMaterial, SphereGeometry, Vector3 } from 'three';
+import {
+    Color, BufferGeometry, Group, Line, LineBasicMaterial,
+    Mesh, MeshPhongMaterial, SphereGeometry, Vector3
+} from 'three';
+
+// Hair Density
+// custom needs to be explicitly set
+export enum HairDensity {
+    BALDING = 0,
+    LIGHT = 1,
+    MEDIUM = 2,
+    HEAVY = 3,
+    BIG_FOOT = 4,
+    CUSTOM = -1
+}
 
 // Verlet stick terminal anchoring
 export enum AnchorPoint {
@@ -203,7 +216,7 @@ export class Quad extends Group {
         // this.lineGeometry.vertices.push(this.getCentroid());
         // this.lineGeometry.vertices.push(this.getNormal());
 
-       // this.lineGeometry.verticesNeedUpdate = true;
+        // this.lineGeometry.verticesNeedUpdate = true;
         (this.lineGeometry as THREE.BufferGeometry).attributes.position.needsUpdate = true
 
     }

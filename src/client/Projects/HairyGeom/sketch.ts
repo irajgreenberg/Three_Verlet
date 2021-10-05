@@ -23,7 +23,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 document.addEventListener('click', onMouse, false);
 
 // Custom Geometry
-let hairyLine = new HairyLine(new Vector3(-.82, 0, 0), new Vector3(.82, 0, 0), 400);
+let hairyLine = new HairyLine(new Vector3(-.82, 0, 0), new Vector3(.82, 0, 0), 400, 10);
 scene.add(hairyLine);
 
 // Simple lighting calculations
