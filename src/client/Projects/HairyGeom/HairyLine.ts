@@ -6,13 +6,11 @@ export class HairyLine extends Group {
 
     tendrils: VerletStrand[] = [];
 
-
     // number of hairs along line
     lineSegs: number;
 
     // number of nodes on each hair
     hairSegs;
-
 
     // for growing:
     nodeScale = 1;
@@ -49,7 +47,7 @@ export class HairyLine extends Group {
         for (let i = 0; i < lineSegs; i++) {
             this.tendrils[i] = new VerletStrand(new Vector3(pts[0].x + lineGap.x * i, pts[0].y, pts[0].z),
                 new Vector3(pts[0].x + lineGap.x * i, pts[0].y + Math.random() * .3, pts[0].z + Math.random() * .3),
-                this.hairSegs, AnchorPoint.HEAD);
+                this.hairSegs, AnchorPoint.HEAD, .3);
             this.add(this.tendrils[i]);
 
             // defaults
