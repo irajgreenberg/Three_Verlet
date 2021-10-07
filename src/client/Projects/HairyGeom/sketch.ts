@@ -9,7 +9,7 @@
 
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { Scene, Vector3 } from 'three';
+import { BufferGeometry, Line, LineBasicMaterial, Scene, Vector3 } from 'three';
 import { AnchorPoint } from '../../PByte3/IJGUtils';
 import { HairyLine } from './HairyLine';
 
@@ -23,7 +23,16 @@ const controls = new OrbitControls(camera, renderer.domElement);
 document.addEventListener('click', onMouse, false);
 
 // Custom Geometry
-let hairyLine = new HairyLine(new Vector3(-.82, 0, 0), new Vector3(.82, 0, 0), 400, 10);
+
+// Test moving line, for HairyLine tracking
+const pts = [new Vector3(-.82, 0, 0), new Vector3(.82, 0, 0)];
+let geom: BufferGeometry = new BufferGeometry().setFromPoints(pts);
+let mat = new LineBasicMaterial({ color: 0xEE8811 });
+const line = new Line(geom, mat);
+scene.add(line); // add to Group
+let theta = 0.0;
+
+let hairyLine = new HairyLine(new Vector3(-.82, 0, 0), new Vector3(.82, 0, 0), 100, 10);
 scene.add(hairyLine);
 
 // Simple lighting calculations
@@ -58,8 +67,24 @@ var animate = function () {
     //controls.autoRotate = true;
     camera.lookAt(scene.position); //0,0,0
 
+    // Test waving Line
+    (line.geometry as BufferGeometry).attributes.position.needsUpdate = true;
+    line.geometry.attributes.position.setXYZ(1, pts[1].x, pts[1].y + Math.sin(theta += Math.PI / 180) * .5, pts[1].z);
+    line.geometry.attributes.position.setXYZ(0, pts[0].x, pts[0].y + Math.cos(theta += Math.PI / 180) * .5, pts[0].z);
+
+
     // start verlet
     hairyLine.live();
+
+    // test update function
+    let x = line.geometry.attributes.position.getX(0);
+    let y = line.geometry.attributes.position.getY(0);
+    let z = line.geometry.attributes.position.getZ(0);
+
+    let x2 = line.geometry.attributes.position.getX(1);
+    let y2 = line.geometry.attributes.position.getY(1);
+    let z2 = line.geometry.attributes.position.getZ(1);
+    hairyLine.update(new Vector3(x, y, z), new Vector3(x2, y2, z2));
 
     controls.update()
     render();

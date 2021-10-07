@@ -33,7 +33,7 @@ export class HairyLine extends Group {
         const geom = new BufferGeometry().setFromPoints(pts);
         const mat = new LineBasicMaterial({ color: 0xEE8811 });
         const line = new Line(geom, mat);
-        this.add(line); // add to Group
+        //  this.add(line); // add to Group
 
         // tendrils
         this.lineSegs = lineSegs;
@@ -94,6 +94,19 @@ export class HairyLine extends Group {
 
     }
 
+    // takes new terminal coords
+    // interpolates all  tendril insertion points
+    update(start: Vector3, end: Vector3) {
+        this.tendrils[0].moveToNode(0, start);
+        this.tendrils[this.tendrils.length - 1].moveToNode(0, end);
+        let deltaVec = new Vector3().subVectors(end, start);
+        let deltaVecStep = deltaVec.divideScalar(this.tendrils.length - 1);
+        for (let i = 0; i < this.tendrils.length; i++) {
+            let v = new Vector3(deltaVecStep.x, deltaVecStep.y, deltaVecStep.z);
+            v.multiplyScalar(i);
+            this.tendrils[i].moveToNode(0, new Vector3().addVectors(start, v));
+        }
+    }
 
     move(anchorPoint: AnchorPoint, vec: Vector3) {
         let index = 0;

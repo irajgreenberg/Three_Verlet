@@ -152,10 +152,18 @@ export class VerletStrand extends Group {
         this.add(this.tendril);
     }
 
+    // Euler
     public moveNode(index: number, vec: Vector3): void {
         this.nodes[index].position.x += vec.x;
         this.nodes[index].position.y += vec.y;
         this.nodes[index].position.z += vec.z;
+    }
+
+    // sets postion
+    public moveToNode(index: number, vec: Vector3): void {
+        this.nodes[index].position.x = vec.x;
+        this.nodes[index].position.y = vec.y;
+        this.nodes[index].position.z = vec.z;
     }
 
     public verlet(isConstrained: boolean = true): void {
@@ -172,11 +180,11 @@ export class VerletStrand extends Group {
     }
 
     private constrain(): void {
-       // constrain nodes using VerletStick
+        // constrain nodes using VerletStick
         for (var i = 0; i < this.segmentCount; i++) {
             this.segments[i].constrainLen();
         }
-      
+
         // update tendril line
         (this.tendril.geometry as BufferGeometry).attributes.position.needsUpdate = true;
         for (var i = 0; i < this.nodes.length; i++) {
@@ -249,7 +257,7 @@ export class VerletStrand extends Group {
         tenMat.opacity = alpha;
     }
 
-    setStrandColor(tendrilColor: Color){
+    setStrandColor(tendrilColor: Color) {
         let tenMat = this.tendril.material as MeshBasicMaterial;
         tenMat.color = tendrilColor;
     }
@@ -273,7 +281,7 @@ export class VerletStrand extends Group {
         }
     }
 
-   
+
 
     // createSkin() {
     //     const path = new CustomSinCurve(10);
