@@ -51,7 +51,7 @@ export class VerletStick extends THREE.Group {
 
   constrainLen(): void {
     // accuracy factor
-    let accuracyCount: number = 5; //TO DO: make externally controllable eventually
+    let accuracyCount: number = 3; //TO DO: make externally controllable eventually
     let x1 = 0; let y1 = 0; let z1 = 0;
     let x2 = 0; let y2 = 0; let z2 = 0;
     for (var i = 0; i < accuracyCount; i++) {

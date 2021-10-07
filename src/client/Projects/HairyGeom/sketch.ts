@@ -32,7 +32,7 @@ const line = new Line(geom, mat);
 scene.add(line); // add to Group
 let theta = 0.0;
 
-let hairyLine = new HairyLine(new Vector3(-.82, 0, 0), new Vector3(.82, 0, 0), 100, 10);
+let hairyLine = new HairyLine(new Vector3(-.82, 0, 0), new Vector3(.82, 0, 0), 100, 10, .2);
 scene.add(hairyLine);
 
 // Simple lighting calculations

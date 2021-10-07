@@ -10,7 +10,12 @@ export class HairyLine extends Group {
     lineSegs: number;
 
     // number of nodes on each hair
-    hairSegs;
+    hairSegs: number;
+
+    hairLen: number;
+
+    // springiness of hair
+    elasticity: number;
 
     // for growing:
     nodeScale = 1;
@@ -22,7 +27,7 @@ export class HairyLine extends Group {
     strandAlpha = 0;
     isStrandAlphable = true;
 
-    constructor(term0: Vector3, term1: Vector3, lineSegs: number, hairSegs: number) {
+    constructor(term0: Vector3, term1: Vector3, lineSegs: number, hairSegs: number, elasticity: number = .3, hairLen: number = .3) {
         super();
 
         // line
@@ -35,10 +40,15 @@ export class HairyLine extends Group {
         const line = new Line(geom, mat);
         //  this.add(line); // add to Group
 
-        // tendrils
+        // tendril spacing
         this.lineSegs = lineSegs;
-        //temporary
+
+        // hair node spacing 
         this.hairSegs = hairSegs;
+
+        this.hairLen = hairLen;
+
+        this.elasticity = elasticity;
         const lineGap = new Vector3(pts[1].x, pts[1].y, pts[1].z);
         lineGap.sub(pts[0]);
         lineGap.divideScalar(lineSegs);
@@ -46,12 +56,12 @@ export class HairyLine extends Group {
         // const tendrils: VerletStrand[] = [];
         for (let i = 0; i < lineSegs; i++) {
             this.tendrils[i] = new VerletStrand(new Vector3(pts[0].x + lineGap.x * i, pts[0].y, pts[0].z),
-                new Vector3(pts[0].x + lineGap.x * i, pts[0].y + Math.random() * .3, pts[0].z + Math.random() * .3),
-                this.hairSegs, AnchorPoint.HEAD, .3);
+                new Vector3(pts[0].x + lineGap.x * i, pts[0].y + Math.random() * this.hairLen, pts[0].z + Math.random() * 0),
+                this.hairSegs, AnchorPoint.HEAD, this.elasticity);
             this.add(this.tendrils[i]);
 
             // defaults
-            this.tendrils[i].moveNode(1, new Vector3(-3 + Math.random() * 3, -3 + Math.random() * 3, -3 + Math.random() * 3));
+            this.tendrils[i].moveNode(1, new Vector3(-3 + Math.random() * 3, -3 + Math.random() * 3, 0));
             this.tendrils[i].setNodesScale(5);
             this.tendrils[i].setStrandMaterials(new Color(0xFFEEFF), .35);
             this.tendrils[i].setStrandOpacity(0); // start with invisible hair
