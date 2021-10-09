@@ -12,6 +12,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { BufferGeometry, Line, LineBasicMaterial, Scene, Vector3 } from 'three';
 import { AnchorPoint } from '../../PByte3/IJGUtils';
 import { HairyLine } from './HairyLine';
+import { HairyBlob } from './HairyBlob';
 
 const scene: Scene = new Scene();
 const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
@@ -29,11 +30,13 @@ const pts = [new Vector3(-.82, 0, 0), new Vector3(.82, 0, 0)];
 let geom: BufferGeometry = new BufferGeometry().setFromPoints(pts);
 let mat = new LineBasicMaterial({ color: 0xEE8811 });
 const line = new Line(geom, mat);
-scene.add(line); // add to Group
+//scene.add(line); // add to Group
 let theta = 0.0;
 
-let hairyLine = new HairyLine(new Vector3(-.82, 0, 0), new Vector3(.82, 0, 0), 100, 10, .2);
+let hairyLine = new HairyLine(new Vector3(-.82, 0, 0), new Vector3(.82, 0, 0), 200, 4, .85, .05);
 scene.add(hairyLine);
+
+let blob = new HairyBlob(1, 0, .3);
 
 // Simple lighting calculations
 const color = 0xEEEEFF;
@@ -69,8 +72,8 @@ var animate = function () {
 
     // Test waving Line
     (line.geometry as BufferGeometry).attributes.position.needsUpdate = true;
-    line.geometry.attributes.position.setXYZ(1, pts[1].x, pts[1].y + Math.sin(theta += Math.PI / 180) * .5, pts[1].z);
-    line.geometry.attributes.position.setXYZ(0, pts[0].x, pts[0].y + Math.cos(theta += Math.PI / 180) * .5, pts[0].z);
+    line.geometry.attributes.position.setXYZ(1, pts[1].x, pts[1].y + Math.sin(theta += Math.PI / 240) * 1.1, pts[1].z);
+    line.geometry.attributes.position.setXYZ(0, pts[0].x, pts[0].y + Math.cos(theta += Math.PI / 240) * 1.1, pts[0].z);
 
 
     // start verlet

@@ -188,7 +188,7 @@ export class VerletStrand extends Group {
         // update tendril line
         (this.tendril.geometry as BufferGeometry).attributes.position.needsUpdate = true;
         for (var i = 0; i < this.nodes.length; i++) {
-            this.tendril.geometry.attributes.position.setXYZ(i, this.nodes[i].position.x, this.nodes[i].position.y, this.nodes[i].position.z);
+            (this.tendril.geometry as BufferGeometry).attributes.position.setXYZ(i, this.nodes[i].position.x, this.nodes[i].position.y, this.nodes[i].position.z);
         }
     }
 

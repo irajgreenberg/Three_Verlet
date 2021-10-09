@@ -3,6 +3,7 @@ import { HairDensity } from "../../PByte3/IJGUtils";
 import { VerletStrand } from "../../PByte3/VerletStrand";
 import { HairyLine } from "./HairyLine";
 
+// defaults to XY-plane
 export class HairyQuad extends Group {
 
     pos: Vector3;
@@ -13,6 +14,8 @@ export class HairyQuad extends Group {
         super();
         this.pos = pos;
         this.dim = dim;
+
+
 
 
     }

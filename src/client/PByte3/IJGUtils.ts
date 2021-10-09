@@ -138,6 +138,7 @@ export class Quad extends Group {
     v1: Vector3;
     v2: Vector3;
     v3: Vector3;
+    isDrawable: boolean;
 
     // used internally for normal calucations
     private side0: Vector3 = new Vector3();
@@ -154,12 +155,13 @@ export class Quad extends Group {
     lineMaterial = new LineBasicMaterial({ color: 0xFF9900 });
     line: Line;
 
-    constructor(v0: Vector3, v1: Vector3, v2: Vector3, v3: Vector3) {
+    constructor(v0: Vector3, v1: Vector3, v2: Vector3, v3: Vector3, isDrawable: boolean = true) {
         super();
         this.v0 = v0;
         this.v1 = v1;
         this.v2 = v2;
         this.v3 = v3;
+        this.isDrawable = isDrawable;
 
         // for drawing normal
         // this.lineGeometry.vertices = [];
@@ -174,7 +176,9 @@ export class Quad extends Group {
         this.line = new Line(this.lineGeometry, this.lineMaterial);
         this.lineMaterial.transparent = true;
         this.lineMaterial.opacity = 0;
-        this.add(this.line);
+        if (isDrawable) {
+            this.add(this.line);
+        }
     }
 
     // returns normalized vector

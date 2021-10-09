@@ -27,6 +27,9 @@ export class HairyLine extends Group {
     strandAlpha = 0;
     isStrandAlphable = true;
 
+    // for tracking number of grow() calls
+    growCounter: number = 0;
+
     constructor(term0: Vector3, term1: Vector3, lineSegs: number, hairSegs: number, elasticity: number = .3, hairLen: number = .3) {
         super();
 
@@ -49,15 +52,22 @@ export class HairyLine extends Group {
         this.hairLen = hairLen;
 
         this.elasticity = elasticity;
+
+        // calc gap to shift each tendril along line
         const lineGap = new Vector3(pts[1].x, pts[1].y, pts[1].z);
         lineGap.sub(pts[0]);
-        lineGap.divideScalar(lineSegs);
+        lineGap.divideScalar(this.lineSegs);
 
         // const tendrils: VerletStrand[] = [];
         for (let i = 0; i < lineSegs; i++) {
-            this.tendrils[i] = new VerletStrand(new Vector3(pts[0].x + lineGap.x * i, pts[0].y, pts[0].z),
-                new Vector3(pts[0].x + lineGap.x * i, pts[0].y + Math.random() * this.hairLen, pts[0].z + Math.random() * 0),
-                this.hairSegs, AnchorPoint.HEAD, this.elasticity);
+            let v0 = new Vector3(pts[0].x + lineGap.x * i, pts[0].y + lineGap.y * i, pts[0].z + lineGap.z * i);
+            let v1 = new Vector3(v0.x, v0.y, v0.z);
+            this.tendrils[i] = new VerletStrand(
+                v0,
+                v1.addScalar(Math.random() * this.hairLen),
+                this.hairSegs,
+                AnchorPoint.HEAD,
+                this.elasticity);
             this.add(this.tendrils[i]);
 
             // defaults
@@ -78,6 +88,7 @@ export class HairyLine extends Group {
     }
 
     grow() {
+        // console.log("hits = ", this.growCounter++);
         if (this.isNodeScalable) {
             this.setNodeScale(this.nodeScale);
         }
