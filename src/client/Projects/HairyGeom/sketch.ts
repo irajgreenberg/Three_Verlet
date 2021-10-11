@@ -72,8 +72,8 @@ var animate = function () {
 
     // Test waving Line
     (line.geometry as BufferGeometry).attributes.position.needsUpdate = true;
-    line.geometry.attributes.position.setXYZ(1, pts[1].x, pts[1].y + Math.sin(theta += Math.PI / 240) * 1.1, pts[1].z);
-    line.geometry.attributes.position.setXYZ(0, pts[0].x, pts[0].y + Math.cos(theta += Math.PI / 240) * 1.1, pts[0].z);
+    line.geometry.attributes.position.setXYZ(1, pts[1].x, pts[1].y + Math.sin(theta += Math.PI / 80) * 1.1, pts[1].z);
+    line.geometry.attributes.position.setXYZ(0, pts[0].x, pts[0].y + Math.cos(theta += Math.PI / 80) * 1.1, pts[0].z);
 
 
     // start verlet

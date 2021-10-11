@@ -14,19 +14,17 @@
 //----------------------------------------------
 
 import { PolyhedronGeometry, Vector3 } from "three";
-import { Quad } from "../../PByte3/IJGUtils";
+import { Quad, Tri } from "../../PByte3/IJGUtils";
 import { VerletNode } from "../../PByte3/VerletNode";
 import { VerletStick } from "../../PByte3/VerletStick";
 
 
 export class HairyBlob extends PolyhedronGeometry {
     elasticity: number;
-    //nodes: VerletNode[];
-    //sticks: VerletStick[];
-
-    //internals
-    //  private rects: Quad[] = [];
-
+    nodes?: VerletNode[]
+    sticks?: VerletStick[];
+    tris: Tri[];
+    
     constructor(radius: number, detail: number, elasticity: number) {
 
         const t = (1 + Math.sqrt(5)) / 2;
@@ -46,9 +44,14 @@ export class HairyBlob extends PolyhedronGeometry {
 
         super(vertices, indices, radius, detail);
         this.elasticity = elasticity;
-
-        for (let i = 0; i < indices.length; i++) {
-            //)
+        this.tris = [];
+        for (let i = 0; i < indices.length; i+=8) {
+           // console.log(indices.length);
+            this.tris[i] = new Tri(
+                new Vector3(vertices[indices[i]], vertices[indices[i+1]], vertices[indices[i+2]]),
+                new Vector3(vertices[indices[i+3]], vertices[indices[i+4]], vertices[indices[i+5]]),
+                new Vector3(vertices[indices[i+6]], vertices[indices[i+7]], vertices[indices[i+8]])
+                );
         }
 
     }

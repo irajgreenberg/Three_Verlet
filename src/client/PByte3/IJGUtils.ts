@@ -131,6 +131,123 @@ export class VerletMaterials {
     }
 }
 
+// Convenience class to group 3 vectors
+// includes tri centroid and normal
+export class Tri extends Group {
+    v0: Vector3;
+    v1: Vector3;
+    v2: Vector3;
+    isDrawable: boolean;
+
+    // used internally for normal calucations
+    private side0: Vector3 = new Vector3();
+    private side1: Vector3 = new Vector3();
+    private norm: Vector3 = new Vector3();
+
+    private isNormalVisible: boolean = false;
+    private normalAlpha: number = 0;
+
+    // for centroid
+    private cntr: Vector3 = new Vector3();
+
+    lineGeometry: BufferGeometry;
+    lineMaterial = new LineBasicMaterial({ color: 0xFF9900 });
+    line: Line;
+
+    constructor(v0: Vector3, v1: Vector3, v2: Vector3, isDrawable: boolean = true) {
+        super();
+        this.v0 = v0;
+        this.v1 = v1;
+        this.v2 = v2;
+        this.isDrawable = isDrawable;
+
+        // for drawing normal
+        let points = [];
+        points.push(this.getCentroid());
+        points.push(this.getNormal());
+        this.lineGeometry = new BufferGeometry().setFromPoints(points);
+
+        this.line = new Line(this.lineGeometry, this.lineMaterial);
+        this.lineMaterial.transparent = true;
+        this.lineMaterial.opacity = 0;
+        if (isDrawable) {
+            this.add(this.line);
+        }
+    }
+
+    // returns normalized vector
+    // centered to face
+    getNormal(): Vector3 {
+        //reset normals
+        this.side0.setScalar(0);
+        this.side1.setScalar(0);
+        this.norm.setScalar(1); // may not need
+
+        // calc 2 quad side sides
+        this.side0.subVectors(this.v1, this.v0);
+        this.side1.subVectors(this.v2, this.v0);
+
+        // calc normal
+        this.norm.crossVectors(this.side0, this.side1)
+        this.norm.normalize().multiplyScalar(-.07);
+        this.norm.add(this.getCentroid());
+
+        //return quad normalized normal
+        return this.norm;
+    }
+
+    setIsNormalVisible(isNormalVisible: boolean, normalAlpha: number = .25): void {
+        this.isNormalVisible = isNormalVisible;
+        this.normalAlpha = normalAlpha;
+    }
+
+    // dynamically recalculates normal
+    updateNormal(): void {
+        if (this.isNormalVisible) {
+            this.lineMaterial.opacity = this.normalAlpha;
+        } else {
+            this.lineMaterial.opacity = 0;
+        }
+        this.lineMaterial.needsUpdate = true;
+
+        // this.lineGeometry.vertices = [];
+        // this.lineGeometry.vertices.push(this.getCentroid());
+        // this.lineGeometry.vertices.push(this.getNormal());
+
+        // this.lineGeometry.verticesNeedUpdate = true;
+        (this.lineGeometry as THREE.BufferGeometry).attributes.position.needsUpdate = true
+
+    }
+
+    // returns center point
+    getCentroid(): Vector3 {
+        this.cntr.setScalar(0);
+        this.cntr.add(this.v0);
+        this.cntr.add(this.v1);
+        this.cntr.add(this.v2);
+        this.cntr.divideScalar(3);
+        return this.cntr;
+    }
+
+    getEdges(): Vector3[] {
+        let edges = [new Vector3(), new Vector3(),
+        new Vector3(), new Vector3()];
+        edges[0].subVectors(this.v1, this.v0);
+        edges[1].subVectors(this.v2, this.v1);
+        edges[2].subVectors(this.v0, this.v2);
+        return edges;
+    }
+
+    getArea(): number {
+        // returns magnitude of cross product
+        let c = new Vector3();
+        c.copy(this.getEdges()[0]);
+        c.cross(this.getEdges()[1]);
+        return c.length();
+    }
+}
+// end tri class
+
 // Convenience class to group 4 vectors
 // includes quad centroid and normal
 export class Quad extends Group {
@@ -140,7 +257,7 @@ export class Quad extends Group {
     v3: Vector3;
     isDrawable: boolean;
 
-    // used internally for normal calucations
+    // used internally for normal calculations
     private side0: Vector3 = new Vector3();
     private side1: Vector3 = new Vector3();
     private norm: Vector3 = new Vector3();
@@ -163,11 +280,6 @@ export class Quad extends Group {
         this.v3 = v3;
         this.isDrawable = isDrawable;
 
-        // for drawing normal
-        // this.lineGeometry.vertices = [];
-        // this.lineGeometry.vertices.push(this.getCentroid());
-        // this.lineGeometry.vertices.push(this.getNormal());
-
         let points = [];
         points.push(this.getCentroid());
         points.push(this.getNormal());
@@ -182,7 +294,7 @@ export class Quad extends Group {
     }
 
     // returns normalized vector
-    // centered to quad
+    // centered to face
     getNormal(): Vector3 {
         //reset normals
         this.side0.setScalar(0);
