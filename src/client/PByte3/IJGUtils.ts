@@ -169,7 +169,7 @@ export class Tri extends Group {
 
         this.line = new Line(this.lineGeometry, this.lineMaterial);
         this.lineMaterial.transparent = true;
-        this.lineMaterial.opacity = 0;
+        this.lineMaterial.opacity = .75;
         if (isDrawable) {
             this.add(this.line);
         }
