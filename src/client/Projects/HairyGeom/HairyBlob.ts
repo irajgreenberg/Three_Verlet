@@ -13,7 +13,7 @@
 // Thanks to: https://superhedral.com/2020/05/17/building-the-unit-icosahedron/
 //----------------------------------------------
 
-import { Color, Group, Vector, Vector3 } from "three";
+import { BufferGeometry, Color, Group, Vector, Vector3 } from "three";
 import { AnchorPoint, GeometryDetail, Tri } from "../../PByte3/IJGUtils";
 import { VerletNode } from "../../PByte3/VerletNode";
 import { VerletStick } from "../../PByte3/VerletStick";
@@ -27,8 +27,16 @@ export class HairyBlob extends Group {
     centerNode: VerletNode;
 
 
-    constructor(radius: number, detail: number, elasticity: number) {
+    geometry: BufferGeometry;
+    // buffer attributes
+    // const positions = [];
+    // const normals = [];
+    // const uvs = [];
 
+
+
+    constructor(radius: number, detail: number, elasticity: number) {
+        super();
         const t = (1 + Math.sqrt(5)) / 2;
 
         const vertices = [
@@ -46,6 +54,7 @@ export class HairyBlob extends Group {
             - t, 0, 1
         ];
 
+        // face3 vertices
         const indices = [
             0, 11, 5,
             0, 5, 1,
@@ -69,12 +78,33 @@ export class HairyBlob extends Group {
             9, 8, 1
         ];
 
+        // create BufferGeometry
+        this.geometry = new BufferGeometry();
+
+        const positions = [];
+        const normals = [];
+        const uvs = [];
+        for (let i = 0; i < indices.length; i++) {
+            // positions.push(vertices[indices[i * 3]]);
+
+            // normals.push(...vertex.norm);
+            // uvs.push(...vertex.uv);
+        }
+
+
         const vecs: Vector3[] = [];
         for (let i = 0, j = 0; i < vertices.length; i += 3) {
             vecs[j++] = new Vector3(vertices[i], vertices[i + 1], vertices[i + 2]);
         }
 
-        super();
+        for (let i = 0; i < indices.length; i += 3) {
+            positions.push(vecs[indices[i]].x);
+            positions.push(vecs[indices[i]].y);
+            positions.push(vecs[indices[i]].z);
+        }
+
+
+
         this.elasticity = elasticity;
         this.tris = [];
         this.nodes = [];
@@ -155,6 +185,7 @@ export class HairyBlob extends Group {
                 this.add(this.sticks[i]);
             }
         }
+
 
     }
 
