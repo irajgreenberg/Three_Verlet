@@ -18,16 +18,18 @@
 // Center of Creative Computation, SMU
 //----------------------------------------------
 
-import * as THREE from '/build/three.module.js';
-import { OrbitControls } from '/jsm/controls/OrbitControls';
-import { VerletNode } from './PByte3/VerletNode.js';
-import { VerletStrand } from './PByte3/VerletStrand.js';
-import { VerletTetrahedron } from './PByte3/VerletTetrahedron.js';
-import { Color, SphereBufferGeometry, Vector2, Vector3 } from '/build/three.module.js';
-import { AnchorPoint, GeometryDetail, Propulsion, VerletMaterials } from './PByte3/IJGUtils.js';
-import { EpidermalHood } from './PByte3/EpidermalHood.js';
-import { VerletSphere } from './PByte3/VerletSphere.js';
-import { VerletStick } from './PByte3/VerletStick.js';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { BufferGeometry, Color, Vector2, Vector3 } from "three";
+import { AnchorPoint, GeometryDetail } from "../../PByte3/IJGUtils";
+import { VerletNode } from "../../PByte3/VerletNode";
+import { VerletStick } from "../../PByte3/VerletStick";
+import { VerletStrand } from '../../PByte3/VerletStrand';
+import { VerletTetrahedron } from '../../PByte3/VerletTetrahedron';
+import { Propulsion, VerletMaterials } from '../../PByte3/IJGUtils';
+import { EpidermalHood } from '../../PByte3/EpidermalHood';
+import { VerletSphere } from '../../PByte3/VerletSphere';
+
 
 
 const scene: THREE.Scene = new THREE.Scene();
@@ -57,7 +59,8 @@ let eggGeometry: THREE.TorusKnotGeometry;
 let eggMaterial: THREE.MeshPhongMaterial;
 let eggWireframe: THREE.LineSegments;
 let eggCilia: VerletStrand[] = []; // do I need this?
-let eggVerts: Vector3[];
+//let eggVerts: Vector3[];
+//let eggVerts = [];
 let isEggBirth: boolean = false;
 let tet: VerletTetrahedron;
 let tetCounter: number = 0;
@@ -76,18 +79,15 @@ let finalTethers: VerletStick[] = [];
 let finalTetherAlphas: number[] = [];
 
 
-
 // cube bounds
 const bounds: THREE.Vector3 = new THREE.Vector3(5, 5, 5);
 const tetBounds: THREE.Vector3 = new THREE.Vector3(.85, 2, .85);
 createCubeConstraints(bounds, false);
 createCubeConstraints(tetBounds, false);
 
-
 setLighting();
 camera.position.y = .05;
 camera.position.z = 3;
-
 
 window.addEventListener('resize', onWindowResize, false);
 
@@ -130,7 +130,9 @@ function hatch(): void {
     eggMaterial.transparent = true;
     egg = new THREE.Mesh(eggGeometry, eggMaterial);
     scene.add(egg);
-    eggVerts = eggGeometry.vertices;
+    //eggVerts = eggGeometry.vertices;
+   // eggVerts = egg.geometry.attributes.position
+    // console.log("egg.geometry.attributes.position = ", egg.geometry.attributes.position)
 
 }
 
@@ -357,8 +359,6 @@ var animate = function () {
     }
 
 
-
-
     if (tet !== undefined) {
         tet.verlet();
         tet.pulseNode(0, .009, Math.PI / 45);
@@ -391,7 +391,6 @@ var animate = function () {
             ova.position.set(avgPos.x, avgPos.y, avgPos.z);
             //eggWireframe.position.set(avgPos.x, avgPos.y, avgPos.z);
         }
-
     }
 
     if (epidermalCover !== undefined) {
@@ -412,6 +411,7 @@ var animate = function () {
         }
 
     }
+     
     for (var i = 0; i < tet.nodes.length; i++) {
         finalTethers[i].constrainLen();
     }
@@ -436,7 +436,6 @@ window.addEventListener('touchstart', (event) => {
     event.preventDefault();
     setPickPosition(event.touches[0]);
 }, { passive: false });
-
 window.addEventListener('touchmove', (event) => {
     setPickPosition(event.touches[0]);
 
@@ -475,7 +474,7 @@ window.addEventListener('touchmove', (event) => {
 
         // stage 2 - tendrils
         if (tetCounter == 11 && tendrilCounter < 5) {
-            const pos = getScreenPos(new THREE.Vector2(event.clientX, event.clientY))
+           // const pos = getScreenPos(new THREE.Vector2(event.clientX, event.clientY))
             //addTendril(pos);
             addTendril(new Vector3(tet.position.x + tet.nodes[tendrilCounter].position.x,
                 tet.position.y + tet.nodes[tendrilCounter].position.y,

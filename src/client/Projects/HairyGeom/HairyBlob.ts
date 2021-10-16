@@ -121,17 +121,17 @@ export class HairyBlob extends Group {
                     isAddable3 = false;
                 }
             }
-            if (isAddable) {
-                this.sticks[k++] = new VerletStick(this.nodes[indices[i]], this.nodes[indices[i + 1]], .01);
-            }
+            // if (isAddable) {
+            //     this.sticks[k++] = new VerletStick(this.nodes[indices[i]], this.nodes[indices[i + 1]], .01);
+            // }
 
             if (isAddable2) {
                 this.sticks[k++] = new VerletStick(this.nodes[indices[i + 1]], this.nodes[indices[i + 2]], .01);
             }
 
-            if (isAddable3) {
-                this.sticks[k++] = new VerletStick(this.nodes[indices[i + 2]], this.nodes[indices[i]], .01);
-            }
+            // if (isAddable3) {
+            //     this.sticks[k++] = new VerletStick(this.nodes[indices[i + 2]], this.nodes[indices[i]], .01);
+            // }
 
         }
 
