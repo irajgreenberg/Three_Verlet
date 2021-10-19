@@ -1,26 +1,14 @@
-//Boilerplate Typescript/Three/VSCode, by Sean Bradley:
-//git clone https://github.com/Sean-Bradley/Three.js-TypeScript-Boilerplate.git
-
-// For new projects:  1. npm install -g typescript, 
-//                    2. npm install
-// To run:            3. npm run dev 
-//                    Server runs locally at port 3000
-
-// These experiments support development
-// of an 'independent' softbody organism.
-// Work is being produced in collaboration with
-// Courtney Brown, Melanie Clemmons & Brent Brimhall
-
-// Growable Organism01 
-// contrained within a cube
-
-// Original Author: Ira Greenberg, 11/2020
+// Organism01
+// Author: Ira Greenberg, 10/2021
 // Center of Creative Computation, SMU
-//----------------------------------------------
+// Dependencies: PByte.js, Three.js, 
+
+//Original template by Sean Bradley:
+//https://github.com/Sean-Bradley/Three.js-TypeScript-Boilerplate.git
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { BufferGeometry, Color, Group, Vector2, Vector3 } from "three";
+import { BufferGeometry, Color, Vector2, Vector3 } from "three";
 import { AnchorPoint, GeometryDetail } from "../../PByte3/IJGUtils";
 import { VerletNode } from "../../PByte3/VerletNode";
 import { VerletStick } from "../../PByte3/VerletStick";
@@ -53,7 +41,6 @@ let amps: number[] = [];
 let freqs: number[] = [];
 let thetas: number[] = [];
 
-let groupMover: Vector3 = new Vector3(0,0,0);
 
 let egg: THREE.Mesh;
 let eggGeometry: THREE.TorusKnotGeometry;
@@ -79,11 +66,9 @@ nodeType: GeometryDetail;
 let finalTethers: VerletStick[] = [];
 let finalTetherAlphas: number[] = [];
 
-let organismGroup: Group;
-
 
 // cube bounds
-const bounds: THREE.Vector3 = new Vector3(10, 10, 10);
+const bounds: THREE.Vector3 = new Vector3(5, 5, 5);
 const tetBounds: THREE.Vector3 = new Vector3(.85, 2, .85);
 createCubeConstraints(bounds, false);
 createCubeConstraints(tetBounds, false);
@@ -108,10 +93,6 @@ function getAllTendrilNodes(): VerletNode[] {
 
 // Birth stage - egg
 function hatch(): void {
-
-    // create outer group
-    organismGroup = new Group();
-
     //test
     let vals: number[] = [0];
     //ova = new VerletSphere(new Vector3(), new Vector2(.075, .1), 18, 18);
@@ -120,8 +101,7 @@ function hatch(): void {
     ova.addTendrils(12, .9);
     ova.setTendrilOpacity(ovaCiliaAlpha);
     ova.setNodeVisibility(true);
-    //scene.add(ova);
-    organismGroup.add(ova);
+    scene.add(ova);
     for (var i = 0, j = 0; i < ova.nodes.length; i++, j++) {
         if (i % 2 == 0) {
             ovaPulseIndices.push(i);
@@ -138,13 +118,11 @@ function hatch(): void {
     eggMaterial.opacity = 0;
     eggMaterial.transparent = true;
     egg = new THREE.Mesh(eggGeometry, eggMaterial);
-    //scene.add(egg);
-    organismGroup.add(egg);
+    scene.add(egg);
     //eggVerts = eggGeometry.vertices;
    // eggVerts = egg.geometry.attributes.position
     // console.log("egg.geometry.attributes.position = ", egg.geometry.attributes.position)
 
-    scene.add(organismGroup);
 }
 
 hatch();
@@ -164,8 +142,7 @@ function addTet() {
     tet.setNodesColor(new THREE.Color(0X996611));
     tet.setSticksColor(new THREE.Color(0XFF0000));
     tet.setSticksOpacity(0);
-    //scene.add(tet);
-    organismGroup.add(tet);
+    scene.add(tet);
     tet.moveNode(0, new Vector3(.02, -.006, .04))
     tet.moveNode(1, new Vector3(-.02, .006, -.04))
 }
@@ -191,8 +168,7 @@ function addTendril(pos: THREE.Vector3) {
     ns.setStrandMaterials(new THREE.Color(.3, .5, 1), .3);
     tendrils.push(ns);
     ns.setNodeVisible(0, false);
-    //scene.add(ns);
-    organismGroup.add(ns);
+    scene.add(ns);
 
     ns.moveNode(ns.nodes.length - 1,
         new THREE.Vector3(THREE.MathUtils.randFloatSpread(.08),
@@ -219,8 +195,7 @@ function addCilia(ciliaSegments: number = 0.0, cilialLength: number = 0.0, cilia
             //cilia[k].setNodesScale(3);
             cilia[k].setStrandMaterials(new Color(0XEEEEEE), .25);
 
-            //scene.add(cilia[k]);
-            organismGroup.add(cilia[k]);
+            scene.add(cilia[k]);
         }
     }
 }
@@ -346,19 +321,6 @@ var animate = function () {
     camera.position.z = Math.cos(cameraTheta3D.z+=Math.PI/180)*2.2;
     camera.position.x = Math.sin(cameraTheta3D.x+=Math.PI/180)*2.2;
 
-
-    organismGroup.position.setX(Math.cos(groupMover.x)*1.75);
-    organismGroup.position.setY(Math.cos(groupMover.y)*1.75);
-    organismGroup.position.setZ(Math.sin(groupMover.z)*1.25);
-    groupMover.x += Math.PI/720;
-    groupMover.y += Math.PI/1440;
-    groupMover.z += Math.PI/2000;
-
-    organismGroup.rotateY((-1+Math.random())*Math.PI/180);
-    organismGroup.rotateX((-1+Math.random())*Math.PI/360);
-    organismGroup.rotateZ((-1+Math.random())*Math.PI/720);
-    organismGroup.scale.set(2, 2, 2);
-   
 
     if (isOvaBirth) {
         ova.setStickColor(new Color(0X7777DD), ovaStickColorAlpha);
@@ -498,8 +460,7 @@ window.addEventListener('touchmove', (event) => {
                 points.push(tet.nodes[tetCounter].position);
                 let eggToTetLineGeometry = new THREE.BufferGeometry().setFromPoints(points);
                 eggToTetLines.push(new THREE.Line(eggToTetLineGeometry, eggToTetLineMaterial))
-                //scene.add(eggToTetLines[tetCounter]);
-                organismGroup.add(eggToTetLines[tetCounter]);
+                scene.add(eggToTetLines[tetCounter]);
             }
             tetCounter++;
         }
@@ -563,8 +524,7 @@ function onMouse(event: MouseEvent) {
                 points.push(tet.nodes[tetCounter].position);
                 let eggToTetLineGeometry = new THREE.BufferGeometry().setFromPoints(points);
                 eggToTetLines.push(new THREE.Line(eggToTetLineGeometry, eggToTetLineMaterial))
-                //scene.add(eggToTetLines[tetCounter]);
-                organismGroup.add(eggToTetLines[tetCounter]);
+                scene.add(eggToTetLines[tetCounter]);
             }
             tetCounter++;
         }
