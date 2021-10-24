@@ -56,7 +56,7 @@ hairyBlob.moveCenter(new Vector3(.3, .2, .2));
 let hairyLines: HairyLine[] = [];
 for (let i = 0; i < 30; i++) {
     hairyLines[i] = new HairyLine(hairyBlob.sticks[i].start.position, hairyBlob.sticks[i].end.position, 30, 3, .85, .06);
-    scene.add(hairyLines[i]);
+  //  scene.add(hairyLines[i]);
 }
 
 

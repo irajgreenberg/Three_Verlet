@@ -91,7 +91,6 @@ export class HairyBlob extends Group {
             // uvs.push(...vertex.uv);
         }
 
-
         const vecs: Vector3[] = [];
         for (let i = 0, j = 0; i < vertices.length; i += 3) {
             vecs[j++] = new Vector3(vertices[i], vertices[i + 1], vertices[i + 2]);
@@ -103,21 +102,20 @@ export class HairyBlob extends Group {
             positions.push(vecs[indices[i]].z);
         }
 
-
-
         this.elasticity = elasticity;
         this.tris = [];
         this.nodes = [];
         this.sticks = [];
 
-        for (let i = 0, j = 0; i < indices.length; i += 3) {
-            this.tris[j++] = new Tri(vecs[indices[i]], vecs[indices[i + 1]], vecs[indices[i + 2]]);
+        for (let i = 0, j = 0; i < 1; i += 3) {
+            this.tris[j] = new Tri(vecs[indices[i]], vecs[indices[i + 1]], vecs[indices[i + 2]]);
+            this.add(this.tris[j++]);
         }
 
         // calulate unique Verlet nodes
         for (let i = 0; i < vecs.length; i++) {
-            this.nodes[i] = new VerletNode(vecs[i].multiplyScalar(radius), .01,
-                new Color(1, 1, 1), GeometryDetail.SPHERE_LOW);
+            this.nodes[i] = new VerletNode(vecs[i].multiplyScalar(radius), .02,
+                new Color(1, .75, .2), GeometryDetail.SPHERE_LOW);
             this.add(this.nodes[i]);
         }
 
@@ -162,7 +160,6 @@ export class HairyBlob extends Group {
             // if (isAddable3) {
             //     this.sticks[k++] = new VerletStick(this.nodes[indices[i + 2]], this.nodes[indices[i]], .01);
             // }
-
         }
 
         // add cross supports
@@ -178,15 +175,12 @@ export class HairyBlob extends Group {
             }
         }
 
-
         // console.log("sticks length = ", this.sticks.length)
         for (let i = 0; i < this.sticks.length; i++) {
             if (i < 30) {
                 this.add(this.sticks[i]);
             }
         }
-
-
     }
 
     getCentroid(): Vector3 {
@@ -209,8 +203,6 @@ export class HairyBlob extends Group {
     }
 
     live() {
-
-
         for (const n of this.nodes) {
             n.verlet();
         }
@@ -219,14 +211,12 @@ export class HairyBlob extends Group {
         for (const s of this.sticks) {
             s.constrainLen();
         }
-
     }
 
     constrainBounds(bounds: Vector3): void {
         for (const n of this.nodes) {
             n.constrainBounds(bounds);
         }
-
     }
 
 }
