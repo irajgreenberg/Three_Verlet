@@ -226,7 +226,12 @@ export class HairyBlob extends Group {
         for (const n of this.nodes) {
             n.constrainBounds(bounds);
         }
+    }
 
+    test = () => console.log("this is a test");
+
+    test2() {
+        console.log("this is a test")
     }
 
 }
