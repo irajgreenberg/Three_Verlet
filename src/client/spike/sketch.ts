@@ -1,33 +1,23 @@
-//Boilerplate Typescript/Three/VSCode, by Sean Bradley:
-//git clone https://github.com/Sean-Bradley/Three.js-TypeScript-Boilerplate.git
-
-// For new projects:  1. npm install -g typescript, 
-//                    2. npm install
-// To run:            3. npm run dev 
-//                    Server runs locally at port 3000
-
-// These experiments support development
-// of an 'independent' softbody organism.
-// Work is being produced in collaboration with
-// Courtney Brown, Melanie Clemmons & Brent Brimhall
-
-// Growable Organism01 
-// contrained within a cube
-
-// Original Author: Ira Greenberg, 11/2020
+// Organism01
+// Author: Ira Greenberg, 10/2021
 // Center of Creative Computation, SMU
-//----------------------------------------------
+// Dependencies: PByte.js, Three.js, 
 
-import * as THREE from '/build/three.module.js';
-import { OrbitControls } from '/jsm/controls/OrbitControls';
-import { VerletNode } from './PByte3/VerletNode.js';
-import { VerletStrand } from './PByte3/VerletStrand.js';
-import { VerletTetrahedron } from './PByte3/VerletTetrahedron.js';
-import { Color, SphereBufferGeometry, Vector2, Vector3 } from '/build/three.module.js';
-import { AnchorPoint, GeometryDetail, Propulsion, VerletMaterials } from './PByte3/IJGUtils.js';
-import { EpidermalHood } from './PByte3/EpidermalHood.js';
-import { VerletSphere } from './PByte3/VerletSphere.js';
-import { VerletStick } from './PByte3/VerletStick.js';
+//Original template by Sean Bradley:
+//https://github.com/Sean-Bradley/Three.js-TypeScript-Boilerplate.git
+
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { BufferGeometry, Color, Vector2, Vector3 } from "three";
+import { AnchorPoint, GeometryDetail } from "../../PByte3/IJGUtils";
+import { VerletNode } from "../../PByte3/VerletNode";
+import { VerletStick } from "../../PByte3/VerletStick";
+import { VerletStrand } from '../../PByte3/VerletStrand';
+import { VerletTetrahedron } from '../../PByte3/VerletTetrahedron';
+import { Propulsion, VerletMaterials } from '../../PByte3/IJGUtils';
+import { EpidermalHood } from '../../PByte3/EpidermalHood';
+import { VerletSphere } from '../../PByte3/VerletSphere';
+
 
 
 const scene: THREE.Scene = new THREE.Scene();
@@ -57,7 +47,8 @@ let eggGeometry: THREE.TorusKnotGeometry;
 let eggMaterial: THREE.MeshPhongMaterial;
 let eggWireframe: THREE.LineSegments;
 let eggCilia: VerletStrand[] = []; // do I need this?
-let eggVerts: Vector3[];
+//let eggVerts: Vector3[];
+//let eggVerts = [];
 let isEggBirth: boolean = false;
 let tet: VerletTetrahedron;
 let tetCounter: number = 0;
@@ -76,18 +67,16 @@ let finalTethers: VerletStick[] = [];
 let finalTetherAlphas: number[] = [];
 
 
-
 // cube bounds
-const bounds: THREE.Vector3 = new THREE.Vector3(5, 5, 5);
-const tetBounds: THREE.Vector3 = new THREE.Vector3(.85, 2, .85);
+const bounds: THREE.Vector3 = new Vector3(5, 5, 5);
+const tetBounds: THREE.Vector3 = new Vector3(.85, 2, .85);
 createCubeConstraints(bounds, false);
 createCubeConstraints(tetBounds, false);
 
-
 setLighting();
 camera.position.y = .05;
-camera.position.z = 3;
-
+camera.position.z = 1;
+let cameraTheta3D = new Vector3();
 
 window.addEventListener('resize', onWindowResize, false);
 
@@ -130,7 +119,9 @@ function hatch(): void {
     eggMaterial.transparent = true;
     egg = new THREE.Mesh(eggGeometry, eggMaterial);
     scene.add(egg);
-    eggVerts = eggGeometry.vertices;
+    //eggVerts = eggGeometry.vertices;
+   // eggVerts = egg.geometry.attributes.position
+    // console.log("egg.geometry.attributes.position = ", egg.geometry.attributes.position)
 
 }
 
@@ -150,7 +141,7 @@ function addTet() {
     tet.setNodesScale(3.4);
     tet.setNodesColor(new THREE.Color(0X996611));
     tet.setSticksColor(new THREE.Color(0XFF0000));
-    tet.setSticksOpacity(.25);
+    tet.setSticksOpacity(0);
     scene.add(tet);
     tet.moveNode(0, new Vector3(.02, -.006, .04))
     tet.moveNode(1, new Vector3(-.02, .006, -.04))
@@ -235,7 +226,7 @@ function addHood() {
     epidermalCover.setNodesScale(10.2, 9, 3, true);
     epidermalCover.setNodesVisible(true, true, true);
     epidermalCover.setAllOpacity(epidermalCoverAlpha);
-    scene.add(epidermalCover);
+   // scene.add(epidermalCover);
     isHoodReady = false;
 
     // add yellow tethers from tet nodes to top nodes of hood
@@ -247,7 +238,7 @@ function addHood() {
         finalTetherAlphas[i] = 0;
         finalTethers[i].setOpacity(finalTetherAlphas[i]);
         //finalTethers[0].lineGeometry.elementsNeedUpdate = true;
-        scene.add(finalTethers[i]);
+       // scene.add(finalTethers[i]);
     }
 }
 addHood();
@@ -326,6 +317,10 @@ var animate = function () {
     requestAnimationFrame(animate);
     controls.autoRotate = true;
     camera.lookAt(scene.position); //0,0,0
+   // camera.position.y = Math.sin(cameraTheta3D.y+=Math.PI/15)*10;
+    camera.position.z = Math.cos(cameraTheta3D.z+=Math.PI/180)*2.2;
+    camera.position.x = Math.sin(cameraTheta3D.x+=Math.PI/180)*2.2;
+
 
     if (isOvaBirth) {
         ova.setStickColor(new Color(0X7777DD), ovaStickColorAlpha);
@@ -355,8 +350,6 @@ var animate = function () {
         }
         ova.setTendrilOpacity(ovaCiliaAlpha)
     }
-
-
 
 
     if (tet !== undefined) {
@@ -391,7 +384,6 @@ var animate = function () {
             ova.position.set(avgPos.x, avgPos.y, avgPos.z);
             //eggWireframe.position.set(avgPos.x, avgPos.y, avgPos.z);
         }
-
     }
 
     if (epidermalCover !== undefined) {
@@ -412,6 +404,7 @@ var animate = function () {
         }
 
     }
+     
     for (var i = 0; i < tet.nodes.length; i++) {
         finalTethers[i].constrainLen();
     }
@@ -436,7 +429,6 @@ window.addEventListener('touchstart', (event) => {
     event.preventDefault();
     setPickPosition(event.touches[0]);
 }, { passive: false });
-
 window.addEventListener('touchmove', (event) => {
     setPickPosition(event.touches[0]);
 
@@ -475,7 +467,7 @@ window.addEventListener('touchmove', (event) => {
 
         // stage 2 - tendrils
         if (tetCounter == 11 && tendrilCounter < 5) {
-            const pos = getScreenPos(new THREE.Vector2(event.clientX, event.clientY))
+           // const pos = getScreenPos(new THREE.Vector2(event.clientX, event.clientY))
             //addTendril(pos);
             addTendril(new Vector3(tet.position.x + tet.nodes[tendrilCounter].position.x,
                 tet.position.y + tet.nodes[tendrilCounter].position.y,

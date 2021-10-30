@@ -150,9 +150,13 @@ export class Tri extends Group {
     // for centroid
     private cntr: Vector3 = new Vector3();
 
-    lineGeometry: BufferGeometry;
+    lineGeometry?: BufferGeometry;
     lineMaterial = new LineBasicMaterial({ color: 0xFF9900 });
-    line: Line;
+    line?: Line;
+
+    faceGeometry: BufferGeometry;
+    faceMaterial = new MeshPhongMaterial({ color: 0xFF9900 });
+    face: Mesh;
 
     constructor(v0: Vector3, v1: Vector3, v2: Vector3, isDrawable: boolean = true) {
         super();
@@ -161,18 +165,30 @@ export class Tri extends Group {
         this.v2 = v2;
         this.isDrawable = isDrawable;
 
-        // for drawing normal
+        // drawing face
         let points = [];
-        points.push(this.getCentroid());
-        points.push(this.getNormal());
-        this.lineGeometry = new BufferGeometry().setFromPoints(points);
+        points.push( this.v0);
+        points.push( this.v1);
+        points.push( this.v2);
+        
+        this.faceGeometry = new BufferGeometry().setFromPoints(points);
 
-        this.line = new Line(this.lineGeometry, this.lineMaterial);
-        this.lineMaterial.transparent = true;
-        this.lineMaterial.opacity = .75;
-        if (isDrawable) {
-            this.add(this.line);
-        }
+        this.face = new Mesh(this.faceGeometry, this.faceMaterial);
+        this.add(this.face);
+        
+        
+        // for drawing normal
+        // let points = [];
+        // points.push(this.getCentroid());
+        // points.push(this.getNormal());
+        // this.lineGeometry = new BufferGeometry().setFromPoints(points);
+
+        // this.line = new Line(this.lineGeometry, this.lineMaterial);
+        // this.lineMaterial.transparent = true;
+        // this.lineMaterial.opacity = .75;
+        // if (isDrawable) {
+        //     this.add(this.line);
+        // }
     }
 
     // returns normalized vector
