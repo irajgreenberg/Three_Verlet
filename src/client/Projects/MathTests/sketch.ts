@@ -62,7 +62,7 @@ function onWindowResize() {
 }
 
 var animate = function () {
-    requestAnimationFrame(animate);
+    window.requestAnimationFrame(animate);
     controls.autoRotate = true;
     camera.lookAt(scene.position); //0,0,0
 
