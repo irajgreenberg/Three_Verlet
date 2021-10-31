@@ -6,7 +6,7 @@ module.exports = {
     // entry: './src/client/Projects/HairyGeom/sketch.ts',
     // entry: './src/client/Projects/Organism/Organism01.ts',
     // entry: './src/client/Projects/MathTests/sketch.ts',
-    entry: './src/client/Projects/NeurotoBots/PbOCD01.ts',
+    entry: './src/client/Projects/NeurotoBots/sketch.ts',
     /************************************************ */
     module: {
         rules: [
