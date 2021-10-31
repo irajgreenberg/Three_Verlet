@@ -11,7 +11,7 @@
 
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { AmbientLight, BufferGeometry, DirectionalLight, DoubleSide, HemisphereLight, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, MeshPhongMaterial, PCFSoftShadowMap, PerspectiveCamera, PlaneGeometry, Scene, SpotLight, Vector3, WebGLRenderer } from 'three';
+import { AmbientLight, BufferGeometry, DirectionalLight, DoubleSide, HemisphereLight, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, MeshPhongMaterial, PCFSoftShadowMap, PerspectiveCamera, PlaneGeometry, Scene, SpotLight, TextureLoader, Vector3, WebGLRenderer } from 'three';
 
 
 
@@ -49,6 +49,12 @@ const plane = new Mesh(geometry, material);
 plane.rotateX(-Math.PI / 2);
 // plane.castShadow = true;
 plane.receiveShadow = true;
+//console.log(../);
+const texture = new TextureLoader().load("./metal01.jpg");
+texture.wrapS = THREE.RepeatWrapping;
+texture.wrapT = THREE.RepeatWrapping;
+texture.repeat.set( 4, 4 );
+
 scene.add(plane);
 
 // sphere
