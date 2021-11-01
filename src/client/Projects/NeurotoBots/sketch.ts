@@ -50,10 +50,13 @@ plane.rotateX(-Math.PI / 2);
 // plane.castShadow = true;
 plane.receiveShadow = true;
 //console.log(../);
-const texture = new TextureLoader().load("./metal01.jpg");
+const texture = new TextureLoader().load("https://media.istockphoto.com/photos/rusty-painted-metal-background-picture-id1318168616");
+//const texture = new TextureLoader().load("~/Desktop/metal_02.jpg");
+//"C:\Users\Ira\Desktop\metal_02.jpg"
 texture.wrapS = THREE.RepeatWrapping;
 texture.wrapT = THREE.RepeatWrapping;
-texture.repeat.set( 4, 4 );
+texture.repeat.set(1, 1);
+plane.material.map = texture;
 
 scene.add(plane);
 
