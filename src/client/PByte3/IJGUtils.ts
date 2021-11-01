@@ -4,6 +4,25 @@ import {
     Mesh, MeshPhongMaterial, SphereGeometry, Vector3
 } from 'three';
 
+
+
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+// get random floating point range like in Processing
+// maximum exclusive, minimum inclusive
+export class PBMath {
+    // rand float
+    static rand(min: number, max: number): number {
+        return Math.random() * (max - min) + min;
+    }
+    // rand int
+    static randInt(min: number, max: number) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min) + min);
+    }
+
+}
+
 // Hair Density
 // custom needs to be explicitly set
 export enum HairDensity {
@@ -167,16 +186,16 @@ export class Tri extends Group {
 
         // drawing face
         let points = [];
-        points.push( this.v0);
-        points.push( this.v1);
-        points.push( this.v2);
-        
+        points.push(this.v0);
+        points.push(this.v1);
+        points.push(this.v2);
+
         this.faceGeometry = new BufferGeometry().setFromPoints(points);
 
         this.face = new Mesh(this.faceGeometry, this.faceMaterial);
         this.add(this.face);
-        
-        
+
+
         // for drawing normal
         // let points = [];
         // points.push(this.getCentroid());
@@ -190,6 +209,7 @@ export class Tri extends Group {
         //     this.add(this.line);
         // }
     }
+
 
     // returns normalized vector
     // centered to face
