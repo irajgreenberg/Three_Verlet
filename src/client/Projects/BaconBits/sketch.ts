@@ -34,7 +34,7 @@ const hubHeadStrap: VerletNode = new VerletNode(new Vector3(0, 1.5, 0));
 const sticks: VerletStick[] = [];
 const blocks: Mesh[] = [];
 
-const gravity = -.0002;
+const gravity = 0;
 for (let i = 0; i < NODE_COUNT; i++) {
     let theta = Math.random() * Math.PI * 2;
     let radius = PBMath.rand(.2, .9);
@@ -61,9 +61,9 @@ for (let i = 0; i < NODE_COUNT; i++) {
     blocks[i].rotateZ(PBMath.rand(-Math.PI / 15, Math.PI / 15));
     scene.add(blocks[i]);
 }
-//sticks.push(new VerletStick(hubNeck, hubHead, .3, 1));
+sticks.push(new VerletStick(hubNeck, hubHead, .3, 1));
 sticks.push(new VerletStick(hubHeadStrap, hubHead, .875, 1));
-//scene.add(sticks[sticks.length - 2]);
+scene.add(sticks[sticks.length - 2]);
 scene.add(sticks[sticks.length - 1]);
 hubHead.moveNode(new Vector3(.2, .15, -.145));
 
