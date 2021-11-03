@@ -13,7 +13,7 @@ import { AmbientLight, BoxGeometry, BufferGeometry, Line, LineBasicMaterial, Mes
 import { VerletNode } from '../../PByte3/VerletNode';
 import { PBMath } from '../../PByte3/IJGUtils';
 import { VerletStick } from '../../PByte3/VerletStick';
-
+import { BlockyHead } from './BlockyHead';
 
 const scene: Scene = new Scene();
 const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
@@ -24,64 +24,10 @@ document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 document.addEventListener('click', onMouse, false);
 
+
 // Custom Geometry
-// 200 random cubbies
-const NODE_COUNT = 2000;
-const nodes: VerletNode[] = [];
-const hubNeck: VerletNode = new VerletNode(new Vector3(0, -1.5, 0));
-const hubHead: VerletNode = new VerletNode(new Vector3(0));
-const hubHeadStrap: VerletNode = new VerletNode(new Vector3(0, 1.5, 0));
-const sticks: VerletStick[] = [];
-const blocks: Mesh[] = [];
-
-const gravity = 0;
-for (let i = 0; i < NODE_COUNT; i++) {
-    let theta = Math.random() * Math.PI * 2;
-    let radius = PBMath.rand(.2, .9);
-    // random z rot
-    let x = Math.cos(theta) * radius;
-    let y = Math.sin(theta) * radius;
-    let z = 0;
-    // random y rot
-    let phi = Math.random() * Math.PI * 2;
-    let z2 = z * Math.cos(phi) - x * Math.sin(phi)
-    let x2 = z * Math.sin(phi) + x * Math.cos(phi)
-    let y2 = y;
-    nodes[i] = new VerletNode(new Vector3(x2, y2, z2), .02);
-    // scene.add(nodes[i]);
-
-    sticks[i] = new VerletStick(hubHead, nodes[i], .01);
-    //scene.add(sticks[i]);
-
-    let geom: BoxGeometry = new BoxGeometry(PBMath.rand(.01, .14), PBMath.rand(.01, .14), PBMath.rand(.01, .14));
-    let mat: MeshPhongMaterial = new MeshPhongMaterial({ color: 0x225588 });
-    blocks[i] = new Mesh(geom, mat);
-    blocks[i].rotateX(PBMath.rand(-Math.PI / 15, Math.PI / 15));
-    blocks[i].rotateY(PBMath.rand(-Math.PI / 15, Math.PI / 15));
-    blocks[i].rotateZ(PBMath.rand(-Math.PI / 15, Math.PI / 15));
-    scene.add(blocks[i]);
-}
-// neck and head straps
-sticks.push(new VerletStick(hubNeck, hubHead, .3, 1));
-sticks.push(new VerletStick(hubHeadStrap, hubHead, .875, 1));
-// scene.add(sticks[sticks.length - 2]);
-// scene.add(sticks[sticks.length - 1]);
-hubHead.moveNode(new Vector3(5.2, .15, -.145));
-
-let randNodeindex = 0;
-for (let i = 0, k = 0, l = 0; i < nodes.length; i++) {
-    // cross-supports
-    let val = Math.floor(Math.random() * (nodes.length - 1));
-    if (i % 1 === 0 && i !== val) {
-        sticks.push(new VerletStick(nodes[i], nodes[val], 1, 0));
-
-    }
-    // hairs
-    // to do
-}
-
-
-
+let head: BlockyHead = new BlockyHead();
+scene.add(head);
 
 // cube bounds
 const bounds: THREE.Vector3 = new THREE.Vector3(2.2, 2.2, 2.2);
@@ -125,43 +71,19 @@ var animate = function () {
     requestAnimationFrame(animate);
     controls.autoRotate = true;
     camera.lookAt(scene.position); //0,0,0
-    hubHead.verlet();
-    for (let i = 0; i < nodes.length; i++) {
-        nodes[i].verlet();
-        blocks[i].position.x = nodes[i].position.x
-        blocks[i].position.y = nodes[i].position.y += gravity;
-        blocks[i].position.z = nodes[i].position.z
-    }
-
-
-    for (let i = 0; i < sticks.length; i++) {
-        sticks[i].constrainLen();
-    }
+    head.live();
     controls.update()
     render();
 }
 
-
 function onMouse(event: MouseEvent) {
-
 }
 
-
 function onMouseMove(event: MouseEvent) {
-
 }
 
 function render() {
     renderer.render(scene, camera);
 }
 animate();
-
-
-
-
-
-
-function random(arg0: number, arg1: number): number | undefined {
-    throw new Error('Function not implemented.');
-}
 
