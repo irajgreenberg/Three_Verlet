@@ -26,7 +26,7 @@ document.addEventListener('click', onMouse, false);
 
 // Custom Geometry
 // 200 random cubbies
-const NODE_COUNT = 1000;
+const NODE_COUNT = 2000;
 const nodes: VerletNode[] = [];
 const hubNeck: VerletNode = new VerletNode(new Vector3(0, -1.5, 0));
 const hubHead: VerletNode = new VerletNode(new Vector3(0));
@@ -53,7 +53,7 @@ for (let i = 0; i < NODE_COUNT; i++) {
     sticks[i] = new VerletStick(hubHead, nodes[i], .01);
     //scene.add(sticks[i]);
 
-    let geom: BoxGeometry = new BoxGeometry(PBMath.rand(.01, .4), PBMath.rand(.01, .4), PBMath.rand(.01, .4));
+    let geom: BoxGeometry = new BoxGeometry(PBMath.rand(.01, .14), PBMath.rand(.01, .14), PBMath.rand(.01, .14));
     let mat: MeshPhongMaterial = new MeshPhongMaterial({ color: 0x225588 });
     blocks[i] = new Mesh(geom, mat);
     blocks[i].rotateX(PBMath.rand(-Math.PI / 15, Math.PI / 15));
@@ -61,19 +61,24 @@ for (let i = 0; i < NODE_COUNT; i++) {
     blocks[i].rotateZ(PBMath.rand(-Math.PI / 15, Math.PI / 15));
     scene.add(blocks[i]);
 }
+// neck and head straps
 sticks.push(new VerletStick(hubNeck, hubHead, .3, 1));
 sticks.push(new VerletStick(hubHeadStrap, hubHead, .875, 1));
-scene.add(sticks[sticks.length - 2]);
-scene.add(sticks[sticks.length - 1]);
-hubHead.moveNode(new Vector3(.2, .15, -.145));
+// scene.add(sticks[sticks.length - 2]);
+// scene.add(sticks[sticks.length - 1]);
+hubHead.moveNode(new Vector3(5.2, .15, -.145));
 
-// for (let i = 0, k = 0; i < NODE_COUNT; i++) {
-//     for (let j = 0; j < NODE_COUNT; j++) {
-//         if (i !== j) {
-//             sticks[k++] = new VerletStick[]
-//         }
-//     }
-// }
+let randNodeindex = 0;
+for (let i = 0, k = 0, l = 0; i < nodes.length; i++) {
+    // cross-supports
+    let val = Math.floor(Math.random() * (nodes.length - 1));
+    if (i % 1 === 0 && i !== val) {
+        sticks.push(new VerletStick(nodes[i], nodes[val], 1, 0));
+
+    }
+    // hairs
+    // to do
+}
 
 
 
