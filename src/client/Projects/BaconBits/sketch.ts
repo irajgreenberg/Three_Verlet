@@ -14,6 +14,7 @@ import { VerletNode } from '../../PByte3/VerletNode';
 import { PBMath } from '../../PByte3/IJGUtils';
 import { VerletStick } from '../../PByte3/VerletStick';
 import { BlockyHead } from './BlockyHead';
+import { BlockyTorso } from './BlockyTorso';
 
 const scene: Scene = new Scene();
 const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
@@ -24,10 +25,16 @@ document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 document.addEventListener('click', onMouse, false);
 
+//utilities
+const axesHelper = new THREE.AxesHelper(500);
+scene.add(axesHelper);
 
 // Custom Geometry
 let head: BlockyHead = new BlockyHead();
-scene.add(head);
+//scene.add(head);
+
+let torso:BlockyTorso = new BlockyTorso(new Vector3(.5, .75, .5), new Vector3(3, 3, 3));
+scene.add(torso);
 
 // cube bounds
 const bounds: THREE.Vector3 = new THREE.Vector3(2.2, 2.2, 2.2);

@@ -1,8 +1,8 @@
-import { Line3, Vector3 } from "three";
+import { Group, Line3, Vector3 } from "three";
 import { VerletNode } from "../../PByte3/VerletNode";
 import { VerletStick } from "../../PByte3/VerletStick";
 
-export class BlockyTorso {
+export class BlockyTorso extends Group {
 
     dim: Vector3;
     parts: Vector3;
@@ -10,8 +10,8 @@ export class BlockyTorso {
     sticks: VerletStick[] = [];
     spine: Line3;
 
-
     constructor(dim: Vector3, parts: Vector3) {
+        super();
         this.dim = dim;
         this.parts = parts;
         this.spine = new Line3(new Vector3(0, this.dim.y / 2, 9), new Vector3(0, -this.dim.y / 2, 0));
@@ -21,9 +21,14 @@ export class BlockyTorso {
         for (let i = 0; i < parts.x; i++) {
             for (let j = 0; j < parts.y; j++) {
                 for (let k = 0; k < parts.z; k++) {
-                    this.nodes.push();
+                    this.nodes.push(new VerletNode (
+                        new Vector3(-dim.x/2+blockW*i, -dim.y/2+blockH*j,-dim.z/2+blockD*k), 
+                        .02));
                 }
             }
+        }
+        for(let n of this.nodes){
+            this.add(n);
         }
     }
 
