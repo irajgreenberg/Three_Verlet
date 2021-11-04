@@ -91,8 +91,8 @@ export class BlockyHead extends Group {
         //     hubHead.moveNode(new Vector3(PBMath.rand(-30, 30), PBMath.rand(-30, 30), PBMath.rand(-30, 30)));
         // }
 
-        for (let i = 0; i < this.sticks.length; i++) {
-            this.sticks[i].constrainLen();
+        for (let s of this.sticks) {
+            s.constrainLen();
         }
     }
 }

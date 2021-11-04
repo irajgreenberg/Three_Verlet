@@ -27,14 +27,16 @@ document.addEventListener('click', onMouse, false);
 
 //utilities
 const axesHelper = new THREE.AxesHelper(500);
-scene.add(axesHelper);
+//scene.add(axesHelper);
 
 // Custom Geometry
 let head: BlockyHead = new BlockyHead();
 //scene.add(head);
+head.position.y += 1.75;
 
-let torso:BlockyTorso = new BlockyTorso(new Vector3(.5, .75, .5), new Vector3(3, 3, 3));
+let torso: BlockyTorso = new BlockyTorso(new Vector3(1.5, 2, 1.5), new Vector3(3, 3, 3));
 scene.add(torso);
+//torso.position.y -= 1.75;
 
 // cube bounds
 const bounds: THREE.Vector3 = new THREE.Vector3(2.2, 2.2, 2.2);
@@ -79,6 +81,7 @@ var animate = function () {
     controls.autoRotate = true;
     camera.lookAt(scene.position); //0,0,0
     head.live();
+    torso.live();
     controls.update()
     render();
 }
