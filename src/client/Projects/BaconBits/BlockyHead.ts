@@ -4,9 +4,9 @@ import { PBMath } from '../../PByte3/IJGUtils';
 import { VerletStick } from '../../PByte3/VerletStick';
 
 export class BlockyHead extends Group {
-    // Custom Geometry
-    // 200 random cubbies
-    NODE_COUNT = 1000;
+    pos:Vector3;
+    dim:Vector3;
+    blockCount:number;
     nodes: VerletNode[] = [];
     hubNeck: VerletNode = new VerletNode(new Vector3(0, -1.5, 0));
     hubHead: VerletNode = new VerletNode(new Vector3(0));
@@ -20,21 +20,27 @@ export class BlockyHead extends Group {
 
     gravity = 0;
 
-    constructor() {
+    constructor(pos:Vector3, dim:Vector3, blockCount:number) {
         super();
-        for (let i = 0; i < this.NODE_COUNT; i++) {
+        this.pos = pos;
+        this.dim = dim;
+        this.blockCount = blockCount;
+
+        for (let i = 0; i < this.blockCount; i++) {
             let theta = Math.random() * Math.PI * 2;
-            let radius = PBMath.rand(.2, .9);
+            let radiusX = PBMath.rand(.08, dim.x);
+            let radiusY = PBMath.rand(.08, dim.y);
+           // let radiusZ = PBMath.rand(.08, dim.z);
             // random z rot
-            let x = Math.cos(theta) * radius;
-            let y = Math.sin(theta) * radius;
+            let x = Math.cos(theta) * radiusX;
+            let y = Math.sin(theta) * radiusY;
             let z = 0;
             // random y rot
             let phi = Math.random() * Math.PI * 2;
             let z2 = z * Math.cos(phi) - x * Math.sin(phi)
             let x2 = z * Math.sin(phi) + x * Math.cos(phi)
             let y2 = y;
-            this.nodes[i] = new VerletNode(new Vector3(x2, y2, z2), .02);
+            this.nodes[i] = new VerletNode(new Vector3(pos.x+x2, pos.y+y2, pos.z+z2), .02);
             // scene.add(nodes[i]);
 
             this.sticks[i] = new VerletStick(this.hubHead, this.nodes[i], PBMath.rand(.01, .08), 0);
@@ -71,9 +77,10 @@ export class BlockyHead extends Group {
         let randNodeindex = 0;
         for (let i = 0, k = 0, l = 0; i < this.nodes.length; i++) {
             let val = Math.floor(Math.random() * (this.nodes.length - 1));
-            if (i % 3 === 0 && i !== val) {
+            if (i % 1 === 0 && i !== val) {
                 this.sticks.push(new VerletStick(this.nodes[i], this.nodes[val], 1, 0));
             }
+            this.add(this.sticks[this.sticks.length-1]);
             // hairs
             // to do
         }

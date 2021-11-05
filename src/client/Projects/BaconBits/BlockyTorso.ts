@@ -5,6 +5,7 @@ import { VerletStick } from "../../PByte3/VerletStick";
 
 export class BlockyTorso extends Group {
 
+    pos:Vector3;
     dim: Vector3;
     parts: Vector3;
     nodes: VerletNode[] = [];
@@ -12,8 +13,9 @@ export class BlockyTorso extends Group {
     spine: VerletStick;
     blocks: Mesh[] = [];
 
-    constructor(dim: Vector3, parts: Vector3) {
+    constructor(pos:Vector3, dim: Vector3, parts: Vector3) {
         super();
+        this.pos = pos;
         this.dim = dim;
         this.parts = parts;
 
@@ -36,7 +38,7 @@ export class BlockyTorso extends Group {
                 for (let k = 0; k < parts.z; k++) {
                     // create nodes
                     this.nodes.push(new VerletNode(
-                        new Vector3(-dim.x / 2 + blockW * i, -dim.y / 2 + blockH * j, -dim.z / 2 + blockD * k),
+                        new Vector3(pos.x-dim.x / 2 + blockW * i, pos.y-dim.y / 2 + blockH * j, pos.z-dim.z / 2 + blockD * k),
                         .02));
 
                     // create blocks

@@ -30,13 +30,15 @@ const axesHelper = new THREE.AxesHelper(500);
 //scene.add(axesHelper);
 
 // Custom Geometry
-let head: BlockyHead = new BlockyHead();
-//scene.add(head);
-head.position.y += 1.75;
+let head: BlockyHead = new BlockyHead(new Vector3(0, 1.75, 0),new Vector3(.8, .8, .8),1000);
+// head.position.y += 1.75;
+scene.add(head);
 
-let torso: BlockyTorso = new BlockyTorso(new Vector3(1.5, 2, 1.5), new Vector3(3, 3, 3));
-scene.add(torso);
+
+let torso: BlockyTorso = new BlockyTorso(new Vector3(0, -1.75, 0), new Vector3(1.5, 2, 1.5), new Vector3(3, 3, 3));
 //torso.position.y -= 1.75;
+scene.add(torso);
+
 
 // cube bounds
 const bounds: THREE.Vector3 = new THREE.Vector3(2.2, 2.2, 2.2);
@@ -81,6 +83,9 @@ var animate = function () {
     controls.autoRotate = true;
     camera.lookAt(scene.position); //0,0,0
     head.live();
+    // head.hubHead.position.x = torso.position.x;
+    // head.hubHead.position.y = torso.position.y;
+    // head.hubHead.position.z = torso.position.z;
     torso.live();
     controls.update()
     render();
