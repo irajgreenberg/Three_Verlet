@@ -9,7 +9,7 @@
 
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { AmbientLight, BoxGeometry, BufferGeometry, Line, LineBasicMaterial, Mesh, MeshPhongMaterial, Scene, Vector3 } from 'three';
+import { AmbientLight, BoxGeometry, BufferGeometry, DoubleSide, Line, LineBasicMaterial, Mesh, MeshPhongMaterial, PlaneGeometry, Scene, SpotLight, Vector3 } from 'three';
 import { VerletNode } from '../../PByte3/VerletNode';
 import { PBMath } from '../../PByte3/IJGUtils';
 import { VerletStick } from '../../PByte3/VerletStick';
@@ -31,13 +31,24 @@ const axesHelper = new THREE.AxesHelper(500);
 
 // Custom Geometry
 let head: BlockyHead = new BlockyHead(new Vector3(0, 1.75, 0),new Vector3(.8, .8, .8),1000);
-// head.position.y += 1.75;
-scene.add(head);
+// head.position.y += 1.75;//
+//scene.add(head);
 
 
-let torso: BlockyTorso = new BlockyTorso(new Vector3(0, -1.75, 0), new Vector3(1.5, 2, 1.5), new Vector3(3, 3, 3));
-//torso.position.y -= 1.75;
+let torso: BlockyTorso = new BlockyTorso(new Vector3(0, 0, 0), new Vector3(2.5, 5, 1.5), new Vector3(3, 6, 3));
+torso.position.y = 3.25;
 scene.add(torso);
+
+// ground plane
+const geometry = new PlaneGeometry(400, 400);
+const material = new MeshPhongMaterial({ color: 0x222222, opacity: 0.5, side: DoubleSide });
+//material.opacity = 0.5;
+
+const plane = new Mesh(geometry, material);
+plane.rotateX(-Math.PI / 2);
+// plane.castShadow = true;
+plane.receiveShadow = true;
+scene.add(plane);
 
 
 // cube bounds
@@ -61,9 +72,20 @@ const color2 = 0xFFFFDD;
 const intensity2 = 1;
 const light2 = new THREE.DirectionalLight(color, intensity);
 light2.position.set(-2, 6, 1);
+light2.castShadow = true;
 
 scene.add(light2);
 //scene.add(light2.target);
+
+const spot = new SpotLight(0xffa95c, 2);
+spot.position.set(-30, 300, 50);
+spot.castShadow = true;
+spot.shadow.radius = 8; //doesn't workw ith PCFsoftshadows
+
+spot.shadow.bias = -0.0001;
+spot.shadow.mapSize.width = 1024 * 4;
+spot.shadow.mapSize.height = 1024 * 4;
+scene.add(spot);
 
 camera.position.y = .8;
 camera.position.z = 6;

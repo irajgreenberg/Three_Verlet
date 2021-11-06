@@ -43,7 +43,7 @@ export class BlockyHead extends Group {
             this.nodes[i] = new VerletNode(new Vector3(pos.x+x2, pos.y+y2, pos.z+z2), .02);
             // scene.add(nodes[i]);
 
-            this.sticks[i] = new VerletStick(this.hubHead, this.nodes[i], PBMath.rand(.01, .08), 0);
+            this.sticks[i] = new VerletStick(this.hubHead, this.nodes[i], PBMath.rand(.1, .8), 0);
             //scene.add(sticks[i]);
 
             let geom: BoxGeometry = new BoxGeometry(PBMath.rand(.01, .14), PBMath.rand(.01, .14), PBMath.rand(.01, .14));
