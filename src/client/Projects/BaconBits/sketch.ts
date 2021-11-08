@@ -9,7 +9,7 @@
 
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { AmbientLight, BoxGeometry, BufferGeometry, DoubleSide, Line, LineBasicMaterial, Mesh, MeshPhongMaterial, PlaneGeometry, Scene, SpotLight, Vector3 } from 'three';
+import { AmbientLight, BoxGeometry, BufferGeometry, DoubleSide, Line, LineBasicMaterial, Mesh, MeshPhongMaterial, PCFSoftShadowMap, PlaneGeometry, Scene, SpotLight, TextureLoader, Vector3 } from 'three';
 import { VerletNode } from '../../PByte3/VerletNode';
 import { PBMath } from '../../PByte3/IJGUtils';
 import { VerletStick } from '../../PByte3/VerletStick';
@@ -20,6 +20,8 @@ const scene: Scene = new Scene();
 const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
     75, window.innerWidth / window.innerHeight, 0.001, 2000);
 const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer();
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = PCFSoftShadowMap;
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -31,12 +33,12 @@ const axesHelper = new THREE.AxesHelper(500);
 
 // Custom Geometry
 let head: BlockyHead = new BlockyHead(new Vector3(0, 1.75, 0),new Vector3(.8, .8, .8),1000);
-// head.position.y += 1.75;//
+ head.position.y += 1.75;//
 //scene.add(head);
 
 
-let torso: BlockyTorso = new BlockyTorso(new Vector3(0, 0, 0), new Vector3(2.5, 5, 1.5), new Vector3(3, 6, 3));
-torso.position.y = 3.25;
+let torso: BlockyTorso = new BlockyTorso(new Vector3(0, 0, 0), new Vector3(2.5, 5, 1.5), new Vector3(3, 6, 2));
+torso.position.y = 5.25;
 scene.add(torso);
 
 // ground plane
@@ -48,6 +50,14 @@ const plane = new Mesh(geometry, material);
 plane.rotateX(-Math.PI / 2);
 // plane.castShadow = true;
 plane.receiveShadow = true;
+
+const texture = new TextureLoader().load("textures/ira_drawing01.jpg"); // in client directory or use http
+texture.wrapS = THREE.RepeatWrapping;
+texture.wrapT = THREE.RepeatWrapping;
+texture.repeat.set(1, 1);
+plane.material.map = texture;
+
+
 scene.add(plane);
 
 
@@ -88,7 +98,7 @@ spot.shadow.mapSize.height = 1024 * 4;
 scene.add(spot);
 
 camera.position.y = .8;
-camera.position.z = 6;
+camera.position.z = 13;
 
 window.addEventListener('resize', onWindowResize, false);
 window.addEventListener('mousemove', onMouseMove, false);
@@ -109,6 +119,7 @@ var animate = function () {
     // head.hubHead.position.y = torso.position.y;
     // head.hubHead.position.z = torso.position.z;
     torso.live();
+    torso.groundCollide(plane.position.y);
     controls.update()
     render();
 }
