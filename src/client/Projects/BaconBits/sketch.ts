@@ -37,8 +37,8 @@ let head: BlockyHead = new BlockyHead(new Vector3(0, 1.75, 0),new Vector3(.8, .8
 //scene.add(head);
 
 
-let torso: BlockyTorso = new BlockyTorso(new Vector3(0, 0, 0), new Vector3(2.5, 5, 1.5), new Vector3(3, 6, 2));
-torso.position.y = 5.25;
+let torso: BlockyTorso = new BlockyTorso(new Vector3(0, 0, 0), new Vector3(2.5, 5, 1.5), new Vector3(3, 12, 3));
+torso.position.y = 3.25;
 scene.add(torso);
 
 // ground plane

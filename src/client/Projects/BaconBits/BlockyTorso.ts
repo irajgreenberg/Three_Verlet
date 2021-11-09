@@ -1,4 +1,5 @@
 import { timeStamp } from "console";
+import { copyFileSync } from "fs";
 import { Box3, BoxGeometry, BufferGeometry, Color, Group, Line, Line3, LineBasicMaterial, Mesh, MeshPhongMaterial, Vector3 } from "three";
 import { PBMath } from "../../PByte3/IJGUtils";
 import { VerletNode } from "../../PByte3/VerletNode";
@@ -13,12 +14,13 @@ export class BlockyTorso extends Group {
     nodesOrig: VerletNode[] = [];
     sticks: VerletStick[] = [];
     spine: VerletStick;
+    spineOrig: VerletStick;
     blocks: Mesh[] = [];
     blockDims: Box3[] = [];
     spineTheta: number = 0;
 
-    spineGravity:number = .003;
-    spineDamping:number = .85;
+    spineGravity:number = .065;
+    spineDamping:number = .999;
     spineSpdY:number = .002;
 
 
@@ -37,8 +39,10 @@ export class BlockyTorso extends Group {
         // const spineMat = new LineBasicMaterial({ color: 0xFFAA11 });
 
         // // ets
-        this.spine = new VerletStick(new VerletNode(new Vector3(pos.x, pos.y + this.dim.y / 2 + .2, pos.z)), new VerletNode(new Vector3(pos.x, pos.y - this.dim.y / 2 - .2, pos.z)), 1, .0003);
-
+        this.spine = new VerletStick(new VerletNode(new Vector3(pos.x, pos.y + this.dim.y / 2 + .2, pos.z)), new VerletNode(new Vector3(pos.x, pos.y - this.dim.y / 2 - .2, pos.z)), 1, .1);
+        
+        this.spineOrig = new VerletStick(new VerletNode(new Vector3(pos.x, pos.y + this.dim.y / 2 + .2, pos.z)), new VerletNode(new Vector3(pos.x, pos.y - this.dim.y / 2 - .2, pos.z)), 1, .0003);
+        
         // create nodes
         let blockW = dim.x / (parts.x - 1);
         let blockH = dim.y / (parts.y - 1);
@@ -73,32 +77,32 @@ export class BlockyTorso extends Group {
             }
         }
         this.spine.setColor(new Color(0xFF3322));
-        this.spine.setOpacity(.245);
-        this.add(this.spine);
+        this.spine.setOpacity(1);
+       // this.add(this.spine);
 
         //connect torso nodes to spine nodes
         for (let n of this.nodes) {
-            this.sticks.push(new VerletStick(this.spine.start, n, PBMath.rand(.01, .08), 1));
-            this.sticks.push(new VerletStick(this.spine.end, n, PBMath.rand(.01, .08), 1));
+            this.sticks.push(new VerletStick(this.spine.start, n, PBMath.rand(.001, .08), 1));
+            this.sticks.push(new VerletStick(this.spine.end, n, PBMath.rand(.001, .08), 1));
         }
         // connect torso nodes to each other
         for (let i = 0; i < this.nodes.length; i++) {
             for (let j = 0; j < this.nodes.length; j++) {
-                if (i !== j && i % 2 == 0) {
-                    this.sticks.push(new VerletStick(this.nodes[i], this.nodes[j], PBMath.rand(.03, .1), 0));
+                if (i !== j && i % 12 == 0) {
+                    this.sticks.push(new VerletStick(this.nodes[i], this.nodes[j], PBMath.rand(.03, .06), 0));
                 }
             }
         }
 
 
         for (let n of this.nodes) {
-            this.add(n);
+          //  this.add(n);
         }
 
         for (let s of this.sticks) {
             this.add(s);
             s.setColor(new Color(0x88FF99));
-            s.setOpacity(.015);
+            s.setOpacity(.145);
         }
 
         this.nodes[Math.round(this.nodes.length / 2)].moveNode(new Vector3(21, -20, 3));
@@ -117,12 +121,12 @@ export class BlockyTorso extends Group {
         // if (Math.floor(Math.random() * 30) == 5) {
         //     this.nodes[Math.round(Math.random() * this.nodes.length - 1)].moveNode(new Vector3(PBMath.rand(-.3, .3), PBMath.rand(-.3, .3), PBMath.rand(-.3, .3)));
         // }
-        this.nodes[5].position.x = this.nodesOrig[5].position.x + Math.cos(this.spineTheta) * .2;
+       // this.nodes[5].position.x = this.nodesOrig[5].position.x + Math.cos(this.spineTheta) * .2;
         
         this.spine.start.verlet();
         this.spine.end.verlet();
         //this.spine.position.y = Math.sin(this.spineTheta) * .5;
-        this.spineTheta += Math.PI / 25;
+        this.spineTheta += Math.PI / 5;
 
 
         for (let i = 0; i < this.nodes.length; i++) {
@@ -145,8 +149,10 @@ export class BlockyTorso extends Group {
 
     groundCollide(groundY:number):void {
 
-         this.spineSpdY += this.spineGravity;
+         //this.spineSpdY += this.spineGravity;
+         this.spineSpdY += Math.PI/18;
          this.spine.start.position.y -= this.spineSpdY;
+         this.spine.start.position.y = this.spineOrig.start.position.y + Math.cos(this.spineSpdY)*.55
 
 
 
