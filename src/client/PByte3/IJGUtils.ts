@@ -5,7 +5,11 @@ import {
 } from 'three';
 
 
-
+export function trace(...args: any[]) {
+    for (let i = 0; i < args.length; i++) {
+        console.log(args[i]);
+    }
+}
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
 // get random floating point range like in Processing
 // maximum exclusive, minimum inclusive

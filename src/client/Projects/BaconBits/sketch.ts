@@ -9,12 +9,13 @@
 
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { AmbientLight, BoxGeometry, BufferGeometry, DoubleSide, Line, LineBasicMaterial, Mesh, MeshPhongMaterial, PCFSoftShadowMap, PlaneGeometry, Scene, SpotLight, TextureLoader, Vector3 } from 'three';
+import { AmbientLight, BoxGeometry, BufferGeometry, DoubleSide, Line, LineBasicMaterial, Mesh, MeshPhongMaterial, PCFSoftShadowMap, PlaneGeometry, Scene, SpotLight, TextureLoader, Vector2, Vector3 } from 'three';
 import { VerletNode } from '../../PByte3/VerletNode';
-import { PBMath } from '../../PByte3/IJGUtils';
+import { PBMath, trace } from '../../PByte3/IJGUtils';
 import { VerletStick } from '../../PByte3/VerletStick';
 import { BlockyHead } from './BlockyHead';
 import { BlockyTorso } from './BlockyTorso';
+import { VerletLamella } from '../../PByte3/VerletLamella';
 
 const scene: Scene = new Scene();
 const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
@@ -56,10 +57,17 @@ texture.wrapS = THREE.RepeatWrapping;
 texture.wrapT = THREE.RepeatWrapping;
 texture.repeat.set(1, 1);
 plane.material.map = texture;
-
-
 scene.add(plane);
 
+let lamella = new VerletLamella(new Vector3(-5, -2, 0), new Vector3(5, 2, 0), 12, new Vector2(.02, .8));
+//scene.add(lamella);
+
+let lamelli:VerletLamella[] = [];
+for(let i=0; i< torso.nodes.length; i++){
+    lamelli[i] = new VerletLamella(new Vector3(-2, -2, 0), new Vector3(2, 2, 0), 10, new Vector2(.02, .8));
+    lamelli[i].setOpacity(.25);
+    scene.add(lamelli[i]);
+}
 
 // cube bounds
 const bounds: THREE.Vector3 = new THREE.Vector3(2.2, 2.2, 2.2);
@@ -97,7 +105,7 @@ spot.shadow.mapSize.width = 1024 * 4;
 spot.shadow.mapSize.height = 1024 * 4;
 scene.add(spot);
 
-camera.position.y = .8;
+camera.position.y = 1.24;
 camera.position.z = 13;
 
 window.addEventListener('resize', onWindowResize, false);
@@ -120,6 +128,18 @@ var animate = function () {
     // head.hubHead.position.z = torso.position.z;
     torso.live();
     torso.groundCollide(plane.position.y);
+
+
+   // attach lamelli to blocks
+    for(let i=0; i< torso.nodes.length; i++){
+        lamelli[i].nodes[0].position.x = torso.position.x + torso.nodes[i].position.x; 
+        lamelli[i].nodes[0].position.y = torso.position.y + torso.nodes[i].position.y; 
+        lamelli[i].nodes[0].position.z = torso.position.z + torso.nodes[i].position.z; 
+        lamelli[i].live();
+    }
+
+
+
     controls.update()
     render();
 }
