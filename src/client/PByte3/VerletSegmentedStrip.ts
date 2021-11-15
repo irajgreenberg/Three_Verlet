@@ -21,6 +21,8 @@ export abstract class VerletSegmentedStrip extends Group {
         this.head = head;
         this.tail = tail;
         this.segmentCount = segmentCount;
+
+        
     }
 
     abstract live():void;

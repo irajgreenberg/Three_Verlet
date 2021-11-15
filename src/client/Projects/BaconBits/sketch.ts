@@ -5,8 +5,6 @@
 
 
 
-
-
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { AmbientLight, BoxGeometry, BufferGeometry, DoubleSide, Line, LineBasicMaterial, Mesh, MeshPhongMaterial, PCFSoftShadowMap, PlaneGeometry, Scene, SpotLight, TextureLoader, Vector2, Vector3 } from 'three';
