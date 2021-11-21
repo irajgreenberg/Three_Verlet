@@ -10,6 +10,7 @@ import {
 // get random floating point range like in Processing
 // maximum exclusive, minimum inclusive
 export class PBMath {
+
     // rand float
     static rand(min: number, max: number): number {
         return Math.random() * (max - min) + min;
