@@ -1,11 +1,166 @@
 
 import {
     Color, BufferGeometry, Group, Line, LineBasicMaterial,
-    Mesh, MeshPhongMaterial, SphereGeometry, Vector3
+    Mesh, MeshPhongMaterial, SphereGeometry, Vector3, BufferAttribute
 } from 'three';
 
 
+export class FrenetFrame extends Group {
 
+    nodePos:Vector3;
+    
+    len: number = 0;
+
+    tan?: Vector3;
+    norm?: Vector3;
+    biNorm?: Vector3;
+
+    tLine?: Line;
+    nLine?: Line;
+    bLine?: Line;
+
+    /* eventually maybe add control to these props
+    this.lineMaterial.transparent = true;
+    this.lineMaterial.opacity = 1;
+    this.lineMaterial.linewidth = 5;
+    */
+
+    tGeom?: BufferGeometry;
+    nGeom?: BufferGeometry;
+    bGeom?: BufferGeometry;
+
+    tMat?: LineBasicMaterial;
+    nMat?: LineBasicMaterial;
+    bMat?: LineBasicMaterial;
+
+    constructor(v0: Vector3, v1: Vector3, v2: Vector3, len: number) {
+        super();
+        this.len = len;
+
+        // node being acted on
+        this.nodePos = v1;
+        
+        // calculate Tangenet, Normal & biNormal
+        this.tan = new Vector3();
+        this.tan.subVectors(v2, v0);
+        this.tan.normalize();
+
+        this.norm = new Vector3();
+        this.norm.crossVectors(v2, v0);
+        this.norm.normalize();
+
+        this.biNorm = new Vector3();
+        this.biNorm.crossVectors(this.tan, this.norm);
+        this.biNorm.normalize();
+
+        // generate line meshes
+        let tPoints: Vector3[] = [];
+        let nPoints: Vector3[] = [];
+        let bPoints: Vector3[] = [];
+
+        tPoints.push(v1);
+        tPoints.push(this.tan.multiplyScalar(this.len));
+        this.tGeom = new BufferGeometry().setFromPoints(tPoints);
+
+        nPoints.push(v1);
+        nPoints.push(this.norm.multiplyScalar(this.len));
+        this.nGeom = new BufferGeometry().setFromPoints(nPoints);
+
+        bPoints.push(v1);
+        bPoints.push(this.biNorm.multiplyScalar(this.len));
+        this.bGeom = new BufferGeometry().setFromPoints(bPoints);
+
+        this.tMat = new LineBasicMaterial({ color: 0xFF0000 });
+        this.nMat = new LineBasicMaterial({ color: 0xFFFF00 });
+        this.bMat = new LineBasicMaterial({ color: 0x0000FF });
+
+        this.tLine = new Line(this.tGeom, this.tMat);
+        this.nLine = new Line(this.nGeom, this.nMat);
+        this.bLine = new Line(this.bGeom, this.bMat);
+
+        // add lines to Group
+        this.add(this.tLine);
+        this.add(this.nLine);
+        this.add(this.bLine);
+    }
+
+    // update frame
+    update(v0: Vector3, v1: Vector3, v2: Vector3) {
+
+        // ensure already instantiated
+        if (this.tan && this.norm && this.biNorm) {
+
+            this.nodePos = v1;
+            
+            this.tan.subVectors(v2, v0);
+            this.tan.normalize();
+
+            this.norm.crossVectors(v2, v0);
+            this.norm.normalize();
+
+            this.biNorm.crossVectors(this.tan, this.norm);
+            this.biNorm.normalize();
+
+            (this.tLine?.geometry as BufferGeometry).attributes.position.needsUpdate = true;
+            (this.nLine?.geometry as BufferGeometry).attributes.position.needsUpdate = true;
+            (this.bLine?.geometry as BufferGeometry).attributes.position.needsUpdate = true;
+
+            this.tLine?.geometry.attributes.position.setXYZ(0, v1.x, v1.y, v1.z);
+            let tv = this.tan.multiplyScalar(this.len);
+            this.tLine?.geometry.attributes.position.setXYZ(1, v1.x + tv.x, v1.y + tv.y, v1.z + tv.z);
+
+            this.nLine?.geometry.attributes.position.setXYZ(0, v1.x, v1.y, v1.z);
+            let nv = this.norm.multiplyScalar(this.len);
+            this.nLine?.geometry.attributes.position.setXYZ(1, v1.x + nv.x, v1.y + nv.y, v1.z + nv.z);
+
+            this.bLine?.geometry.attributes.position.setXYZ(0, v1.x, v1.y, v1.z);
+            let bv = this.biNorm.multiplyScalar(this.len);
+            this.bLine?.geometry.attributes.position.setXYZ(1, v1.x + bv.x, v1.y + bv.y, v1.z + bv.z);
+
+        }
+
+    }
+    getTangent(): Vector3 {
+        if (this.tan) {
+            return this.tan;
+        }
+        return new Vector3();
+    }
+
+    getNormal(): Vector3 {
+        if (this.norm) {
+            return this.norm;
+        }
+        return new Vector3();
+    }
+
+    getBiNormal(): Vector3 {
+        if (this.biNorm) {
+            return this.biNorm;
+        }
+        return new Vector3();
+    }
+
+}
+// returns a line
+export function line(start: Vector3, end: Vector3, stroke: Color = new Color(0xaa6611)): Line {
+    const geometry = new BufferGeometry();
+    const vertices = new Float32Array(
+        [start.x, start.y, start.z,
+        end.x, end.y, end.z]
+    );
+    geometry.setAttribute('position', new BufferAttribute(vertices, 3));
+    const material = new LineBasicMaterial({ color: stroke });
+
+    return new Line(geometry, material);
+}
+
+
+export function trace(...args: any[]) {
+    for (let i = 0; i < args.length; i++) {
+        console.log(args[i]);
+    }
+}
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
 // get random floating point range like in Processing
 // maximum exclusive, minimum inclusive

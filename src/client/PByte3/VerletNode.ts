@@ -104,8 +104,6 @@ export class VerletNode extends THREE.Mesh {
 
     //super(geom, new THREE.MeshBasicMaterial({ color: color }));
     super(geom, mat);
-
-    // console.log(geomDetail);
     if (geomDetail < 13) { // show backs of poly nodes
       let mat = this.material as THREE.MeshBasicMaterial;
       mat.side = THREE.DoubleSide;
