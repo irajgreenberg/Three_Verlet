@@ -7,7 +7,7 @@ module.exports = {
     // entry: './src/client/Projects/Organism/Organism01.ts',
     // entry: './src/client/Projects/MathTests/sketch.ts',
     // entry: './src/client/Projects/NeurotoBots/sketch.ts',
-    //entry: './src/client/Projects/BaconBits/sketch.ts',
+    // entry: './src/client/Projects/BaconBits/sketch.ts',
     entry: './src/client/Projects/BaconOfTheSea/sketch.ts',
     /************************************************ */
     module: {

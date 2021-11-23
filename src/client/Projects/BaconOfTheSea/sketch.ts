@@ -3,10 +3,12 @@
 // Code appropriated from:
 // https://threejsfundamentals.org/threejs/lessons/threejs-canvas-textures.html
 
-import { AmbientLight, BoxGeometry, CanvasTexture, ClampToEdgeWrapping, Color, DirectionalLight, Group, LoadingManager, MaterialLoader, Mesh, MeshBasicMaterial, MeshPhongMaterial, MirroredRepeatWrapping, Object3D, PCFSoftShadowMap, PerspectiveCamera, RepeatWrapping, Scene, SphereGeometry, SpotLight, TextureLoader, Vector2, Vector3, WebGLRenderer } from 'three'
+import { AmbientLight, AnimationMixer, BoxGeometry, CanvasTexture, ClampToEdgeWrapping, Clock, Color, DirectionalLight, Group, LoadingManager, MaterialLoader, Mesh, MeshBasicMaterial, MeshPhongMaterial, MirroredRepeatWrapping, Object3D, PCFSoftShadowMap, PerspectiveCamera, RepeatWrapping, Scene, SphereGeometry, SpotLight, TextureLoader, Vector2, Vector3, WebGLRenderer } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
+import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader'
 import { PBMath } from '../../PByte3/IJGUtils';
 
 
@@ -50,7 +52,11 @@ scene.add(spot);
 
 
 loadModel();
+let mixer: AnimationMixer;
 
+const clock = new Clock();
+let whale: Group;
+let yellow: Group
 
 function loadModel() {
     let mtlLoader = new MTLLoader();
@@ -63,17 +69,71 @@ function loadModel() {
         objLoader.setMaterials(materials);
         objLoader.load('models/discus_fish_obj/discus_fish.obj', function (object) {
             //object.position.y -= 60;
+            yellow = object;
+            object.scale.x = .45;
+            object.scale.y = .45;
+            object.scale.z = .45;
             scene.add(object);
         });
     });
 
-}
+    let daeLoader = new ColladaLoader();
+    daeLoader.load('models/fish.dae', function (object) {
+        //object.position.y -= 60;
+        scene.add(object.scene.children[2]);
+    });
 
+    let objLoader = new OBJLoader();
+    objLoader.load('models/Fish.obj', function (object) {
+
+        // scene.add(object);
+    });
+
+    let fbxLoader = new FBXLoader();
+    fbxLoader.load('models/Whale.fbx', function (object) {
+        whale = object;
+        object.scale.x = .15;
+        object.scale.y = .15;
+        object.scale.z = .15;
+        object.position.z -= 260;
+        whale.rotateY(Math.PI / 2);
+
+        mixer = new AnimationMixer(object);
+        const action = mixer.clipAction(object.animations[1]);
+        action.play();
+
+        scene.add(object);
+    });
+}
+let ctr = 0;
+let ctr2 = 0;
+let ctr3 = 0;
+let bob = 0;
 
 function animate() {
     requestAnimationFrame(animate);
     controls.update();
+    const delta = clock.getDelta();
+    const delta2 = clock.getDelta();
+    if ((mixer as AnimationMixer)) {
+        mixer.update(delta);
 
+    }
+    whale.position.z = -260 + Math.cos(ctr) * 150;
+    whale.position.x = Math.sin(ctr) * 150;
+    whale.position.y = Math.cos(ctr2) * 10;
+    whale.rotateY(Math.PI / 4 * .0111);
+
+
+    yellow.position.z = -180 + Math.cos(ctr) * 180;
+    yellow.position.x = Math.sin(-ctr) * 40;
+    yellow.position.y = bob + Math.cos(-ctr3) * 1;
+    yellow.rotateY(-Math.PI / 4 * .0111);
+    bob = Math.sin(ctr) * 50;
+
+    ctr += Math.PI / 360;
+    ctr2 += Math.PI / 90;
+    ctr3 += Math.PI / 40;
 
     // required to see texture changes each animation frame
     //texture.needsUpdate = true;

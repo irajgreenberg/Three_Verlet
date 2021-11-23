@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+    <asset>
+        <contributor>
+            <authoring_tool>Newtek LightWave CORE v1.0</authoring_tool>
+            <comments>LWCORE_profile_version=0.1</comments>
+        </contributor>
+        <created>2021-11-22T14:03:01Z</created>
+        <modified>2021-11-22T14:03:01Z</modified>
+        <unit meter="0.01"/>
+        <up_axis>Y_UP</up_axis>
+    </asset>
+    <library_animations/>
+    <library_cameras>
+        <camera id="Camera_lib" name="">
+            <optics>
+                <technique_common>
+                    <perspective>
+                        <yfov>34.708</yfov>
+                        <aspect_ratio>1.33333</aspect_ratio>
+                        <znear>1</znear>
+                        <zfar>10000</zfar>
+                    </perspective>
+                </technique_common>
+            </optics>
+        </camera>
+    </library_cameras>
+    <library_lights>
+        <light id="Light_lib" name="">
+            <technique_common>
+                <directional>
+                    <color>3.14 3.14 3.14</color>
+                </directional>
+            </technique_common>
+        </light>
+    </library_lights>
+    <library_materials>
+        <material id="Default" name="Default">
+            <instance_effect url="#Default-fx"/>
+        </material>
+        <material id="Bone" name="Bone">
+            <instance_effect url="#Bone-fx"/>
+        </material>
+    </library_materials>
+    <library_effects>
+        <effect id="Default-fx">
+            <profile_COMMON>
+                <technique sid="common">
+                    <lambert>
+                        <diffuse>
+                            <color sid="diffuse">0.501961 0.501961 0.501961 0</color>
+                        </diffuse>
+                    </lambert>
+                </technique>
+            </profile_COMMON>
+        </effect>
+        <effect id="Bone-fx">
+            <profile_COMMON>
+                <technique sid="common">
+                    <lambert>
+                        <diffuse>
+                            <color sid="diffuse">0.501961 0.501961 0.501961 0</color>
+                        </diffuse>
+                    </lambert>
+                </technique>
+            </profile_COMMON>
+        </effect>
+    </library_effects>
+    <library_geometries>
+        <geometry id="Fish_lib" name="">
+            <mesh>
+                <source id="Fish_positions" name="position">
+                    <float_array id="Fish_positions_array" count="159">174.375 96.875 0 174.375 -86.875 0 253.547 -57.925 -4.68623 253.547 -57.925 4.68623 247.585 65.3743 -4.71664 247.555 65.3609 4.70517 -129.167 -63.0555 12.5 -129.167 73.0556 12.5 129.167 73.0556 12.5 129.167 -63.0555 12.5 -129.167 -63.0555 -12.5 -129.167 73.0556 -12.5 129.167 73.0556 -12.5 129.167 -63.0555 -12.5 0 5 22.5 -232.5 5 0 -174.375 5 16.875 0 127.5 0 0 96.875 16.875 174.375 5 16.875 0 -117.5 0 0 -86.875 16.875 -174.375 -86.875 0 0 5 -22.5 -174.375 5 -16.875 -174.375 96.875 0 0 96.875 -16.875 174.375 5 -16.875 0 -86.875 -16.875 208.547 -42.4569 7.67393 253.693 1.70652 11.9218 311.328 1.71307 -4.86061 311.296 1.7 4.85299 208.573 45.8906 7.65877 208.547 45.8744 -7.66763 253.673 1.69456 -11.9246 208.547 -42.4569 -7.67393 346.414 -103.17 7.67393 373.953 4.14684 11.9218 409.11 4.16277 -4.86061 373.864 -140.758 -4.68623 346.43 111.514 7.65877 373.887 149.14 -4.71664 409.091 4.131 4.85299 373.869 149.107 4.70517 346.414 111.475 -7.66763 373.94 4.11779 -11.9246 346.414 -103.17 -7.67393 373.864 -140.758 4.68623 -5 5 0 
+175 5 0 255 5 0 405 10 0 </float_array>
+                    <technique_common>
+                        <accessor count="53" offset="0" source="#Fish_positions_array" stride="3">
+                            <param name="X" type="float"/>
+                            <param name="Y" type="float"/>
+                            <param name="Z" type="float"/>
+                        </accessor>
+                    </technique_common>
+                </source>
+                <vertices id="Fish_vertices">
+                    <input semantic="POSITION" source="#Fish_positions"/>
+                </vertices>
+                <polylist count="48" material="Default">
+                    <input offset="0" semantic="VERTEX" source="#Fish_vertices"/>
+                    <vcount>3 3 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 </vcount>
+                    <p>5 4 0 1 3 2 21 14 16 6 18 7 16 14 19 8 18 14 19 14 21 9 16 15 22 6 22 15 24 10 25 11 24 15 7 25 15 16 17 25 7 18 17 26 11 25 12 26 17 0 8 0 17 18 40 39 38 37 39 42 41 38 46 45 44 43 46 43 48 47 22 20 21 6 21 20 1 9 28 13 1 20 22 10 28 20 24 23 28 10 28 23 27 13 23 26 12 27 11 26 23 24 29 30 19 9 32 31 2 3 2 29 9 1 30 33 8 19 4 0 8 33 5 4 31 32 12 0 5 34 27 12 34 35 13 36 3 1 27 35 36 13 38 30 29 37 2 31 39 40 37 29 2 40 41 33 30 38 42 4 33 41 31 4 42 39 44 5 32 43 34 5 44 45 35 34 45 46 3 36 47 48 43 32 3 48 36 35 46 47 </p>
+                </polylist>
+            </mesh>
+        </geometry>
+    </library_geometries>
+    <library_controllers>
+        <controller id="Fish_controller">
+            <skin source="#Fish_lib">
+                <source id="Fish_controller_joints">
+                    <IDREF_array count="3" id="Fish_controller_joints_array">Bone01 Bone02 Bone03 </IDREF_array>
+                    <technique_common>
+                        <accessor count="3" stride="1" source="#Fish_controller_joints_array">
+                            <param type="IDREF"/>
+                        </accessor>
+                    </technique_common>
+                </source>
+                <source id="Fish_controller_joints_matrices">
+                    <float_array count="48" id="Fish_controller_joints_matrices_array">1.91069e-15 1 -4.37114e-08 -5 4.37114e-08 -4.37114e-08 -1 4.37114e-07 -1 0 -4.37114e-08 -5 0 0 0 1 7.57597e-23 1 -1.71512e-15 -5 1.71512e-15 -1.71512e-15 -1 -3.33389e-13 -1 7.57597e-23 -1.71512e-15 175 0 0 0 1 -0.0333148 0.999445 -1.77131e-15 3.49806 1.71512e-15 -1.71512e-15 -1 -3.33389e-13 -0.999445 -0.0333148 -1.65703e-15 255.025 0 0 0 1 </float_array>
+                    <technique_common>
+                        <accessor count="3" stride="16" source="#Fish_controller_joints_matrices_array">
+                            <param type="float4x4"/>
+                        </accessor>
+                    </technique_common>
+                </source>
+                <source id="Fish_controller_joint_weights">
+                    <float_array count="159" id="Fish_controller_joint_weights_array">0.608121 0.608121 0.0701471 0.0701471 0.079589 0.0796424 0.986124 0.986124 0.832879 0.832879 0.986124 0.986124 0.832879 0.832879 0.999981 0.959179 0.980142 0.9613 0.985896 0.692893 0.9613 0.985896 0.968282 0.999981 0.980142 0.968282 0.985896 0.692892 0.985896 0.380134 7.18751e-05 4.54187e-07 4.55843e-07 0.339677 0.339976 7.21689e-05 0.380134 0.0491891 1.33993e-06 8.18592e-08 0.0779353 0.0369057 0.0604971 8.22802e-08 0.0604721 0.0368719 1.34729e-06 0.0491891 0.0779353 1 
+0.692308 2.38747e-24 1.86118e-26 0.270245 0.270245 0.32359 0.32359 0.327836 0.327884 0.00861124 0.00861124 0.149083 0.149083 0.00861124 0.00861124 0.149083 0.149083 1.49875e-05 0.0231199 0.0118874 0.0264973 0.0101456 0.306898 0.0264973 0.0101456 0.0185798 1.49875e-05 0.0118874 0.0185798 0.0101456 0.306899 0.0101456 0.455518 0.354001 1.63927e-05 1.64788e-05 0.528973 0.528995 0.354188 0.455518 0.130781 7.66979e-06 2.93901e-07 0.134023 0.100392 0.105499 2.95475e-07 0.105487 0.100358 7.71336e-06 
+0.130781 0.134023 2.3521e-26 0.307692 0.3477 6.99995e-26 0.121635 0.121635 0.606263 0.606263 0.592575 0.592474 0.00526485 0.00526485 0.0180371 0.0180371 0.00526485 0.00526485 0.0180371 0.0180371 4.37364e-06 0.0177008 0.00797004 0.0122025 0.00395809 0.000208471 0.0122025 0.00395809 0.0131387 4.37364e-06 0.00797004 0.0131387 0.00395809 0.000208471 0.00395809 0.164347 0.645927 0.999983 0.999983 0.131351 0.131029 0.645739 0.164347 0.82003 0.999991 1 0.788041 0.862702 0.834003 1 
+0.834041 0.86277 0.999991 0.82003 0.788041 7.01768e-27 1.76161e-24 0.6523 1 </float_array>
+                    <technique_common>
+                        <accessor count="159" stride="1" source="#Fish_controller_joint_weights_array">
+                            <param type="float"/>
+                        </accessor>
+                    </technique_common>
+                </source>
+                <joints>
+                    <input semantic="JOINT" source="#Fish_controller_joints"/>
+                    <input semantic="INV_BIND_MATRIX" source="#Fish_controller_joints_matrices"/>
+                </joints>
+                <vertex_weights count="53">
+                    <input semantic="JOINT" offset="0" source="#Fish_controller_joints"/>
+                    <input semantic="WEIGHT" offset="1" source="#Fish_controller_joint_weights"/>
+                    <vcount>3 
+3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 
+3 3 </vcount>
+                    <v>0 0 1 53 2 106 
+0 1 1 54 2 107 0 2 1 55 2 108 0 3 1 56 2 109 0 4 1 57 2 110 0 5 1 58 2 111 0 6 1 59 2 112 0 7 1 60 2 113 0 8 1 61 2 114 0 9 1 62 2 115 0 10 1 63 2 116 0 11 1 64 2 117 0 12 1 65 2 118 0 13 1 66 2 119 0 14 1 67 2 120 0 15 1 68 2 121 0 16 1 69 2 122 0 17 1 70 2 123 0 18 1 71 2 124 0 19 1 72 2 125 0 20 1 73 2 126 0 21 1 74 2 127 0 22 1 75 2 128 0 23 1 76 2 129 0 24 1 77 2 130 0 25 1 78 2 131 0 26 1 79 2 132 0 27 1 80 2 133 0 28 1 81 2 134 0 29 1 82 2 135 0 30 1 83 2 136 0 31 1 84 2 137 0 32 1 85 2 138 0 33 1 86 2 139 0 34 1 87 2 140 0 35 1 88 2 141 0 36 1 89 2 142 0 37 1 90 2 143 0 38 1 91 2 144 0 39 1 92 2 145 0 40 1 93 2 146 0 41 1 94 2 147 0 42 1 95 2 148 0 43 1 96 2 149 0 44 1 97 2 150 0 45 1 98 2 151 0 46 1 99 2 152 0 47 1 100 2 153 0 48 1 101 2 154 0 49 1 102 2 155 0 50 1 103 2 156 
+0 51 1 104 2 157 0 52 1 105 2 158 </v>
+                </vertex_weights>
+            </skin>
+        </controller>
+    </library_controllers>
+    <library_visual_scenes>
+        <visual_scene id="VisualSceneNode" name="fish">
+            <node id="Fish" name="Fish">
+                <translate sid="translate">0 0 0</translate>
+                <translate sid="rotatePivotCompensation">0 0 0</translate>
+                <translate sid="rotatePivot">0 0 0</translate>
+                <rotate sid="rotatePivotOffsetY">0 1 0 0</rotate>
+                <rotate sid="rotatePivotOffsetX">1 0 0 0</rotate>
+                <rotate sid="rotatePivotOffsetZ">0 0 1 0</rotate>
+                <rotate sid="rotateY">0 1 0 0</rotate>
+                <rotate sid="rotateX">1 0 0 0</rotate>
+                <rotate sid="rotateZ">0 0 1 0</rotate>
+                <rotate sid="rotatePivotAxisY">0 1 0 0</rotate>
+                <rotate sid="rotatePivotAxisX">1 0 0 0</rotate>
+                <rotate sid="rotatePivotAxisZ">0 0 1 0</rotate>
+                <translate sid="rotatePivotInverse">0 0 0</translate>
+                <translate sid="scalePivotCompensation">0 0 0</translate>
+                <translate sid="scalePivot">0 0 0</translate>
+                <scale sid="scale">1 1 1</scale>
+                <translate sid="scalePivotInverse">0 0 0</translate>
+                <instance_controller url="#Fish_controller">
+                    <bind_material>
+                        <technique_common>
+                            <instance_material symbol="Bone" target="#Bone"/>
+                            <instance_material symbol="Default" target="#Default"/>
+                        </technique_common>
+                    </bind_material>
+                </instance_controller>
+                <node id="Bone01" name="Bone01" sid="" type="JOINT">
+                    <translate sid="translate">-5 5 0</translate>
+                    <translate sid="rotatePivotCompensation">0 0 0</translate>
+                    <translate sid="rotatePivot">0 0 0</translate>
+                    <rotate sid="rotatePivotOffsetY">0 1 0 0</rotate>
+                    <rotate sid="rotatePivotOffsetX">1 0 0 0</rotate>
+                    <rotate sid="rotatePivotOffsetZ">0 0 1 0</rotate>
+                    <rotate sid="rotateY">0 1 0 -90</rotate>
+                    <rotate sid="rotateX">1 0 0 0</rotate>
+                    <rotate sid="rotateZ">0 0 1 90</rotate>
+                    <rotate sid="rotatePivotAxisY">0 1 0 0</rotate>
+                    <rotate sid="rotatePivotAxisX">1 0 0 0</rotate>
+                    <rotate sid="rotatePivotAxisZ">0 0 1 0</rotate>
+                    <translate sid="rotatePivotInverse">0 0 0</translate>
+                    <translate sid="scalePivotCompensation">0 0 0</translate>
+                    <translate sid="scalePivot">0 0 0</translate>
+                    <scale sid="scale">1 1 1</scale>
+                    <translate sid="scalePivotInverse">0 0 0</translate>
+                    <node id="Bone02" name="Bone02" sid="" type="JOINT">
+                        <translate sid="translate">3.43923e-13 7.86805e-06 -180</translate>
+                        <translate sid="rotatePivotCompensation">0 0 0</translate>
+                        <translate sid="rotatePivot">0 0 0</translate>
+                        <rotate sid="rotatePivotOffsetY">0 1 0 0</rotate>
+                        <rotate sid="rotatePivotOffsetX">1 0 0 0</rotate>
+                        <rotate sid="rotatePivotOffsetZ">0 0 1 0</rotate>
+                        <rotate sid="rotateY">0 1 0 -1.09474e-13</rotate>
+                        <rotate sid="rotateX">1 0 0 2.50448e-06</rotate>
+                        <rotate sid="rotateZ">0 0 1 -2.50448e-06</rotate>
+                        <rotate sid="rotatePivotAxisY">0 1 0 0</rotate>
+                        <rotate sid="rotatePivotAxisX">1 0 0 0</rotate>
+                        <rotate sid="rotatePivotAxisZ">0 0 1 0</rotate>
+                        <translate sid="rotatePivotInverse">0 0 0</translate>
+                        <translate sid="scalePivotCompensation">0 0 0</translate>
+                        <translate sid="scalePivot">0 0 0</translate>
+                        <scale sid="scale">1 1 1</scale>
+                        <translate sid="scalePivotInverse">0 0 0</translate>
+                        <node id="Bone03" name="Bone03" sid="" type="JOINT">
+                            <translate sid="translate">0 0 -80</translate>
+                            <translate sid="rotatePivotCompensation">0 0 0</translate>
+                            <translate sid="rotatePivot">0 0 0</translate>
+                            <rotate sid="rotatePivotOffsetY">0 1 0 0</rotate>
+                            <rotate sid="rotatePivotOffsetX">1 0 0 0</rotate>
+                            <rotate sid="rotatePivotOffsetZ">0 0 1 0</rotate>
+                            <rotate sid="rotateY">0 1 0 -1.90915</rotate>
+                            <rotate sid="rotateX">1 0 0 0</rotate>
+                            <rotate sid="rotateZ">0 0 1 0</rotate>
+                            <rotate sid="rotatePivotAxisY">0 1 0 0</rotate>
+                            <rotate sid="rotatePivotAxisX">1 0 0 0</rotate>
+                            <rotate sid="rotatePivotAxisZ">0 0 1 0</rotate>
+                            <translate sid="rotatePivotInverse">0 0 0</translate>
+                            <translate sid="scalePivotCompensation">0 0 0</translate>
+                            <translate sid="scalePivot">0 0 0</translate>
+                            <scale sid="scale">1 1 1</scale>
+                            <translate sid="scalePivotInverse">0 0 0</translate>
+                        </node>
+                    </node>
+                </node>
+            </node>
+            <node id="Light" name="Light">
+                <translate sid="translate">-200 200 200</translate>
+                <translate sid="rotatePivotCompensation">0 0 0</translate>
+                <translate sid="rotatePivot">0 0 0</translate>
+                <rotate sid="rotatePivotOffsetY">0 1 0 0</rotate>
+                <rotate sid="rotatePivotOffsetX">1 0 0 0</rotate>
+                <rotate sid="rotatePivotOffsetZ">0 0 1 0</rotate>
+                <rotate sid="rotateY">0 1 0 -45</rotate>
+                <rotate sid="rotateX">1 0 0 -35</rotate>
+                <rotate sid="rotateZ">0 0 1 0</rotate>
+                <rotate sid="rotatePivotAxisY">0 1 0 0</rotate>
+                <rotate sid="rotatePivotAxisX">1 0 0 0</rotate>
+                <rotate sid="rotatePivotAxisZ">0 0 1 0</rotate>
+                <translate sid="rotatePivotInverse">0 0 0</translate>
+                <translate sid="scalePivotCompensation">0 0 0</translate>
+                <translate sid="scalePivot">0 0 0</translate>
+                <scale sid="scale">1 1 1</scale>
+                <translate sid="scalePivotInverse">0 0 0</translate>
+                <instance_light url="#Light_lib"/>
+            </node>
+            <node id="Camera" name="Camera">
+                <translate sid="translate">88.305 4.19092 1254.39</translate>
+                <translate sid="rotatePivotCompensation">0 0 0</translate>
+                <translate sid="rotatePivot">0 0 0</translate>
+                <rotate sid="rotatePivotOffsetY">0 1 0 0</rotate>
+                <rotate sid="rotatePivotOffsetX">1 0 0 0</rotate>
+                <rotate sid="rotatePivotOffsetZ">0 0 1 0</rotate>
+                <rotate sid="rotateY">0 1 0 0</rotate>
+                <rotate sid="rotateX">1 0 0 0</rotate>
+                <rotate sid="rotateZ">0 0 1 0</rotate>
+                <rotate sid="rotatePivotAxisY">0 1 0 0</rotate>
+                <rotate sid="rotatePivotAxisX">1 0 0 0</rotate>
+                <rotate sid="rotatePivotAxisZ">0 0 1 0</rotate>
+                <translate sid="rotatePivotInverse">0 0 0</translate>
+                <translate sid="scalePivotCompensation">0 0 0</translate>
+                <translate sid="scalePivot">0 0 0</translate>
+                <scale sid="scale">1 1 1</scale>
+                <translate sid="scalePivotInverse">0 0 0</translate>
+                <instance_camera url="#Camera_lib"/>
+            </node>
+        </visual_scene>
+    </library_visual_scenes>
+    <scene>
+        <instance_visual_scene url="#VisualSceneNode"/>
+    </scene>
+</COLLADA>
