@@ -4,11 +4,23 @@ import {
     Mesh, MeshPhongMaterial, SphereGeometry, Vector3, BufferAttribute
 } from 'three';
 
+export enum FunctionType {
+    //  Specifies Cross-section transform functions
+    LINEAR,
+    LINEAR_INVERSE,
+    SINUSOIDAL,
+    SINUSOIDAL_INVERSE,
+    SINUSOIDAL_RANDOM
+};
 
+export class ProtoTubeExtrusionFunction {
+
+
+}
 export class FrenetFrame extends Group {
 
-    nodePos:Vector3;
-    
+    nodePos: Vector3;
+
     len: number = 0;
 
     tan?: Vector3;
@@ -39,7 +51,7 @@ export class FrenetFrame extends Group {
 
         // node being acted on
         this.nodePos = v1;
-        
+
         // calculate Tangenet, Normal & biNormal
         this.tan = new Vector3();
         this.tan.subVectors(v2, v0);
@@ -91,7 +103,7 @@ export class FrenetFrame extends Group {
         if (this.tan && this.norm && this.biNorm) {
 
             this.nodePos = v1;
-            
+
             this.tan.subVectors(v2, v0);
             this.tan.normalize();
 

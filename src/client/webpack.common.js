@@ -8,7 +8,9 @@ module.exports = {
     // entry: './src/client/Projects/MathTests/sketch.ts',
     // entry: './src/client/Projects/NeurotoBots/sketch.ts',
     // entry: './src/client/Projects/BaconBits/sketch.ts',
-    entry: './src/client/Projects/BaconOfTheSea/sketch.ts',
+    // entry: './src/client/Projects/BaconOfTheSea/sketch.ts',
+    // entry: './src/client/Projects/CustomFishGeometry/sketch.ts',
+    entry: './src/client/Projects/Protobyte_three01/sketch.ts',
     /************************************************ */
     module: {
         rules: [
