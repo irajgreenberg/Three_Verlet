@@ -7,12 +7,12 @@ import { AmbientLight, Bone, CatmullRomCurve3, Color, DirectionalLight, Float32B
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { PBMath } from '../../PByte3/IJGUtils';
 import { ProtoTubeGeometry } from '../../PByte3/ProtoTubeGeometry';
-import { Protobyte } from './Protobyte';
-import { ProtoTube } from './ProtoTube';
+import { ProtoByte_0000 } from './Protobyte_0000';
+import { ProtoTube } from '../../spike/ProtoTube';
 
 // create and position camera
 const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 350;
+camera.position.z = 400;
 
 const scene = new Scene();
 scene.background = new Color(0x00000);
@@ -30,19 +30,9 @@ const controls = new OrbitControls(camera, renderer.domElement);
 
 // ***********************************
 // Begin custom geometry
-let pb = new Protobyte();
-pb.receiveShadow = true;
+let pb = new ProtoByte_0000(new Vector3(80, 325, 80));
 scene.add(pb);
 
-// let vecs: Vector3[] = [];
-// let theta = 0;
-// let phi = 0;
-// for (let i = 0; i < 75; i++) {
-//     vecs[i] = new Vector3(Math.sin(theta += Math.PI / PBMath.rand(i, i + 10)) * i, 145 - i * 3.4, Math.cos(theta += Math.PI / (i + 1)) * -i);
-// }
-// let curve = new CatmullRomCurve3(vecs);
-// let tube1 = new ProtoTube(curve, 2.75, new Color(0x441177), 60, 4);
-// scene.add(tube1);
 
 const ambientTexturesLight = new AmbientLight(0xFFFFFF, 1);
 scene.add(ambientTexturesLight);

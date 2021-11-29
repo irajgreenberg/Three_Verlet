@@ -45,6 +45,8 @@ export class PBMath {
         let vals: number[] = [];
         let theta = 0;
         let freq = 0;
+        let step = 0;
+        let octives = 0;
         switch (expType) {
             case FuncType.NONE:
                 for (let i = 0; i < count; i++) {
@@ -52,8 +54,8 @@ export class PBMath {
                 }
                 break;
             case FuncType.LINEAR:
-                let octives = count / periods;
-                let step = (max - min) / octives;
+                octives = count / periods;
+                step = (max - min) / octives;
                 for (let i = 0; i < periods; i++) {
                     let step = (max - min) / octives;
                     for (let j = 0; j < octives; j++) {
@@ -61,11 +63,29 @@ export class PBMath {
                     }
                 }
                 break
+            case FuncType.LINEAR_INVERSE:
+                octives = count / periods;
+                step = (max - min) / octives;
+                for (let i = 0; i < periods; i++) {
+                    let step = (max - min) / octives;
+                    for (let j = 0; j < octives; j++) {
+                        vals.push(max - step * j);
+                    }
+                }
+                break
             case FuncType.SINUSOIDAL:
                 theta = 0;
-                freq = Math.PI * 2 * periods / count;
-                for (let i = 0; i < count; i++) {
-                    vals[i] = min + Math.sin(theta) * max;
+                freq = Math.PI * periods / count;
+                for (let i = 0; i <= count; i++) {
+                    vals[i] = min + Math.abs(Math.sin(theta)) * max;
+                    theta += freq;
+                }
+                break
+            case FuncType.SINUSOIDAL_INVERSE:
+                theta = 0;
+                freq = Math.PI * periods / count;
+                for (let i = 0; i <= count; i++) {
+                    vals[i] = Math.max(min, Math.abs(Math.cos(theta)) * max);
                     theta += freq;
                 }
                 break

@@ -95,7 +95,12 @@ export class ProtoTubeGeometry extends TubeGeometry {
             // const radius = radii[i];
 
             //const radius = Math.abs(Math.sin(i * Math.PI / 120) * 55);
-            const radius = radii[i];
+            let radius = radii[i];
+            // fix to avoid uneven raddii and tube segments
+            if (radius === undefined) {
+                radius = radii[radii.length - 1];
+            }
+            console.log(radius);
             // generate normals and vertices for the current segment
             for (let j = 0; j <= radialSegments; j++) {
 
@@ -113,13 +118,9 @@ export class ProtoTubeGeometry extends TubeGeometry {
                 normals.push(normal.x, normal.y, normal.z);
 
                 // vertex
-                // vertex.x = P.x + (radius + Math.random() * 1.3) * normal.x;
-                // vertex.y = P.y + (radius + Math.random() * 1.9) * normal.y;
-                // vertex.z = P.z + (radius + Math.random() * 1.3) * normal.z;
-
-                vertex.x = P.x + (radius + Math.random() * 0) * normal.x;
-                vertex.y = P.y + (radius + Math.random() * 0) * normal.y;
-                vertex.z = P.z + (radius + Math.random() * 0) * normal.z;
+                vertex.x = P.x + (radius) * normal.x;
+                vertex.y = P.y + (radius) * normal.y;
+                vertex.z = P.z + (radius) * normal.z;
 
                 vertices.push(vertex.x, vertex.y, vertex.z);
 
