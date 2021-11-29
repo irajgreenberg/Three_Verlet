@@ -3,12 +3,9 @@
 // Dallas, TX
 
 
-import { AmbientLight, Bone, CatmullRomCurve3, Color, DirectionalLight, Float32BufferAttribute, LineSegments, PCFSoftShadowMap, PerspectiveCamera, PointLight, Scene, Skeleton, SkeletonHelper, SkinnedMesh, SphereGeometry, SpotLight, Uint16BufferAttribute, Vector3, WebGLRenderer, WireframeGeometry } from 'three'
+import { AmbientLight, Bone, CatmullRomCurve3, Color, DirectionalLight, Float32BufferAttribute, LineSegments, PCFSoftShadowMap, PerspectiveCamera, PointLight, Scene, Skeleton, SkeletonHelper, SkinnedMesh, SphereGeometry, SpotLight, Vector3, WebGLRenderer } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { PBMath } from '../../PByte3/IJGUtils';
-import { ProtoTubeGeometry } from '../../PByte3/ProtoTubeGeometry';
 import { ProtoByte_0000 } from './Protobyte_0000';
-import { ProtoTube } from '../../spike/ProtoTube';
 
 // create and position camera
 const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
