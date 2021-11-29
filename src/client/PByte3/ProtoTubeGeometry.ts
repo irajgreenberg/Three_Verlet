@@ -1,12 +1,17 @@
 
-import { Curve, Float32BufferAttribute, QuadraticBezierCurve3, TubeGeometry, Vector2, Vector3 } from "three";
+import { Bone, Curve, Float32BufferAttribute, QuadraticBezierCurve3, Skeleton, SkeletonHelper, SkinnedMesh, TubeGeometry, Uint16BufferAttribute, Vector2, Vector3 } from "three";
+import { FuncType, iCurveExpression, PBMath } from "./IJGUtils";
 
 export class ProtoTubeGeometry extends TubeGeometry {
-    radii: number[] = []
+    // radii: number[] = []
 
-    constructor(path: Curve<Vector3>, tubularSegments = 64, radii: number[] = [], radialSegments = 8, closed = false) {
+    constructor(path: Curve<Vector3>, tubularSegments = 64, radialSegments = 8,
+        closed = false, radExpr: iCurveExpression = { func: FuncType.NONE, min: 1, max: 1, periods: 1 }) {
+
         super(path);
-        this.radii = radii;
+        let radii = PBMath.expression(radExpr.func, tubularSegments, radExpr.min, radExpr.max, radExpr.periods);
+
+
         this.type = 'TubeVariableRadiiGeometry';
 
         this.parameters = {
@@ -89,7 +94,8 @@ export class ProtoTubeGeometry extends TubeGeometry {
             // use radius per segment
             // const radius = radii[i];
 
-            const radius = Math.abs(Math.sin(i * Math.PI / 120) * 25);
+            //const radius = Math.abs(Math.sin(i * Math.PI / 120) * 55);
+            const radius = radii[i];
             // generate normals and vertices for the current segment
             for (let j = 0; j <= radialSegments; j++) {
 
@@ -107,9 +113,13 @@ export class ProtoTubeGeometry extends TubeGeometry {
                 normals.push(normal.x, normal.y, normal.z);
 
                 // vertex
-                vertex.x = P.x + radius * normal.x;
-                vertex.y = P.y + radius * normal.y;
-                vertex.z = P.z + radius * normal.z;
+                // vertex.x = P.x + (radius + Math.random() * 1.3) * normal.x;
+                // vertex.y = P.y + (radius + Math.random() * 1.9) * normal.y;
+                // vertex.z = P.z + (radius + Math.random() * 1.3) * normal.z;
+
+                vertex.x = P.x + (radius + Math.random() * 0) * normal.x;
+                vertex.y = P.y + (radius + Math.random() * 0) * normal.y;
+                vertex.z = P.z + (radius + Math.random() * 0) * normal.z;
 
                 vertices.push(vertex.x, vertex.y, vertex.z);
 
@@ -180,5 +190,8 @@ export class ProtoTubeGeometry extends TubeGeometry {
     //         data.closed
     //     );
     // }
+
+
+
 
 }

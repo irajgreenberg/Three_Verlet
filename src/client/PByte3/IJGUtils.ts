@@ -4,14 +4,83 @@ import {
     Mesh, MeshPhongMaterial, SphereGeometry, Vector3, BufferAttribute
 } from 'three';
 
-export enum FunctionType {
+
+export enum FuncType {
     //  Specifies Cross-section transform functions
+    NONE,
     LINEAR,
     LINEAR_INVERSE,
     SINUSOIDAL,
     SINUSOIDAL_INVERSE,
-    SINUSOIDAL_RANDOM
+    SINUSOIDAL_RANDOME
 };
+
+export interface iCurveExpression {
+    func: FuncType;
+    min: number;
+    max: number;
+    periods: number;
+}
+
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+// get random floating point range like in Processing
+// maximum exclusive, minimum inclusive
+export class PBMath {
+
+    // rand float
+    static rand(min: number, max: number): number {
+        return Math.random() * (max - min) + min;
+    }
+    // rand int
+    static randInt(min: number, max: number) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min) + min);
+    }
+
+    // returns radii values for ProtoGeometry based on
+    // mathematical expressions. NONE FuncType return array of uniform
+    // radii vals.
+    static expression(expType: FuncType, count: number, min: number, max: number, periods: number): number[] {
+        let vals: number[] = [];
+        let theta = 0;
+        let freq = 0;
+        switch (expType) {
+            case FuncType.NONE:
+                for (let i = 0; i < count; i++) {
+                    vals[i] = max;
+                }
+                break;
+            case FuncType.LINEAR:
+                let octives = count / periods;
+                let step = (max - min) / octives;
+                for (let i = 0; i < periods; i++) {
+                    let step = (max - min) / octives;
+                    for (let j = 0; j < octives; j++) {
+                        vals.push(min + step * j);
+                    }
+                }
+                break
+            case FuncType.SINUSOIDAL:
+                theta = 0;
+                freq = Math.PI * 2 * periods / count;
+                for (let i = 0; i < count; i++) {
+                    vals[i] = min + Math.sin(theta) * max;
+                    theta += freq;
+                }
+                break
+            default: // returns uniform radii
+                for (let i = 0; i < count; i++) {
+                    vals[i] = max;
+                }
+                break;
+
+        }
+        return vals;
+    }
+
+
+}
 
 export class ProtoTubeExtrusionFunction {
 
@@ -173,23 +242,7 @@ export function trace(...args: any[]) {
         console.log(args[i]);
     }
 }
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
-// get random floating point range like in Processing
-// maximum exclusive, minimum inclusive
-export class PBMath {
 
-    // rand float
-    static rand(min: number, max: number): number {
-        return Math.random() * (max - min) + min;
-    }
-    // rand int
-    static randInt(min: number, max: number) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min) + min);
-    }
-
-}
 
 // Hair Density
 // custom needs to be explicitly set
