@@ -6,6 +6,7 @@ import { ProtoTubeGeometry } from "../../PByte3/ProtoTubeGeometry";
 
 export class ProtoByte_0000 extends Group {
     dim: Vector3;
+    spineMesh: Mesh
 
     constructor(dim: Vector3 = new Vector3(.2, 1., .2)) {
         super();
@@ -33,8 +34,10 @@ export class ProtoByte_0000 extends Group {
 
         const spineGeom = new ProtoTubeGeometry(path, tubeSegs / 10, 20, false, { func: FuncType.SINUSOIDAL_INVERSE, min: 30, max: 80, periods: 3 });
         const spineMat = new MeshPhongMaterial({ color: 0xFF7700, wireframe: false, side: DoubleSide, map: texture, transparent: true, opacity: 1, bumpMap: texture, bumpScale: 1, shininess: .8 });
-        const spineMesh = new Mesh(spineGeom, spineMat);
-        this.add(spineMesh);
+        this.spineMesh = new Mesh(spineGeom, spineMat);
+        this.add(this.spineMesh);
 
     }
 }
+
+
