@@ -4,14 +4,30 @@ import { FuncType, iCurveExpression, PBMath } from "./IJGUtils";
 
 export class ProtoTubeGeometry extends TubeGeometry {
     // radii: number[] = []
+    pathLen: number;
+
+    //used to precalculate curve segment lengths for non-orthogonal skeleton creation. Default bone count is 5
+    boneCount: number;
+    pathSegmentLengths: number[] = [];
 
     constructor(path: Curve<Vector3>, tubularSegments = 64, radialSegments = 8,
-        closed = false, radExpr: iCurveExpression = { func: FuncType.NONE, min: 1, max: 1, periods: 1 }) {
+        closed = false, radExpr: iCurveExpression = { func: FuncType.NONE, min: 1, max: 1, periods: 1 }, boneCount: number = 5) {
 
         super(path);
+
+        // generate radii basedon passed in expression
         let radii = PBMath.expression(radExpr.func, tubularSegments, radExpr.min, radExpr.max, radExpr.periods);
 
+        this.pathLen = path.getLength();
 
+        this.boneCount = boneCount;
+
+        path.arcLengthDivisions = boneCount;
+        this.pathSegmentLengths = path.getLengths();
+        console.log("overall curve length = ", path.getLength());
+        console.log("this.pathSegmentLengths = ", this.pathSegmentLengths);
+
+        // Do I even need the parameters stuff?
         this.type = 'TubeVariableRadiiGeometry';
 
         this.parameters = {
@@ -91,7 +107,7 @@ export class ProtoTubeGeometry extends TubeGeometry {
             const N = frames.normals[i];
             const B = frames.binormals[i];
 
-            // use radius per segment
+            // use radius per segment       
             // const radius = radii[i];
 
             //const radius = Math.abs(Math.sin(i * Math.PI / 120) * 55);
@@ -100,7 +116,7 @@ export class ProtoTubeGeometry extends TubeGeometry {
             if (radius === undefined) {
                 radius = radii[radii.length - 1];
             }
-            console.log(radius);
+            //console.log(radius);
             // generate normals and vertices for the current segment
             for (let j = 0; j <= radialSegments; j++) {
 

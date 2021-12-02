@@ -73,13 +73,16 @@
 // Dallas, TX
 
 
-import { AmbientLight, Bone, BufferGeometry, CatmullRomCurve3, Color, DirectionalLight, Float32BufferAttribute, LineSegments, PCFSoftShadowMap, PerspectiveCamera, PointLight, Scene, Skeleton, SkeletonHelper, SkinnedMesh, SphereGeometry, SpotLight, Uint16BufferAttribute, Vector3, WebGLRenderer } from 'three'
+import { AmbientLight, Bone, BufferGeometry, CatmullRomCurve3, Color, DirectionalLight, MeshPhongMaterial, Float32BufferAttribute, LineSegments, PCFSoftShadowMap, PerspectiveCamera, PointLight, Scene, Skeleton, SkeletonHelper, SkinnedMesh, SphereGeometry, SpotLight, Uint16BufferAttribute, Vector3, WebGLRenderer, Box3 } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { GeometryDetail } from '../../PByte3/IJGUtils';
 import { ProtoByte_0000 } from './Protobyte_0000';
 
 // create and position camera
-const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 400;
+const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 10000);
+camera.position.x = 600;
+camera.position.y = 400;
+camera.position.z = 500;
 
 const scene = new Scene();
 scene.background = new Color(0x00000);
@@ -97,7 +100,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 
 // ***********************************
 // Begin custom geometry
-let pb = new ProtoByte_0000(new Vector3(80, 325, 80));
+let pb = new ProtoByte_0000(new Vector3(80, 300, 80));
 //scene.add(pb);
 
 
@@ -125,27 +128,81 @@ const pointLt = new PointLight(0xff0000, 1, 200); light.position.set(0, 50, 0); 
 // make skinned mesh
 const skinMesh = makeSkinned(pb.spineMesh);
 scene.add(skinMesh);
-// make a skeleton helper for tourbleshooting
+//make a skeleton helper for tourbleshooting
 const skelHelper = new SkeletonHelper(skinMesh);
 scene.add(skelHelper);
+
+function makeSkinned(m: THREE.Mesh): SkinnedMesh {
+    //console.log('passed m - ', m);
+    let nBones: number = pb.boneCount;
+    console.log("pb.boneCount = ", pb.boneCount);
+    console.log("pb.pathVecs.length = ", pb.pathVecs.length);
+    console.log("m.geometry.attributes.position.count = ", m.geometry.attributes.position.count);
+    let bones = [];
+    //for (let i = 0; i < nBones; i++) { bones[i] = new Bone(); }
+    // create bones
+    let seg = pb.curveLenth / pb.boneCount;
+    let position = m.geometry.attributes.position;
+    let boneMod = Math.floor(position.count / nBones);
+    let prevBone = new Bone();
+    bones.push(prevBone);
+    prevBone.position.y = -pb.curveLenth / 2;
+    for (let i = 0; i < pb.boneCount; i++) {
+        const bone = new Bone();
+        bone.position.y = seg;
+        bones.push(bone);
+        prevBone.add(bone);
+        prevBone = bone;
+    }
+
+    //  create indices and weights
+    const vertex = new Vector3();
+    // get buffergeometry
+    var box = new Box3().setFromObject(pb.spineMesh);
+    console.log(box.min, box.max, box.getSize(new Vector3()).y);
+    console.log("pb.spineMesh.geometry.boundingBox = ", pb.spineMesh.geometry.boundingBox);
+    let skinIndices = [];
+    let skinWeights = [];
+    let weightMod = Math.floor(position.count / pb.boneCount);
+
+    // console.log("weightMod = ", weightMod);
+    for (let i = 0, j = 0; i < position.count; i++) {
+        vertex.fromBufferAttribute(position, i);
+        const x = vertex.x
+        const y = vertex.y + pb.curveLenth / 2;
+        const z = vertex.z
+        let skinIndex = Math.floor(y / seg);
+        let skinWeight = (y % seg) / seg;
+        skinIndices.push(skinIndex, skinIndex + 1, 0, 0);
+        // skinWeights.push(1 - skinWeight, skinWeight, 0, 0);
+        skinWeights.push(1 - skinWeight, skinWeight, 0, 0);
+    }
+
+    m.geometry.setAttribute('skinIndex', new Uint16BufferAttribute(skinIndices, 4));
+    m.geometry.setAttribute('skinWeight', new Float32BufferAttribute(skinWeights, 4));
+    let mat2 = new MeshPhongMaterial();
+    let skin = new SkinnedMesh(m.geometry, m.material);
+    let skeleton = new Skeleton(bones);
+    let rootBone = skeleton.bones[0];
+    skin.add(rootBone);
+    // bind the skeleton to the mesh
+    skin.bind(skeleton);
+    skin.geometry.attributes.position.needsUpdate = true;
+    return (skin);
+
+}
 
 function animate() {
     requestAnimationFrame(animate);
     controls.update();
     controls.autoRotate = true;
 
-    const time = Date.now() * 0.001;
-    for (let i = 0; i < skinMesh.skeleton.bones.length; i++) {
-        skinMesh.skeleton.bones[i].rotation.x = Math.sin(time) * 2 / skinMesh.skeleton.bones.length;
-        skinMesh.skeleton.bones[i].rotation.y = Math.sin(time) * 3 / skinMesh.skeleton.bones.length;
-        skinMesh.skeleton.bones[i].rotation.z = Math.sin(time) * 4 / skinMesh.skeleton.bones.length;
-
-        // (skinMesh.geometry as BufferGeometry).attributes.position.needsUpdate = true;
-    }
-
-
-
+    const time = Date.now() * 0.003;
+    skinMesh.skeleton.bones[2].rotation.x = Math.sin(time) * 2 / skinMesh.skeleton.bones.length;
+    skinMesh.skeleton.bones[2].rotation.y = Math.cos(time) * 5 / skinMesh.skeleton.bones.length;
+    skinMesh.skeleton.bones[2].rotation.z = Math.sin(time) * 8 / skinMesh.skeleton.bones.length;
     render();
+
 }
 
 function render() {
@@ -154,42 +211,4 @@ function render() {
 animate();
 
 
-function makeSkinned(pb: any): SkinnedMesh {
-    let nBones = pb.tubeSegs / 10;
-    let bones = [];
-    // make bones
-    for (let i = 0; i < nBones; i++) {
-        bones[i] = new Bone();
-        if (i == 0) {
-            bones[i].position.y = 0;
-        } else {
-            bones[i].position.y = nBones;
-            bones[i - 1].add(bones[i]);
-        }
-    }
-    //  traverses position index assigning a bone index and influence factor to each point
-    let position = pb.geometry.attributes.position;
-    let segmentHeight = 10;
-    let segmentCount = nBones;
-    let totalHeight = segmentCount * segmentHeight;
-    let vertex = new Vector3();
-    let skinIndices = [];
-    let skinWeights = [];
-    for (let i = 0; i < position.count; i++) {
-        vertex.fromBufferAttribute(position, i);
-        let y = (vertex.y);
-        let skinIndex = Math.floor(i / position.count);
-        let skinWeight = (position.count % segmentCount);
-        skinIndices.push(skinIndex, 0, 0, 0);
-        skinWeights.push(1 - skinWeight/*might be skinWeight-1 instead*/, 0, 0, 0);
-    }
-    pb.geometry.setAttribute('skinIndex', new Uint16BufferAttribute(skinIndices, 4));
-    pb.geometry.setAttribute('skinWeight', new Float32BufferAttribute(skinWeights, 4));
-    let skin = new SkinnedMesh(pb.geometry, pb.material);
-    let skeleton = new Skeleton(bones);
-    let rootBone = skeleton.bones[0];
-    skin.add(rootBone);
-    // bind the skeleton to the mesh
-    skin.bind(skeleton);
-    return (skin);
-}
+

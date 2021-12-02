@@ -11,6 +11,7 @@ module.exports = {
     // entry: './src/client/Projects/BaconOfTheSea/sketch.ts',
     // entry: './src/client/Projects/CustomFishGeometry/sketch.ts',
     entry: './src/client/Projects/ProtoBytes/sketch.ts',
+    // entry: './src/client/Projects/Testing/sketch.ts',
     /************************************************ */
     module: {
         rules: [

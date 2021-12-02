@@ -6,14 +6,20 @@ import { ProtoTubeGeometry } from "../../PByte3/ProtoTubeGeometry";
 
 export class ProtoByte_0000 extends Group {
     dim: Vector3;
-    spineMesh: Mesh
+    spineMesh: Mesh;
+    pathVecs: Vector3[] = [];
+
+    // temporary solution, needs to be put in a base calss eventually
+    boneCount: number;
+    curveLenth: number
+    curveLengths: number[] = [];
 
     constructor(dim: Vector3 = new Vector3(.2, 1., .2)) {
         super();
         this.dim = dim;
 
         const tubeSegs = 400;
-        const pathVecs: Vector3[] = [];
+        // const pathVecs: Vector3[] = [];
         let theta = 0;
         let phi = 0;
 
@@ -22,10 +28,19 @@ export class ProtoByte_0000 extends Group {
             let x = Math.sin(theta) * this.dim.x;
             let y = dim.y / 2 - step * i;
             let z = Math.cos(theta) * this.dim.z;
-            pathVecs[i] = new Vector3(x, y, z);
+            this.pathVecs[i] = new Vector3(x, y, z);
             theta += Math.PI / 180;
         }
-        const path = new CatmullRomCurve3(pathVecs);
+
+        // for (let i = 0; i < tubeSegs; i++) {
+        //     let x = 0;
+        //     let y = dim.y / 2 - step * i;
+        //     let z = 0;
+        //     this.pathVecs[i] = new Vector3(x, y, z);
+        //     theta += Math.PI / 180;
+        // }
+        const path = new CatmullRomCurve3(this.pathVecs);
+
 
         const texture = new THREE.TextureLoader().load("textures/corroded_red.jpg");
         texture.wrapS = THREE.RepeatWrapping;
@@ -34,6 +49,13 @@ export class ProtoByte_0000 extends Group {
 
         const spineGeom = new ProtoTubeGeometry(path, tubeSegs / 10, 20, false, { func: FuncType.SINUSOIDAL_INVERSE, min: 30, max: 80, periods: 3 });
         const spineMat = new MeshPhongMaterial({ color: 0xFF7700, wireframe: false, side: DoubleSide, map: texture, transparent: true, opacity: 1, bumpMap: texture, bumpScale: 1, shininess: .8 });
+
+        // TO DO: eventually move to base ProtoByte class
+        this.boneCount = spineGeom.boneCount;
+        this.curveLenth = spineGeom.pathLen;
+        this.curveLengths = spineGeom.pathSegmentLengths;
+
+
         this.spineMesh = new Mesh(spineGeom, spineMat);
         this.add(this.spineMesh);
 
