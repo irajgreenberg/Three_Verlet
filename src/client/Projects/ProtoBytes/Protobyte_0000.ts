@@ -25,9 +25,24 @@ export class ProtoByte_0000 extends Group {
 
         let step = dim.y / tubeSegs;
         for (let i = 0; i < tubeSegs; i++) {
+            // y-axis
             let x = Math.sin(theta) * this.dim.x;
             let y = dim.y / 2 - step * i;
             let z = Math.cos(theta) * this.dim.z;
+
+            // x-axis
+            // let x = dim.x / 2 - step * i;
+            // let y = Math.sin(theta) * this.dim.y;
+            // let z = Math.cos(theta) * this.dim.z;
+
+            //z-axis
+            // let x = Math.cos(theta) * this.dim.x;
+            // let y = Math.sin(theta) * this.dim.y;
+            // let z = dim.z / 2 - step * i;
+
+
+
+
             this.pathVecs[i] = new Vector3(x, y, z);
             theta += Math.PI / 180;
         }

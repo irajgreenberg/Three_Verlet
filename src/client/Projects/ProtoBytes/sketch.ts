@@ -135,15 +135,19 @@ scene.add(skelHelper);
 function makeSkinned(m: THREE.Mesh): SkinnedMesh {
     //console.log('passed m - ', m);
     let nBones: number = pb.boneCount;
-    console.log("pb.boneCount = ", pb.boneCount);
-    console.log("pb.pathVecs.length = ", pb.pathVecs.length);
-    console.log("m.geometry.attributes.position.count = ", m.geometry.attributes.position.count);
+    // console.log("pb.boneCount = ", pb.boneCount);
+    // console.log("pb.pathVecs.length = ", pb.pathVecs.length);
+    // console.log("m.geometry.attributes.position.count = ", m.geometry.attributes.position.count);
+
+    var box = new Box3().setFromObject(pb.spineMesh);
+    let meshDim = new Vector3();
+    meshDim.subVectors(box.max, box.min);
+    // console.log("meshDim  ,", meshDim);
+
     let bones = [];
-    //for (let i = 0; i < nBones; i++) { bones[i] = new Bone(); }
-    // create bones
-    let seg = pb.curveLenth / pb.boneCount;
     let position = m.geometry.attributes.position;
-    let boneMod = Math.floor(position.count / nBones);
+    //let boneMod = Math.floor(position.count / nBones);
+    let seg = pb.curveLenth / pb.boneCount;
     let prevBone = new Bone();
     bones.push(prevBone);
     prevBone.position.y = -pb.curveLenth / 2;
@@ -158,9 +162,7 @@ function makeSkinned(m: THREE.Mesh): SkinnedMesh {
     //  create indices and weights
     const vertex = new Vector3();
     // get buffergeometry
-    var box = new Box3().setFromObject(pb.spineMesh);
-    console.log(box.min, box.max, box.getSize(new Vector3()).y);
-    console.log("pb.spineMesh.geometry.boundingBox = ", pb.spineMesh.geometry.boundingBox);
+
     let skinIndices = [];
     let skinWeights = [];
     let weightMod = Math.floor(position.count / pb.boneCount);
@@ -168,16 +170,13 @@ function makeSkinned(m: THREE.Mesh): SkinnedMesh {
     // console.log("weightMod = ", weightMod);
     for (let i = 0, j = 0; i < position.count; i++) {
         vertex.fromBufferAttribute(position, i);
-        const x = vertex.x
         const y = vertex.y + pb.curveLenth / 2;
-        const z = vertex.z
         let skinIndex = Math.floor(y / seg);
         let skinWeight = (y % seg) / seg;
+
         skinIndices.push(skinIndex, skinIndex + 1, 0, 0);
-        // skinWeights.push(1 - skinWeight, skinWeight, 0, 0);
         skinWeights.push(1 - skinWeight, skinWeight, 0, 0);
     }
-
     m.geometry.setAttribute('skinIndex', new Uint16BufferAttribute(skinIndices, 4));
     m.geometry.setAttribute('skinWeight', new Float32BufferAttribute(skinWeights, 4));
     let mat2 = new MeshPhongMaterial();
@@ -189,7 +188,6 @@ function makeSkinned(m: THREE.Mesh): SkinnedMesh {
     skin.bind(skeleton);
     skin.geometry.attributes.position.needsUpdate = true;
     return (skin);
-
 }
 
 function animate() {
@@ -197,12 +195,11 @@ function animate() {
     controls.update();
     controls.autoRotate = true;
 
-    const time = Date.now() * 0.003;
-    skinMesh.skeleton.bones[2].rotation.x = Math.sin(time) * 2 / skinMesh.skeleton.bones.length;
+    const time = Date.now() * 0.007;
     skinMesh.skeleton.bones[2].rotation.y = Math.cos(time) * 5 / skinMesh.skeleton.bones.length;
-    skinMesh.skeleton.bones[2].rotation.z = Math.sin(time) * 8 / skinMesh.skeleton.bones.length;
+    skinMesh.skeleton.bones[3].rotation.z = Math.sin(time) * 8 / skinMesh.skeleton.bones.length;
+    skinMesh.skeleton.bones[1].rotation.x = Math.sin(time) * 2 / skinMesh.skeleton.bones.length;
     render();
-
 }
 
 function render() {
