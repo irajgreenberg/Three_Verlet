@@ -1,7 +1,6 @@
 
-import { Bone, Curve, Float32BufferAttribute, QuadraticBezierCurve3, Skeleton, SkeletonHelper, SkinnedMesh, TubeGeometry, Uint16BufferAttribute, Vector2, Vector3 } from "three";
+import { Curve, Float32BufferAttribute, TubeGeometry, Vector2, Vector3 } from "three";
 import { FuncType, iCurveExpression, PBMath } from "./IJGUtils";
-
 export class ProtoTubeGeometry extends TubeGeometry {
     // radii: number[] = []
     pathLen: number;
@@ -24,8 +23,8 @@ export class ProtoTubeGeometry extends TubeGeometry {
 
         path.arcLengthDivisions = boneCount;
         this.pathSegmentLengths = path.getLengths();
-        console.log("overall curve length = ", path.getLength());
-        console.log("this.pathSegmentLengths = ", this.pathSegmentLengths);
+        // console.log("overall curve length = ", path.getLength());
+        // console.log("this.pathSegmentLengths = ", this.pathSegmentLengths);
 
         // Do I even need the parameters stuff?
         this.type = 'TubeVariableRadiiGeometry';
@@ -73,7 +72,6 @@ export class ProtoTubeGeometry extends TubeGeometry {
         // functions
 
         function generateBufferData() {
-
             for (let i = 0; i < tubularSegments; i++) {
 
                 generateSegment(i);
@@ -97,6 +95,7 @@ export class ProtoTubeGeometry extends TubeGeometry {
             generateIndices();
 
         }
+
         function generateSegment(i: number) {
 
             // we use getPointAt to sample evenly distributed points from the given path
@@ -182,9 +181,7 @@ export class ProtoTubeGeometry extends TubeGeometry {
             }
 
         }
-
     }
-
     toJSON() {
 
         const data = super.toJSON();
@@ -194,6 +191,7 @@ export class ProtoTubeGeometry extends TubeGeometry {
         return data;
 
     }
+}
 
     // static fromJSON(data:Object) {
 
@@ -210,5 +208,3 @@ export class ProtoTubeGeometry extends TubeGeometry {
 
 
 
-
-}
