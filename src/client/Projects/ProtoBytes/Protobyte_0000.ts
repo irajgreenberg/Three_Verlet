@@ -61,8 +61,8 @@ export class ProtoByte_0000 extends ProtoTubeBase {
         this.skinMesh = this.makeSkinned(this.spineMesh, this.boneCount, this.curveLenth);
         this.add(this.skinMesh);
 
-        const skelHelper = new SkeletonHelper(this.skinMesh);
-        this.add(skelHelper);
+        // const skelHelper = new SkeletonHelper(this.skinMesh);
+        // this.add(skelHelper);
     }
 
     move(time: number) {
