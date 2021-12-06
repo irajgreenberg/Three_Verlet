@@ -4,6 +4,21 @@ import {
     Mesh, MeshPhongMaterial, SphereGeometry, Vector3, BufferAttribute
 } from 'three';
 
+// conveneince functions
+export function cos(t: number) {
+    return Math.cos(t);
+}
+export function sin(t: number) {
+    return Math.sin(t);
+}
+export function tan(t: number) {
+    return Math.tan(t);
+}
+
+// For convenience
+export let PI = 3.14159265359;
+export let TWO_PI = PI * 2;
+export let HALF_PI = PI / 2;
 
 export enum FuncType {
     //  Specifies Cross-section transform functions

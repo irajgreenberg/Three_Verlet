@@ -1,83 +1,84 @@
-// Title:  testing_skinnedMesh
-// Author: Ira Greenberg, 10/2021
-// Center of Creative Computation, SMU
-// Dependencies: PByte.js, Three.js, 
+// Ira Greenberg
+// Dallas, TX
 
-// Node/TS/Three template:
-//https://github.com/Sean-Bradley/Three.js-TypeScript-Boilerplate.git
+// FBX loader example
 
-
-
-import * as THREE from 'three'
+import { AmbientLight, AnimationMixer, Color, DirectionalLight, PCFSoftShadowMap, PerspectiveCamera, PointLight, Scene, SpotLight, WebGLRenderer } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { BufferGeometry, Line, LineBasicMaterial, Scene, Vector3 } from 'three';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 
 
-const scene: Scene = new Scene();
-const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(
-    75, window.innerWidth / window.innerHeight, 0.001, 2000);
-const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer();
+// create and position camera
+const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 10000);
+camera.position.x = 0;
+camera.position.y = 0;
+camera.position.z = 300;
+
+const scene = new Scene();
+scene.background = new Color(0x002222);
+
+// main renderer
+let renderer = new WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
+
 const controls = new OrbitControls(camera, renderer.domElement);
-document.addEventListener('click', onMouse, false);
-
-// Custom Geometry
 
 
-// Simple lighting calculations
-const color = 0xEEEEFF;
-const intensity = .85;
-const light = new THREE.AmbientLight(color, intensity);
+// model
+const loader = new FBXLoader();
+loader.load('models/zombie.fbx', function (object) {
+
+    let mixer = new AnimationMixer(object);
+
+    const action = mixer.clipAction(object.animations[0]);
+    action.play();
+
+    object.traverse(function (child) {
+
+        if (child) {
+
+            child.castShadow = true;
+            child.receiveShadow = true;
+
+        }
+
+    });
+
+    scene.add(object);
+
+});
+
+const ambientTexturesLight = new AmbientLight(0xFFFFFF, .45);
+scene.add(ambientTexturesLight);
+
+const col2 = 0xffffff;
+const intensity = 1;
+const light = new DirectionalLight(col2, intensity);
+light.position.set(15.2, -10.2, 300);
+light.castShadow = true;
 scene.add(light);
 
-const color2 = 0xFFFFDD;
-const intensity2 = 1;
-const light2 = new THREE.DirectionalLight(color, intensity);
-light2.position.set(-2, 6, 1);
+const spot = new SpotLight(0xffffff, 1);
+spot.position.set(-2, 8, 5);
+spot.castShadow = true;
+spot.shadow.radius = 8; //doesn't work with PCFsoftshadows
+spot.shadow.bias = -0.0001;
+spot.shadow.mapSize.width = 1024 * 4;
+spot.shadow.mapSize.height = 1024 * 4;
+scene.add(spot);
 
-scene.add(light2);
-//scene.add(light2.target);
+const pointLt = new PointLight(0xff0000, 1, 400); light.position.set(-100, 50, 500); scene.add(pointLt);
 
-camera.position.y = .8;
-camera.position.z = 3;
-
-window.addEventListener('resize', onWindowResize, false);
-window.addEventListener('mousemove', onMouseMove, false);
-
-function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    render();
-}
-
-var animate = function () {
+function animate() {
     requestAnimationFrame(animate);
-    controls.autoRotate = true;
-    camera.lookAt(scene.position); //0,0,0
-
-    controls.update()
+    controls.update();
     render();
-}
-
-
-function onMouse(event: MouseEvent) {
-
-}
-
-
-function onMouseMove(event: MouseEvent) {
-
 }
 
 function render() {
     renderer.render(scene, camera);
 }
 animate();
-
-
-
-
-
-
