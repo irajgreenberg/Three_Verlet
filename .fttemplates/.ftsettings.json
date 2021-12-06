@@ -1,0 +1,13 @@
+{
+    "name": "My Custom Template",
+    "customVariables": [
+        "projectName"
+    ],
+    "omitParentDirectory": true,
+    "structure": [
+        {
+            "FTName": "<projectName>.ts",
+            "fileName": "<projectName>"
+        }
+    ]
+}
