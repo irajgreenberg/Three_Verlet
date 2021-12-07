@@ -14,7 +14,10 @@ module.exports = {
     //entry: './src/client/Projects/ProtoBytes/ProtoByte_0001/sketch.ts',
     // entry: './src/client/Projects/ProtoBytes/ProtoByte_0002/sketch.ts',
     // entry: './src/client/Projects/ProtoBytes/ProtoByte_0003/sketch.ts',
-    entry: './src/client/Projects/ProtoBytes/ProtoByte_0004/sketch.ts',
+    // entry: './src/client/Projects/ProtoBytes/ProtoByte_0004/sketch.ts',
+
+
+    entry: './src/client/Projects/Truchet/sketch.ts',
     // entry: './src/client/Projects/Testing/sketch.ts',
     /************************************************ */
     module: {

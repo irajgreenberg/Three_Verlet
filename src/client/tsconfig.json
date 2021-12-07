@@ -13,6 +13,7 @@
         "**/*.ts"
     ],
     "exclude": [
-        "spike"
+        "spike",
+        ".fttemplates"
     ]
 }
