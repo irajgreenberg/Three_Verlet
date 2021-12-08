@@ -58,9 +58,9 @@ export class Truchet extends ProtoTubeBase {
         texture.repeat.set(1, 1);
 
         this.boneCount = 5;
-        const spineGeom2 = new ProtoTubeGeometry(path2, tubeSegs, 12, false, { func: FuncType.LINEAR, min: 5, max: 5, periods: 1 }, this.boneCount);
-        const spineGeom1 = new ProtoTubeGeometry(path1, tubeSegs, 12, false, { func: FuncType.LINEAR, min: 5, max: 5, periods: 1 }, this.boneCount);
-        const spineGeom3 = new ProtoTubeGeometry(path3, tubeSegs, 12, false, { func: FuncType.LINEAR, min: 5, max: 5, periods: 1 }, this.boneCount);
+        const spineGeom2 = new ProtoTubeGeometry(path2, tubeSegs, 12, false, { func: FuncType.SINUSOIDAL, min: 1, max: 2, periods: 1 }, this.boneCount);
+        const spineGeom1 = new ProtoTubeGeometry(path1, tubeSegs, 12, false, { func: FuncType.SINUSOIDAL, min: 1, max: 2, periods: 1 }, this.boneCount);
+        const spineGeom3 = new ProtoTubeGeometry(path3, tubeSegs, 12, false, { func: FuncType.SINUSOIDAL, min: 1, max: 2, periods: 1 }, this.boneCount);
         // this.curveLenth = spineGeom.pathLen;
         // this.curveLengths = spineGeom.pathSegmentLengths;
 
