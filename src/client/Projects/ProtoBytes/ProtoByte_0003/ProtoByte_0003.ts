@@ -51,7 +51,7 @@ export class ProtoByte_0003 extends ProtoTubeBase {
         this.curveLenth = spineGeom.pathLen;
         this.curveLengths = spineGeom.pathSegmentLengths;
 
-        const spineMat = new MeshPhongMaterial({ color: 0xff2222, wireframe: false, side: DoubleSide, map: texture, transparent: true, opacity: 1, bumpMap: texture, bumpScale: 1, shininess: .1 });
+        const spineMat = new MeshPhongMaterial({ color: 0xaaff99, wireframe: false, side: DoubleSide, map: texture, transparent: true, opacity: 1, bumpMap: texture, bumpScale: 1, shininess: .1 });
 
         this.boneCount = spineGeom.boneCount;
         this.curveLenth = spineGeom.pathLen;

@@ -59,7 +59,7 @@ for (let i = 0; i < wormCount; i++) {
 //*****************************************************//
 
 
-const ambientTexturesLight = new AmbientLight(0xFFFFFF, 1);
+const ambientTexturesLight = new AmbientLight(0x666666, 1);
 scene.add(ambientTexturesLight);
 
 const col2 = 0xffffff;
@@ -78,7 +78,7 @@ spot.shadow.mapSize.width = 1024 * 4;
 spot.shadow.mapSize.height = 1024 * 4;
 scene.add(spot);
 
-const pointLt = new PointLight(0xff0000, 1, 200); light.position.set(0, 50, 0); scene.add(pointLt);
+const pointLt = new PointLight(0xff8888, 1, 200); light.position.set(0, 50, 0); scene.add(pointLt);
 
 function animate() {
     requestAnimationFrame(animate);

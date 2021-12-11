@@ -7,6 +7,9 @@
 
 import { AmbientLight, Color, DirectionalLight, PCFSoftShadowMap, PerspectiveCamera, PointLight, Scene, SpotLight, Vector3, WebGLRenderer } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { randFloat } from 'three/src/math/MathUtils';
+import { PBMath, PI } from '../../../PByte3/IJGUtils';
+import { ProtoByte_0003 } from '../ProtoByte_0003/ProtoByte_0003';
 import { ProtoByte_0004 } from './ProtoByte_0004';
 
 // create and position camera
@@ -30,10 +33,28 @@ const controls = new OrbitControls(camera, renderer.domElement);
 //****************** Custom geometry ******************//
 let pb = new ProtoByte_0004(new Vector3(80, 300, 80));
 scene.add(pb);
+
+
+// let wormCount = 50;
+// let worms: ProtoByte_0003[] = [];
+// for (let i = 0; i < wormCount; i++) {
+//     let rad = PBMath.rand(10, 50);
+//     let len = PBMath.rand(275, 400);
+//     let offset = 60;
+//     worms[i] = new ProtoByte_0003(new Vector3(rad, len, rad));
+//     worms[i].translateX(PBMath.rand(-offset, offset))
+//     worms[i].translateY(PBMath.rand(-offset, offset))
+//     worms[i].translateZ(PBMath.rand(-offset, offset))
+//     worms[i].rotateX(randFloat(-PI, PI));
+//     worms[i].rotateY(randFloat(-PI, PI));
+//     worms[i].rotateZ(randFloat(-PI, PI));
+//     worms[i].scale.set(.3, .3, .3);
+//     scene.add(worms[i]);
+// }
 //*****************************************************//
 
 
-const ambientTexturesLight = new AmbientLight(0xFFFFFF, 1);
+const ambientTexturesLight = new AmbientLight(0xFFFFFF, .4);
 scene.add(ambientTexturesLight);
 
 const col2 = 0xffffff;
@@ -52,7 +73,7 @@ spot.shadow.mapSize.width = 1024 * 4;
 spot.shadow.mapSize.height = 1024 * 4;
 scene.add(spot);
 
-const pointLt = new PointLight(0xff0000, 1, 200); light.position.set(0, 50, 0); scene.add(pointLt);
+const pointLt = new PointLight(0xff0000, 1, 200); light.position.set(0, 50, 100); scene.add(pointLt);
 
 function animate() {
     requestAnimationFrame(animate);
@@ -61,6 +82,11 @@ function animate() {
 
     const time = Date.now() * 0.007;
     pb.move(time);
+
+    // for (let i = 0; i < wormCount; i++) {
+    //     const time2 = Date.now() * 0.002 * (i + 1) * .02;
+    //      worms[i].move(time2);
+    // }
     render();
 }
 

@@ -27,7 +27,7 @@ export enum FuncType {
     LINEAR_INVERSE,
     SINUSOIDAL,
     SINUSOIDAL_INVERSE,
-    SINUSOIDAL_RANDOME
+    SINUSOIDAL_RANDOM
 };
 
 export interface iCurveExpression {
@@ -77,7 +77,7 @@ export class PBMath {
                         vals.push(min + step * j);
                     }
                 }
-                break
+                break;
             case FuncType.LINEAR_INVERSE:
                 octives = count / periods;
                 step = (max - min) / octives;
@@ -87,7 +87,7 @@ export class PBMath {
                         vals.push(max - step * j);
                     }
                 }
-                break
+                break;
             case FuncType.SINUSOIDAL:
                 theta = 0;
                 freq = Math.PI * periods / count;
@@ -95,7 +95,7 @@ export class PBMath {
                     vals[i] = min + Math.abs(Math.sin(theta)) * max;
                     theta += freq;
                 }
-                break
+                break;
             case FuncType.SINUSOIDAL_INVERSE:
                 theta = 0;
                 freq = Math.PI * periods / count;
@@ -103,7 +103,19 @@ export class PBMath {
                     vals[i] = Math.max(min, Math.abs(Math.cos(theta)) * max);
                     theta += freq;
                 }
-                break
+                break;
+            case FuncType.SINUSOIDAL_RANDOM:
+                theta = 0;
+                freq = Math.PI * periods / count;
+                let rMax = max;
+                for (let i = 0; i <= count; i++) {
+                    //  if (i % periods == 0) {
+                    rMax = PBMath.rand(min, max);
+                    //   }
+                    vals[i] = Math.max(min, Math.abs(Math.cos(theta)) * rMax);
+                    theta += freq;
+                }
+                break;
             default: // returns uniform radii
                 for (let i = 0; i < count; i++) {
                     vals[i] = max;

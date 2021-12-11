@@ -48,17 +48,17 @@ export class ProtoByte_0001 extends ProtoTubeBase {
         const path = new CatmullRomCurve3(this.pathVecs);
 
 
-        const texture = new TextureLoader().load("textures/corroded_red.jpg");
+        const texture = new TextureLoader().load("textures/corrogated_metal2_color.jpg");
         texture.wrapS = RepeatWrapping;
         texture.wrapT = RepeatWrapping;
-        texture.repeat.set(80, 1);
+        texture.repeat.set(20, 1);
 
         this.boneCount = 10;
         const spineGeom = new ProtoTubeGeometry(path, Math.floor(tubeSegs / 2), 6, false, { func: FuncType.SINUSOIDAL_INVERSE, min: 2, max: 10, periods: 25 }, this.boneCount);
         this.curveLenth = spineGeom.pathLen;
         this.curveLengths = spineGeom.pathSegmentLengths;
 
-        const spineMat = new MeshPhongMaterial({ color: 0xFFBBBB, wireframe: false, side: DoubleSide, map: texture, transparent: true, opacity: .65, bumpMap: texture, bumpScale: 1, shininess: .8 });
+        const spineMat = new MeshPhongMaterial({ color: 0xCCBBFF, wireframe: false, side: DoubleSide, map: texture, transparent: true, opacity: .65, bumpMap: texture, bumpScale: 1, shininess: .8 });
         this.uniforms = {
             time: { value: 1.0 }
         };
