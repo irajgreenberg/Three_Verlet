@@ -19,7 +19,7 @@ export class VerletNode extends THREE.Mesh {
   isNodeVisible: boolean;
   isVerletable: boolean;
 
-  constructor(pos: THREE.Vector3, radius: number = 0.005, color: THREE.Color = new THREE.Color(.5, .5, .5), geomDetail: GeometryDetail = GeometryDetail.SPHERE_LOW, isNodeVisible: boolean = true) {
+  constructor(pos: THREE.Vector3, radius: number = 1, color: THREE.Color = new THREE.Color(.5, .5, .5), geomDetail: GeometryDetail = GeometryDetail.SPHERE_LOW, isNodeVisible: boolean = true) {
 
     // determine node geometry
     let geom;

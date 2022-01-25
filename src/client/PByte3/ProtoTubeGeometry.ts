@@ -1,18 +1,30 @@
 
-import { Curve, Float32BufferAttribute, TubeGeometry, Vector2, Vector3 } from "three";
+// NOTES: 
+// 1. TubeGeometry creates a copy of radialSegment[0]. I think this is ued for uv mapping
+//    If you want to attach other geometry to tube, attachments points will be < radialSegments.length-1
+// 2. Tube sections will be 1 less than vertex cross-sections (e.g. :-:, 1 tube section, 2 vertex cross-sections)
+// 3. this.geometry.attributes.position.count = (radialSegments+1) * (tubeSegments+1)
+
+import { Curve, Float32BufferAttribute, Line, TubeGeometry, Vector2, Vector3 } from "three";
 import { FuncType, iCurveExpression, PBMath } from "./IJGUtils";
 export class ProtoTubeGeometry extends TubeGeometry {
     // radii: number[] = []
     pathLen: number;
+    tubularSegments: number;
+    radialSegments: number;
 
     //used to precalculate curve segment lengths for non-orthogonal skeleton creation. Default bone count is 5
     boneCount: number;
     pathSegmentLengths: number[] = [];
 
+    skeletalSpineVertices: Vector3[]= [];
+
     constructor(path: Curve<Vector3>, tubularSegments = 64, radialSegments = 8,
         closed = false, radExpr: iCurveExpression = { func: FuncType.NONE, min: 1, max: 1, periods: 1 }, boneCount: number = 5) {
 
         super(path);
+        this.tubularSegments = tubularSegments;
+        this.radialSegments = radialSegments;
 
         // generate radii basedon passed in expression
         let radii = PBMath.expression(radExpr.func, tubularSegments, radExpr.min, radExpr.max, radExpr.periods);
@@ -62,12 +74,23 @@ export class ProtoTubeGeometry extends TubeGeometry {
 
         generateBufferData();
 
+        // Collect points for spineSkeleton
+
+        for (let i = 0; i < this.tubularSegments; i++) {
+            P = path.getPointAt(i / this.tubularSegments, P);
+             this.skeletalSpineVertices.push(P);
+        }
+
         // build geometry
 
         this.setIndex(indices);
         this.setAttribute('position', new Float32BufferAttribute(vertices, 3));
         this.setAttribute('normal', new Float32BufferAttribute(normals, 3));
         this.setAttribute('uv', new Float32BufferAttribute(uvs, 2));
+
+        // create spine based on tube vertices
+        
+        //createSkeletalSpine();
 
         // functions
 
@@ -181,6 +204,25 @@ export class ProtoTubeGeometry extends TubeGeometry {
             }
 
         }
+
+        // function createSkeletalSpine(this: any){
+
+        //     if (this) {
+        //         let position = this.spineMesh.geometry.attributes.position;
+        //         for (let i = 0, k = 0; i < position.count; i += (this.spineGeom.radialSegments + 1)) {
+        //             let vec = new Vector3();
+        //             for (let j = 0; j <= this.spineGeom.radialSegments; j++) {
+        //                 let l = i + j;
+        //                 vec.add(new Vector3(this.bufferClone.getX(l), this.bufferClone.getY(l), this.bufferClone.getZ(l)));
+        //             }
+        //             vec.divideScalar(this.spineGeom.radialSegments);
+        //             this.bufferSpineVecs.push(vec);
+        //             this.bufferSpineVecsInit.push(vec);
+        //         }
+        //     }
+
+
+        // }
     }
     toJSON() {
 

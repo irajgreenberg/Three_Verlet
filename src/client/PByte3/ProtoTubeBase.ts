@@ -1,11 +1,11 @@
 // Base class for ProtoByte Tube Geometry
 // Note: skinning is a 1-dimensional chain along y-axis
 
-import { Mesh, SkinnedMesh, Box3, Vector3, Bone, Uint16BufferAttribute, Float32BufferAttribute, MeshPhongMaterial, Skeleton, Group } from "three";
+import { Mesh, SkinnedMesh, Box3, Vector3, Bone, Uint16BufferAttribute, Float32BufferAttribute, MeshPhongMaterial, Skeleton, Group, Line } from "three";
 
 export abstract class ProtoTubeBase extends Group {
     dim: Vector3;
-    spineMesh?: Mesh;
+    tubeMesh?: Mesh;
     pathVecs: Vector3[] = [];
 
     // temporary solution, needs to be put in a base calss eventually
@@ -21,6 +21,10 @@ export abstract class ProtoTubeBase extends Group {
     // requires implementation in all derived classes
     abstract create(): void;
 
+    // createSkeletalSpine(){
+    // }
+    
+    
     makeSkinned(mesh: Mesh, boneCount: number, curveLength: number): SkinnedMesh {
         //console.log('passed m - ', m);
         let nBones: number = boneCount;

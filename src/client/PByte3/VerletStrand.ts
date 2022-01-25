@@ -10,7 +10,7 @@ import { VerletStick } from './VerletStick';
 import { AnchorPoint, GeometryDetail } from './IJGUtils';
 import { BufferGeometry, Color, Group, Line, LineBasicMaterial, MathUtils, MeshBasicMaterial, Vector3 } from 'three';
 
-export class VerletStrand extends Group{
+export class VerletStrand extends Group {
     head: Vector3
     tail: Vector3
     segmentCount: number;
@@ -33,7 +33,7 @@ export class VerletStrand extends Group{
 
     constructor(head: Vector3, tail: Vector3, segmentCount: number,
         anchorPointDetail: AnchorPoint = AnchorPoint.NONE, elasticity: number = .1,
-        nodeType: GeometryDetail = GeometryDetail.SPHERE_LOW, nodeRadius: number = MathUtils.randFloat(.0002, .0007)) {
+        nodeType: GeometryDetail = GeometryDetail.SPHERE_LOW, nodeRadius: number = MathUtils.randFloat(.02, .07)) {
         super();
         this.head = head;
         this.tail = tail;
@@ -49,7 +49,7 @@ export class VerletStrand extends Group{
         // local vars for segment calcuations
         let deltaVec = new Vector3();
         // get chain vector
-        deltaVec.subVectors(this.head, this.tail);
+        deltaVec.subVectors(this.tail, this.head);
         let chainLen = deltaVec.length();
         // get chain segment length
         let segLen = chainLen / this.segments.length;
@@ -63,7 +63,7 @@ export class VerletStrand extends Group{
                 this.head.y + deltaVec.y * i,
                 this.head.z + deltaVec.z * i
             ),
-                MathUtils.randFloat(.0002, .0007),
+                MathUtils.randFloat(.02, .07),
                 new Color(1, 1, 1), this.nodeType);
 
             this.nodes[i].setNodeVisible(true);
@@ -166,7 +166,17 @@ export class VerletStrand extends Group{
     }
 
     public verlet(isConstrained: boolean = true): void {
-        for (var i = 0; i < this.nodes.length; i++) {
+        let loopStart = 0;
+        let loopEnd = this.nodes.length;
+        if (this.anchorPointDetail === AnchorPoint.HEAD) {
+            loopStart = 1;
+        } else if (this.anchorPointDetail === AnchorPoint.TAIL) {
+            loopEnd = this.nodes.length - 1
+        } else if (this.anchorPointDetail === AnchorPoint.HEAD_TAIL) {
+            loopStart = 1;
+            loopEnd = this.nodes.length - 1;
+        }
+        for (var i = loopStart; i < loopEnd; i++) {
             this.nodes[i].verlet();
             this.nodes[i].rotateX(this.testRot * .1);
             this.nodes[i].rotateY(this.testRot);
@@ -219,6 +229,16 @@ export class VerletStrand extends Group{
         this.nodes[this.nodes.length - 1].position.x = pos.x;
         this.nodes[this.nodes.length - 1].position.y = pos.y;
         this.nodes[this.nodes.length - 1].position.z = pos.z;
+    }
+
+    setTailPositionX(posX: number): void {
+        this.nodes[this.nodes.length - 1].position.x = posX;
+    }
+    setTailPositionY(posY: number): void {
+        this.nodes[this.nodes.length - 1].position.y = posY;
+    }
+    setTailPositionZ(posZ: number): void {
+        this.nodes[this.nodes.length - 1].position.z = posZ;
     }
 
     setNodesVisible(areNodesVisible: boolean): void {

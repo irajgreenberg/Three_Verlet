@@ -1,0 +1,13 @@
+{
+    "glsl-canvas.textures": {
+        "0": "/shaders/spheres.png",
+        "1": "/shaders/spheres2.png",
+        "2": "/shaders/spheres3.png"
+      },
+      
+    "glsl-canvas.uniforms": {
+       "u_sphere0":[1.0, 0.1, 0.1, 0.35],
+       "u_sphere1":[1.0, 1.0, 0.0, 0.0],
+       "u_sphere2":[1.0,0.0,1.0,0.5]
+      }
+}

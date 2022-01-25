@@ -83,11 +83,11 @@ export class ProtoByte_0002 extends ProtoTubeBase {
         this.curveLengths = spineGeom.pathSegmentLengths
 
 
-        //this.spineMesh = new Mesh(spineGeom, spineMat);
-        this.spineMesh = new Mesh(spineGeom, spineMat);
-        this.skinMesh = this.makeSkinned(this.spineMesh, this.boneCount, this.curveLenth);
+        //this.tubeMesh = new Mesh(spineGeom, spineMat);
+        this.tubeMesh = new Mesh(spineGeom, spineMat);
+        this.skinMesh = this.makeSkinned(this.tubeMesh, this.boneCount, this.curveLenth);
         this.add(this.skinMesh);
-        // this.add(this.spineMesh);
+        // this.add(this.tubeMesh);
 
         // const skelHelper = new SkeletonHelper(this.skinMesh);
         // this.add(skelHelper);

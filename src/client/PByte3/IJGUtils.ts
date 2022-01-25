@@ -1,7 +1,8 @@
+import { BoxGeometry, MeshBasicMaterial, Vector } from 'three';
 
 import {
     Color, BufferGeometry, Group, Line, LineBasicMaterial,
-    Mesh, MeshPhongMaterial, SphereGeometry, Vector3, BufferAttribute
+    Mesh, MeshPhongMaterial, SphereGeometry, Vector3, BufferAttribute, DoubleSide
 } from 'three';
 
 // conveneince functions
@@ -30,6 +31,20 @@ export enum FuncType {
     SINUSOIDAL_RANDOM
 };
 
+// Simple class for environment physics
+export class EnvironmentPhysics {
+    gravity: number;
+    damping: number;
+    friction: number;
+    wind: Vector3;
+    constructor(gravity: number, damping: number, friction: number, wind: Vector3) {
+        this.gravity = gravity;
+        this.damping = damping;
+        this.friction = friction;
+        this.wind = wind;
+    }
+}
+
 export interface iCurveExpression {
     func: FuncType;
     min: number;
@@ -42,11 +57,22 @@ export interface iCurveExpression {
 // maximum exclusive, minimum inclusive
 export class PBMath {
 
-    // rand float
+    // expects Vector3[]
+    static getCentroid(vecs: Vector3[]): Vector3 {
+        let c = new Vector3();
+        for (let i = 0; i < vecs.length; i++) {
+            c.add(vecs[i]);
+        }
+        c.divideScalar(vecs.length);
+        return c;
+    }
+
+    // returns random float between min-max
+
     static rand(min: number, max: number): number {
         return Math.random() * (max - min) + min;
     }
-    // rand int
+    // returns random int between min-max
     static randInt(min: number, max: number) {
         min = Math.ceil(min);
         max = Math.floor(max);
@@ -126,6 +152,35 @@ export class PBMath {
         return vals;
     }
 
+
+}
+
+export class particle extends Group {
+    pos: Vector3;
+    spd: Vector3;
+    rad: number;
+    col: Color;
+    partMesh: Mesh;
+
+    constructor(pos: Vector3 = new Vector3(0, 0, 0), spd: Vector3 = new Vector3(0, 0, 0), rad: number = 1, col: Color = new Color(.5, .5, .5)) {
+        super();
+
+        this.pos = pos;
+        this.spd = spd;
+        this.rad = rad;
+        this.col = col;
+
+        let geom = new BoxGeometry(this.rad * 2, this.rad * 2, this.rad * 2);
+        let mat = new MeshBasicMaterial({ color: this.col });
+        this.partMesh = new Mesh(geom, mat);
+        this.add(this.partMesh);
+    }
+
+    move(): void {
+        this.spd.y -= PByteGlobals.gravity;
+        this.pos.add(this.spd);
+        this.partMesh.position.set(this.pos.x, this.pos.y, this.pos.z);
+    }
 
 }
 
@@ -438,11 +493,11 @@ export class Tri extends Group {
     private cntr: Vector3 = new Vector3();
 
     lineGeometry?: BufferGeometry;
-    lineMaterial = new LineBasicMaterial({ color: 0xFF9900 });
-    line?: Line;
+    lineMaterial = new LineBasicMaterial({ color: 0x000000 });
+    line: Line | undefined;
 
     faceGeometry: BufferGeometry;
-    faceMaterial = new MeshPhongMaterial({ color: 0xFF9900 });
+    faceMaterial = new MeshBasicMaterial({ color: 0xFFFFFF, side: DoubleSide });
     face: Mesh;
 
     constructor(v0: Vector3, v1: Vector3, v2: Vector3, isDrawable: boolean = true) {
@@ -454,9 +509,9 @@ export class Tri extends Group {
 
         // drawing face
         let points = [];
-        points.push(this.v0);
-        points.push(this.v1);
         points.push(this.v2);
+        points.push(this.v1);
+        points.push(this.v0);
 
         this.faceGeometry = new BufferGeometry().setFromPoints(points);
 
@@ -464,18 +519,18 @@ export class Tri extends Group {
         this.add(this.face);
 
 
-        // for drawing normal
-        // let points = [];
-        // points.push(this.getCentroid());
-        // points.push(this.getNormal());
-        // this.lineGeometry = new BufferGeometry().setFromPoints(points);
+        //for drawing normal
+        let linePts = [];
+        linePts.push(this.getCentroid());
+        linePts.push(this.getNormal());
+        this.lineGeometry = new BufferGeometry().setFromPoints(linePts);
 
-        // this.line = new Line(this.lineGeometry, this.lineMaterial);
-        // this.lineMaterial.transparent = true;
-        // this.lineMaterial.opacity = .75;
-        // if (isDrawable) {
-        //     this.add(this.line);
-        // }
+        this.line = new Line(this.lineGeometry, this.lineMaterial);
+        this.lineMaterial.transparent = true;
+        this.lineMaterial.opacity = .75;
+        if (isDrawable) {
+            this.add(this.line);
+        }
     }
 
 
@@ -493,7 +548,7 @@ export class Tri extends Group {
 
         // calc normal
         this.norm.crossVectors(this.side0, this.side1)
-        this.norm.normalize().multiplyScalar(-.07);
+        this.norm.normalize().multiplyScalar(-100);
         this.norm.add(this.getCentroid());
 
         //return quad normalized normal
@@ -547,13 +602,14 @@ export class Tri extends Group {
         let c = new Vector3();
         c.copy(this.getEdges()[0]);
         c.cross(this.getEdges()[1]);
-        return c.length();
+        return c.length() / 2;
     }
 }
 // end tri class
 
 // Convenience class to group 4 vectors
 // includes quad centroid and normal
+// Assists in simple collisions
 export class Quad extends Group {
     v0: Vector3;
     v1: Vector3;
@@ -698,7 +754,7 @@ export class Orb extends Group {
     }
 
     move() {
-        this.speed.y += PByteGLobals.gravity;
+        this.speed.y += PByteGlobals.gravity;
         this.pos.add(this.speed);
         this.sphere.position.x = this.pos.x;
         this.sphere.position.y = this.pos.y;
@@ -713,7 +769,7 @@ export class Orb extends Group {
 
 //global variables
 //global variable - eventually implement 'more better'.
-export class PByteGLobals {
+export class PByteGlobals {
     static gravity: number = 0;
 };
 

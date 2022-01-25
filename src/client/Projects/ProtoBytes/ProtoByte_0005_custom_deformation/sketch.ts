@@ -13,7 +13,7 @@ import { ProtoByte_0005 } from './ProtoByte_0005';
 const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.01, 10000);
 camera.position.x = 0;
 camera.position.y = 0;
-camera.position.z = 400;
+camera.position.z = 800;
 
 const scene = new Scene();
 scene.background = new Color(0x00000);
